@@ -73,14 +73,21 @@ const handleSubmit = async (data: TypesFormData) => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex justify-between">
-          <h1 className="text-2xl font-bold text-black">Data Tipe Aset</h1>
-          <Button onClick={handleAdd} variant='outline_blue'>
-            <Plus className="w-4 h-4 mr-2" />
-            Tambah Tipe Aset
-          </Button>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+  <h1 className="text-xl sm:text-2xl font-bold text-black">
+    Data Tipe Aset
+  </h1>
 
-        </div>
+  <Button 
+    onClick={handleAdd} 
+    variant="outline_blue"
+    className="w-full sm:w-auto"
+  >
+    <Plus className="w-4 h-4 mr-2" />
+    Tambah Tipe Aset
+  </Button>
+</div>
+
 
         <input
           type="text"

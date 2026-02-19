@@ -1,5 +1,5 @@
 import React from 'react';
-import { Package, MapPin, Tag, TrendingUp, ArrowUp, ArrowDown, Clock, Map } from 'lucide-react';
+import { Package, MapPin, Tag, TrendingUp, ArrowUp, ArrowDown, Clock } from 'lucide-react';
 import DashboardLayout from '../../../layouts/Dashboardlayout';
 
 const DashboardPage: React.FC = () => {

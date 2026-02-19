@@ -78,13 +78,21 @@ const handleSubmit = async (data: LocationFormData) => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex justify-between">
-          <h1 className="text-2xl font-bold text-black">Data Lokasi</h1>
-          <Button onClick={handleAdd} variant='outline_blue'>
-            <Plus className="w-4 h-4 mr-2" />
-            Tambah Lokasi
-          </Button>
-        </div>
+       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+  <h1 className="text-xl sm:text-2xl font-bold text-black">
+    Data Lokasi
+  </h1>
+
+  <Button 
+    onClick={handleAdd} 
+    variant="outline_blue"
+    className="w-full sm:w-auto"
+  >
+    <Plus className="w-4 h-4 mr-2" />
+    Tambah Lokasi
+  </Button>
+</div>
+
 
         <input
           type="text"
