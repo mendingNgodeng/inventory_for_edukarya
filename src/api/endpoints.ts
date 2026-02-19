@@ -5,4 +5,6 @@ export const ENDPOINTS = {
   CATEGORIES: '/assetCtg',
   TYPES: '/assetTypes',
   USER: '/user', //karyawan 
+  RENTAL_CUSTOMER: '/rentalCustomer',
+  STATISTIC:'/statistic/getDashboardSummary'
 };
