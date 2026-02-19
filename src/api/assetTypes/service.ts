@@ -1,0 +1,54 @@
+// api/location/service.ts
+
+import { apiClient } from '../client';
+import { ENDPOINTS } from '../endpoints';
+import type {
+  data,
+  CreateData,
+  UpdateData,
+  ApiResponse
+} from './types';
+
+export class dataService {
+static async getAll(): Promise<data[]> {
+  const { data } = await apiClient.get<ApiResponse<data[]>>(
+    ENDPOINTS.TYPES
+  );
+
+  return data.data; // ambil array di dalamnya
+}
+
+
+static async getById(id: number): Promise<data> {
+  const { data } = await apiClient.get<ApiResponse<data>>(
+    `${ENDPOINTS.TYPES}/${id}`
+  );
+
+  return data.data;
+}
+
+static async create(payload: CreateData): Promise<data> {
+  const { data } = await apiClient.post<ApiResponse<data>>(
+    ENDPOINTS.TYPES,
+    payload
+  );
+
+  return data.data;
+}
+
+static async update(
+  id: number,
+  payload: UpdateData
+): Promise<data> {
+  const { data } = await apiClient.put<ApiResponse<data>>(
+    `${ENDPOINTS.TYPES}/${id}`,
+    payload
+  );
+
+  return data.data;
+}
+
+  static async delete(id: number): Promise<void> {
+    await apiClient.delete(`${ENDPOINTS.TYPES}/${id}`);
+  }
+}
