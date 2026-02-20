@@ -5,6 +5,8 @@ import LocationPage from '../features/locations/pages/locationPage';
 import AssetTypePage from '../features/AssetType/pages/Page';
 import AssetCategoryPage from '../features/assetCategories/pages/Page';
 import User from '../features/user/pages/Page';
+import Asset from '../features/Assets/pages/Page';
+
 
 
 export const router = createBrowserRouter([
@@ -36,6 +38,12 @@ export const router = createBrowserRouter([
         path: '/user-karyawan',
         element: <User />,
       },
+
+       {
+        path: '/asset',
+        element: <Asset />,
+      },
+
     ],
   },
 ]);

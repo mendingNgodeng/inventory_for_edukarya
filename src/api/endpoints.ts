@@ -4,9 +4,11 @@ export const ENDPOINTS = {
   LOCATION: '/location',
   CATEGORIES: '/assetCtg',
   TYPES: '/assetTypes',
+  ASSETS: '/asset',
   USER: '/user', //karyawan 
-  RENTAL_CUSTOMER: '/rentalCustomer',
+  RENTAL_CUSTOMER: '/rentalCustomer', // revise entire backend later
   STATISTIC:'/statistic/getDashboardSummary',
   CTGRANK:'/statistic/rankCtgByStock'
+
 
 };

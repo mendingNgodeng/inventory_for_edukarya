@@ -6,6 +6,8 @@ import {
   Package,
   Tag,
   LogOut,
+  UserCheck,
+  NotebookTabs,
   X,
 } from 'lucide-react';
 
@@ -19,7 +21,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
     { path: '/asset-types', icon: Package, label: 'List Tipe Aset' },
     { path: '/locations', icon: MapPin, label: 'List Lokasi' },
     { path: '/asset-categories', icon: Tag, label: 'List Kategori Aset' },
-    { path: '/user-karyawan', icon: Tag, label: 'List Karyawan' },
+    { path: '/user-karyawan', icon: UserCheck, label: 'List Karyawan' },
+    { path: '/asset', icon: NotebookTabs, label: 'List Aset' },
   ];
 
   return (
