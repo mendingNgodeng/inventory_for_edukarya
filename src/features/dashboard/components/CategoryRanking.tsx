@@ -23,7 +23,7 @@ const CategoryRanking: React.FC<Props> = ({ data }) => {
           return (
             <div key={i}>
               <div className="flex justify-between mb-2">
-                <span className="text-sm font-medium">{cat.name}</span>
+                <span className="text-sm font-medium text-gray-700">{cat.name}</span>
                 <span className="text-sm text-gray-500">
                   {cat.total_stock}
                 </span>

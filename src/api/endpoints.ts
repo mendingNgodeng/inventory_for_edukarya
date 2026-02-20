@@ -6,5 +6,7 @@ export const ENDPOINTS = {
   TYPES: '/assetTypes',
   USER: '/user', //karyawan 
   RENTAL_CUSTOMER: '/rentalCustomer',
-  STATISTIC:'/statistic/getDashboardSummary'
+  STATISTIC:'/statistic/getDashboardSummary',
+  CTGRANK:'/statistic/rankCtgByStock'
+
 };

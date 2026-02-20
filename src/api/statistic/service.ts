@@ -1,6 +1,6 @@
 import { apiClient } from '../client';
 import { ENDPOINTS } from '../endpoints';
-import type { ApiResponse, DashboardSummary } from './types';
+import type { ApiResponse, CtgRankByStock, DashboardSummary } from './types';
 
 export class dashboardService {
   static async getDashboard() {
@@ -12,4 +12,12 @@ export class dashboardService {
 //  console.log(`Dashboard API response time: ${(end - start).toFixed(2)}ms`);
     return data.data;
   }
+  
+  static async getCtgRank() {
+    const { data } = await apiClient.get<ApiResponse<CtgRankByStock[]>>(
+      ENDPOINTS.CTGRANK
+    );
+    return data.data;
+  }
+  
 }
