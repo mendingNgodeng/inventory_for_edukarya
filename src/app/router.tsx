@@ -6,6 +6,7 @@ import AssetTypePage from '../features/AssetType/pages/Page';
 import AssetCategoryPage from '../features/assetCategories/pages/Page';
 import User from '../features/user/pages/Page';
 import Asset from '../features/Assets/pages/Page';
+import AssetStock from '../features/AssetsStock/pages/Page';
 
 
 
@@ -38,12 +39,14 @@ export const router = createBrowserRouter([
         path: '/user-karyawan',
         element: <User />,
       },
-
        {
         path: '/asset',
         element: <Asset />,
       },
-
+      {
+        path: '/asset-stock',
+        element: <AssetStock />,
+      },
     ],
   },
 ]);

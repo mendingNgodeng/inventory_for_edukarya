@@ -8,7 +8,9 @@ export const ENDPOINTS = {
   USER: '/user', //karyawan 
   RENTAL_CUSTOMER: '/rentalCustomer', // revise entire backend later
   STATISTIC:'/statistic/getDashboardSummary',
-  CTGRANK:'/statistic/rankCtgByStock'
+  CTGRANK:'/statistic/rankCtgByStock',
+  ASSET_STOCK:'/assetStock'
+
 
 
 };

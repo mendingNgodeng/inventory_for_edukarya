@@ -7,10 +7,9 @@ export interface data {
   purchase_price:number,
   asset_name: string;
   asset_code: string;
-    type: {
+  type: {
     name: string;
   };
-
   category: {
     name: string;
   };
@@ -39,6 +38,12 @@ export interface UpdateData {
   purchase_price?:number,
   asset_name?: string;
   is_rentable?: boolean;
+  type?: {
+    name?: string;
+  };
+  category?: {
+    name?: string;
+  };
   created_at?: string;
   updated_at?: string;
 }
