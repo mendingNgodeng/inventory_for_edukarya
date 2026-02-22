@@ -1,4 +1,4 @@
-import { Package, MapPin, Tag, TrendingUp } from "lucide-react";
+import { Package, Tag, TrendingUp,User2} from "lucide-react";
 import type { DashboardSummary } from "../../../api/statistic/types";
 import StatCard from "./StatsCard";
 
@@ -18,7 +18,7 @@ const StatsGrid: React.FC<Props> = ({ summary }) => {
     {
       title: "Total User",
       value: summary.total_user,
-      icon: MapPin,
+      icon: User2,
       bgColor: "bg-green-50",
       textColor: "text-green-600",
     },
@@ -32,6 +32,13 @@ const StatsGrid: React.FC<Props> = ({ summary }) => {
     {
       title: "Aset Dipakai",
       value: summary.total_used_asset,
+      icon: TrendingUp,
+      bgColor: "bg-orange-50",
+      textColor: "text-orange-600",
+    },
+    {
+      title: "Aset Maintenance",
+      value: summary.total_maintenance_asset,
       icon: TrendingUp,
       bgColor: "bg-orange-50",
       textColor: "text-orange-600",

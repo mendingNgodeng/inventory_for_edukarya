@@ -9,6 +9,20 @@ const Table: React.FC<AssetsTableProps> = ({
   onDelete,
 }) => {
 
+  const statusStyle: Record<string, string> = {
+  TERSEDIA: "bg-green-100 text-green-700",
+  "TIDAK TERSEDIA": "bg-red-100 text-red-700",
+  "MAINTENANCE": "bg-yellow-100 text-yellow-700",
+  "DIPINJAM": "bg-blue-100 text-blue-700",
+  "DIPAKAI": "bg-orange-100 text-orange-700",
+
+};
+
+  const conditionStyle: Record<string, string> = {
+  BAIK: "bg-green-100 text-green-700",
+  "RUSAK": "bg-red-100 text-red-700",
+  // "DI MAINTENANCE": "bg-yellow-100 text-yellow-700",
+};
   const total = data.length;
   const EmptyState = () => (
     <tr>
@@ -74,6 +88,9 @@ const Table: React.FC<AssetsTableProps> = ({
                 <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Kode Asset
                 </th>
+                   <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Lokasi asset
+                </th>
                  <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   quantitas
                 </th>
@@ -110,6 +127,9 @@ const Table: React.FC<AssetsTableProps> = ({
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">
                       {loc.asset.asset_code}
                     </td>
+                     <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                      {loc.location.name}
+                    </td>
 
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">
                       {loc.quantity}
@@ -117,26 +137,23 @@ const Table: React.FC<AssetsTableProps> = ({
 
                      <td className="px-6 py-4 text-sm font-medium">
   <span
-    className={`px-3 py-1 rounded-full text-xs font-semibold ${
-      loc.condition == "BAIK"
-        ? "bg-green-100 text-green-700"
-        : "bg-red-100 text-red-700"
-    }`}
-  >
-    {loc.condition ? "BAIK" : "RUSAK"}
-  </span>
+  className={`px-3 py-1 rounded-full text-xs font-semibold ${
+    conditionStyle[loc.condition] || "bg-gray-100 text-gray-700"
+  }`}
+>
+  {loc.condition}
+</span>
 </td>
    <td className="px-6 py-4 text-sm font-medium">
+ 
   <span
-    className={`px-3 py-1 rounded-full text-xs font-semibold ${
-      loc.status === "TERSEDIA"
-        ? "bg-green-100 text-green-700"
-        : "bg-red-100 text-red-700"
-    }`}
-  >
-    {loc.status ? "TERSEDIA" : "TIDAK TERSEDIA"}
-  </span>
-</td>
+  className={`px-3 py-1 rounded-full text-xs font-semibold ${
+    statusStyle[loc.status] || "bg-gray-100 text-gray-700"
+  }`}
+>
+  {loc.status}
+</span>
+</td> 
                    <td className="px-6 py-4 text-sm font-medium">
   <span
     className={`px-3 py-1 rounded-full text-xs font-semibold ${

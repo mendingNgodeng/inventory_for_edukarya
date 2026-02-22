@@ -2,7 +2,7 @@
 
 export interface data {
   id_asset_stock: number;
-  id_assets: number;
+  id_asset: number;
   id_location: number;
   condition:string;
   quantity: number;
@@ -12,6 +12,9 @@ export interface data {
     asset_code: string;
     is_rentable: boolean;
   };
+  location:{
+    name:string
+  }
   created_at: string;
   updated_at: string;
 }
@@ -20,14 +23,14 @@ export interface ApiResponse<T> {
   data: T;
 }
 export interface CreateData {
-  id_assets: number;
+  id_asset: number;
   id_location: number;
   condition:string;
   quantity: number;
 }
 
 export interface UpdateData {
-  id_assets?: number;
+  id_asset?: number;
   id_location?: number;
   condition?: string;
   quantity?: number;

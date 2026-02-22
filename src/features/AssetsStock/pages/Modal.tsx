@@ -27,23 +27,18 @@ const {
   formState: { errors, isSubmitting },
 } = useForm<AssetsFormData>();
 const [serverError, setServerError] = React.useState<string | null>(null);
-//  id_assets: number;
-//   id_location: number;
-//   condition:string;
-//   quantity: number;
-//   status: string;
   useEffect(() => {
     if (editingData) {
       reset({
-        id_assets: editingData.id_assets,
-        id_location: editingData.id_location,
+       id_asset: Number(editingData.id_asset),
+  id_location: Number(editingData.id_location),
         condition: editingData.condition,
         quantity: editingData.quantity,
       });
     } else {
       reset({
-      id_assets: undefined,
-      id_location: undefined,
+  id_asset: "" as any,
+  id_location: "" as any,
       condition: "",
       quantity: 0,
       });
@@ -80,7 +75,7 @@ const [serverError, setServerError] = React.useState<string | null>(null);
     await onSubmit(data);
   } catch (error: any) {
 
-    // 🔴 Kalau error validasi dari Zod (ada errors object)
+    // Kalau error validasi dari Zod (ada errors object)
     if (error.response?.data?.errors) {
       const backendErrors = error.response.data.errors;
 
@@ -93,13 +88,11 @@ const [serverError, setServerError] = React.useState<string | null>(null);
 
       return;
     }
-
     // Kalau unique constraint atau error custom lain
     if (error.response?.data?.message) {
       setServerError(error.response.data.message);
       return;
     }
-
     //  Fallback
     setServerError("Terjadi kesalahan server.");
   }
@@ -114,15 +107,15 @@ const [serverError, setServerError] = React.useState<string | null>(null);
 )}
         <Select
   label="Aset"
-  options={asset.map((type) => ({
-    value: type.id_assets,
-    label: type.asset_name
+  options={asset.map((asset) => ({
+    value: asset.id_assets,
+    label: asset.asset_name +" - " + asset.asset_code
   }))}
-  registration={register("id_assets", {
+  registration={register("id_asset", {
     required: "Aset wajib dipilih",
     valueAsNumber: true,
   })}
-  error={errors.id_assets?.message}
+  error={errors.id_asset?.message}
 />
 
 <Select

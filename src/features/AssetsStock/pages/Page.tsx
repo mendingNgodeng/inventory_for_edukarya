@@ -43,8 +43,14 @@ const [deleteLoading, setDeleteLoading] = useState(false);
     await deleteData(deleteId);
 
     toast.success("Tipe Aset berhasil dihapus");
-  } catch (error) {
-    toast.error("Gagal menghapus Tipe Aset. data ini masih digunakan oleh tabel lain!");
+  } catch (error:any) {
+    // toast.error("Gagal menghapus Tipe Aset. data ini masih digunakan oleh tabel lain!");
+     const message =
+    error?.response?.data?.message ||
+    error?.message ||
+    "Gagal menghapus data.";
+
+  toast.error(message);
   } finally {
     setDeleteLoading(false);
     setDeleteId(null);
@@ -56,7 +62,7 @@ const handleDelete = (id: number) => {
 };
 const handleSubmit = async (data: AssetsFormData) => {
   if (editingData) {
-    await updateData(editingData.id_assets, data);
+    await updateData(editingData.id_asset_stock, data);
     toast.success("Stock Asset berhasil diperbarui");
   } else {
     await createData(data);

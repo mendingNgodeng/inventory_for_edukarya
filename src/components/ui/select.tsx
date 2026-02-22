@@ -26,9 +26,10 @@ const Select: React.FC<SelectProps> = ({
       </label>
       <select
         className="w-full px-3 py-2 border border-gray-500 rounded-lg focus:ring-2 focus:outline-none text-gray-700"
+        defaultValue=""
         {...registration}
       >
-        {/* <option value="">Pilih {label}</option> */}
+        <option className="text-gray-700" value="">Pilih {label}</option>
         {options.map((opt) => (
           <option className="text-gray-700" key={opt.value} value={opt.value}>
             {opt.label}

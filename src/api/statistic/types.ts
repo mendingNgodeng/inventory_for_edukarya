@@ -4,6 +4,7 @@ export interface DashboardSummary {
   total_user: number;
   total_category: number;
   total_used_asset: number;
+  total_maintenance_asset: number;
 }
 
 export interface CtgRankByStock {

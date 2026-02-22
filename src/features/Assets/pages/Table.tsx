@@ -111,11 +111,11 @@ const Table: React.FC<AssetsTableProps> = ({
                     </td>
 
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                      {loc.type?.name ?? "-"}
+                      {loc.type?.name ?? "updated"}
                     </td>
 
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                      {loc.category?.name ?? "-"}
+                      {loc.category?.name ?? "updated" }
                     </td>
 
                     <td className="px-6 py-4 text-sm text-gray-500 truncate">
