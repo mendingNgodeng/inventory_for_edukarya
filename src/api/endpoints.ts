@@ -10,7 +10,7 @@ export const ENDPOINTS = {
   STATISTIC:'/statistic/getDashboardSummary',
   CTGRANK:'/statistic/rankCtgByStock',
   ASSET_STOCK:'/assetStock',
-  ASSET_USE:"/assetBorrow"
-
+  ASSET_USE:"/assetBorrow",
+  ASSET_MAINTENANCE:"/assetMaintenance"
 
 };

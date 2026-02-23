@@ -1,19 +1,36 @@
 import { useEffect, useMemo, useState } from "react";
 import type { BorrowReturnedTableProps } from "../Types";
 import Pagination from "../../../components/ui/pagination"; 
+import TableFilters, { type SortOrder } from "../../../components/ui/tablefilters"; 
+import { sortByDate } from "../../../components/helper/dateSort"; 
 
-
+type SortKey = "BORROWED_DATE" | "RETURNED_DATE";
 
 export default function BorrowReturnedTable({ data, loading }: BorrowReturnedTableProps) {
  const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
-  // reset page saat data berubah (misalnya search berubah)
+   // sort state
+  const [sortBy, setSortBy] = useState<SortKey>("BORROWED_DATE");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("DESC");
+
+  // reset page saat data / sort berubah
   useEffect(() => {
     setPage(1);
-  }, [data]);
+  }, [data, sortBy, sortOrder]);
 
-  const total = data?.length ?? 0;
+  // data tersortir
+  const sortedData = useMemo(() => {
+    if (!data?.length) return [];
+
+    if (sortBy === "BORROWED_DATE") {
+      return sortByDate(data, (r) => r.borrowed_date, sortOrder);
+    }
+    // RETURNED_DATE
+    return sortByDate(data, (r) => r.returned_date, sortOrder);
+  }, [data, sortBy, sortOrder]);
+
+  const total = sortedData?.length ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   // jaga-jaga kalau page > totalPages setelah filter
@@ -23,15 +40,30 @@ export default function BorrowReturnedTable({ data, loading }: BorrowReturnedTab
 
   const pageData = useMemo(() => {
     const start = (page - 1) * pageSize;
-    return data.slice(start, start + pageSize);
-  }, [data, page, pageSize]);
+    return sortedData.slice(start, start + pageSize);
+  }, [sortedData, page, pageSize]);
 
 
   if (loading) return <div className="text-sm text-gray-600">Memuat riwayat...</div>;
-  if (!data.length) return <div className="text-sm text-gray-600">Belum ada asset yang dikembalikan.</div>;
+  if (!sortedData.length) return <div className="text-sm text-gray-600">Belum ada asset yang dikembalikan.</div>;
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+
+ <div className="bg-white border border-gray-200 rounded-lg p-3">
+        <TableFilters<SortKey>
+          label="Urutkan berdasarkan"
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onChangeSortBy={setSortBy}
+          onChangeSortOrder={setSortOrder}
+          sortOptions={[
+            { value: "BORROWED_DATE", label: "Tanggal Pinjam" },
+            { value: "RETURNED_DATE", label: "Tanggal Kembali" },
+          ]}
+        />
+      </div>
+    
       <table className="w-full text-sm">
         <thead className="bg-gray-50">
           <tr className="text-gray-700">

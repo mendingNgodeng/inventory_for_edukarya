@@ -23,9 +23,6 @@ export default function BorrowActiveTable({
 
   const total = data?.length ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
-
-
-
   // jaga-jaga kalau page > totalPages setelah filter
   useEffect(() => {
     if (page > totalPages) setPage(totalPages);

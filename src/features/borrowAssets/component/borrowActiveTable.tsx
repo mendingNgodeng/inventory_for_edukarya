@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Button from "../../../components/ui/button";
-import Pagination from "../../../components/ui/pagination"; 
+import Pagination from "../../../components/ui/pagination";
 import type { BorrowActiveTableProps } from "../Types";
 
 export default function BorrowActiveTable({
@@ -11,26 +11,32 @@ export default function BorrowActiveTable({
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  // reset page saat data berubah (misalnya search berubah)
-  useEffect(() => {
-    setPage(1);
+  // filter: hanya DIPINJAM
+  const useOnly = useMemo(() => {
+    return (data ?? []).filter((x) => x.status === "DIPINJAM");
   }, [data]);
 
-  const total = data?.length ?? 0;
+  // reset page saat filter berubah
+  useEffect(() => {
+    setPage(1);
+  }, [useOnly]);
+
+  // total dari useOnly
+  const total = useOnly.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
-  // jaga-jaga kalau page > totalPages setelah filter
   useEffect(() => {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
 
+  //  dari useOnly
   const pageData = useMemo(() => {
     const start = (page - 1) * pageSize;
-    return data.slice(start, start + pageSize);
-  }, [data, page, pageSize]);
+    return useOnly.slice(start, start + pageSize);
+  }, [useOnly, page, pageSize]);
 
   if (loading) return <div className="text-sm text-gray-600">Memuat data peminjaman...</div>;
-  if (!data.length) return <div className="text-sm text-gray-600">Tidak ada peminjaman yang sedang berlangsung.</div>;
+  if (!useOnly.length) return <div className="text-sm text-gray-600">Tidak ada peminjaman yang sedang berlangsung.</div>;
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
@@ -54,9 +60,7 @@ export default function BorrowActiveTable({
                 {r.assetStock?.asset?.asset_name ?? "-"} ({r.assetStock?.asset?.asset_code ?? "-"})
               </td>
               <td className="px-4 py-2">{r.assetStock?.location?.name ?? "-"}</td>
-              <td className="px-4 py-2">
-                {r.status === "DIPAKAI" ? "Kantor" : (r.user?.name ?? r.id_user ?? "-")}
-              </td>
+              <td className="px-4 py-2">{r.user?.name ?? r.id_user ?? "-"}</td>
               <td className="px-4 py-2">{r.quantity}</td>
               <td className="px-4 py-2 font-medium">{r.status}</td>
               <td className="px-4 py-2">{new Date(r.borrowed_date).toLocaleString()}</td>
@@ -70,7 +74,6 @@ export default function BorrowActiveTable({
         </tbody>
       </table>
 
-      {/*  Pagination */}
       <Pagination
         page={page}
         pageSize={pageSize}

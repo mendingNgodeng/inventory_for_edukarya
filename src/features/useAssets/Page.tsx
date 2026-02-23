@@ -78,12 +78,11 @@ useEffect(() => {
       const assetName = x.assetStock?.asset?.asset_name?.toLowerCase() || "";
       const assetCode = x.assetStock?.asset?.asset_code?.toLowerCase() || "";
       const loc = x.assetStock?.location?.name?.toLowerCase() || "";
-      const userName = x.user?.name?.toLowerCase?.() || ""; // kalau include user
+     
       return (
         assetName.includes(term) ||
         assetCode.includes(term) ||
-        loc.includes(term) ||
-        userName.includes(term)
+        loc.includes(term)
       );
     });
   }, [borrowedData, searchTerm]);
@@ -115,7 +114,7 @@ useEffect(() => {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <h1 className="text-xl sm:text-2xl font-bold text-black">
-            Pinjam Asset
+            Pakai Asset
           </h1>
 
           <div className="text-sm text-gray-500">
