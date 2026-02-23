@@ -25,8 +25,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
     { path: '/user-karyawan', icon: UserCheck, label: 'List Karyawan' },
     { path: '/asset', icon: NotebookTabs, label: 'List Aset' },
     { path: '/asset-stock', icon: NotebookPen, label: 'List Stock aset' },
-    { path: '/BorrowUseAssets', icon: NotebookPen, label: 'Pakai/Pinjam' },
-
+    { path: '/borrow-assets', icon: NotebookPen, label: 'Pinjam Barang' },
+    { path: '/use-assets', icon: NotebookPen, label: 'Pakai Barang' },
 
   ];
 

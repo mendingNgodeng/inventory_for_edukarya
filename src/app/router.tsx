@@ -7,7 +7,7 @@ import AssetCategoryPage from '../features/assetCategories/pages/Page';
 import User from '../features/user/pages/Page';
 import Asset from '../features/Assets/pages/Page';
 import AssetStock from '../features/AssetsStock/pages/Page';
-import Useassets from '../features/UseAssets/Page';
+import Useassets from '../features/borrowAssets/Page';
 
 
 
@@ -21,12 +21,20 @@ export const router = createBrowserRouter([
         index: true,
         element: <DashboardPage />,
       },
-      {
+     
+       {
+        path: '/borrow-assets',
+        element: <Useassets />,
+      },
+
+      // admin only below
+       {
         path: '/dashboard',
         element: <DashboardPage />,
       },
-       {
-        path: '/BorrowUseAssets',
+
+        {
+        path: '/use-assets',
         element: <Useassets />,
       },
       {

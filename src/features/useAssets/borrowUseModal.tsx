@@ -3,8 +3,6 @@ import { useForm } from "react-hook-form";
 import Modal from "../../components/ui/Modal";
 import Button from "../../components/ui/button";
 import Input from "../../components/ui/input";
-import Select from "../../components/ui/select";
-import { useData as useUser } from "../../api/user/hooks";
 import { toast } from "sonner";
 
 type BorrowRow = {
@@ -37,7 +35,6 @@ type StockItem = {
 
 type Payload = {
   id_asset_stock: number;
-  id_user: number;
   quantity: number;
 };
 
@@ -52,7 +49,7 @@ interface Props {
   stock: StockItem | null;
 
   borrowedData: BorrowRow[];
-  createBorrow: (payload: Payload) => Promise<void>;
+  createUsed: (payload: Payload) => Promise<void>;
 
   afterSuccess?: () => Promise<void> | void;
 }
@@ -62,10 +59,9 @@ const BorrowModal: React.FC<Props> = ({
   onClose,
   stock,
   borrowedData,
-  createBorrow,
+  createUsed,
   afterSuccess,
 }) => {
-  const { Data: user } = useUser();
 
   const {
     register,
@@ -127,21 +123,14 @@ const BorrowModal: React.FC<Props> = ({
       return;
     }
 
-    // validasi user
-    if (!data.id_user) {
-      setError("id_user", { type: "manual", message: "User wajib dipilih" });
-      return;
-    }
-
     const payload: Payload = {
       id_asset_stock: stock.id_asset_stock,
-      id_user: data.id_user,
       quantity: data.quantity,
     };
 
     try {
-      await createBorrow(payload);
-      toast.success("Asset berhasil dipinjam");
+      await createUsed(payload);
+      toast.success("Asset berhasil digunakan");
 
       await afterSuccess?.();
       onClose();
@@ -209,18 +198,6 @@ const BorrowModal: React.FC<Props> = ({
               error={errors.quantity?.message}
             />
 
-            <Select
-              label="Karyawan"
-              options={(user ?? []).map((u: any) => ({
-                value: u.id_user,
-                label: u.name+" - "+u.jabatan
-              }))}
-              registration={register("id_user", {
-                required: "User wajib dipilih",
-                valueAsNumber: true,
-              })}
-              error={errors.id_user?.message}
-            />
           </div>
 
           {/* List aktif */}

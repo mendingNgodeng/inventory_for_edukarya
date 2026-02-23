@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState,useEffect} from "react";
 import DashboardLayout from "../../layouts/Dashboardlayout";
 import Cards from "./cards";
+import Pagination from "../../components/ui/pagination";
 import BorrowUseModal from "./borrowUseModal";
 import Tabs from "./component/tabs";
-
+import type { TabKey, StockItem, BorrowRow, ReturnPayload } from "./Types";
 import BorrowActiveTable from "./component/borrowActiveTable";
 import BorrowReturnedTable from "./component/borrowReturnedTable";
 import ReturnModal from "./component/returnModal";
@@ -11,11 +12,19 @@ import ReturnModal from "./component/returnModal";
 import { useData as useStock } from "../../api/assetsStock/hooks";
 import { useData as useBorrowed } from "../../api/UseAssets/hooks";
 
-type TabKey = "STOCK" | "ACTIVE" | "RETURNED";
+
+// pagination
 
 const Page: React.FC = () => {
+  const [stockPage, setStockPage] = useState(1);
+const [stockPageSize, setStockPageSize] = useState(12); // cocok utk grid 3 kolom (12 = 4 baris)
   const [searchTerm, setSearchTerm] = useState("");
   const [tab, setTab] = useState<TabKey>("STOCK");
+
+useEffect(() => {
+  setStockPage(1);
+}, [tab, searchTerm]);
+
 
   // modal pinjam
   const [selectedStock, setSelectedStock] = useState<any | null>(null);
@@ -48,7 +57,18 @@ const Page: React.FC = () => {
       return name.includes(term) || code.includes(term) || loc.includes(term);
     });
   }, [stockData, searchTerm]);
+// pagination
+  const pagedStock = useMemo(() => {
+  const start = (stockPage - 1) * stockPageSize;
+  return (filteredStock ?? []).slice(start, start + stockPageSize);
+}, [filteredStock, stockPage, stockPageSize]);
 
+const stockTotal = filteredStock?.length ?? 0;
+const stockTotalPages = Math.max(1, Math.ceil(stockTotal / stockPageSize));
+
+useEffect(() => {
+  if (stockPage > stockTotalPages) setStockPage(stockTotalPages);
+}, [stockPage, stockTotalPages]);
   // ====== FILTER BORROW LIST (tab ACTIVE + RETURNED) ======
   const filteredBorrow = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
@@ -134,6 +154,20 @@ const Page: React.FC = () => {
             ) : (
               <Cards data={filteredStock} onBorrow={handleBorrow} />
             )}
+
+        <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+          <Pagination
+            page={stockPage}
+            pageSize={stockPageSize}
+            total={stockTotal}
+            onPageChange={setStockPage}
+            onPageSizeChange={(s) => {
+              setStockPageSize(s);
+              setStockPage(1);
+            }}
+            pageSizeOptions={[6, 12, 24, 48]}
+          />
+        </div>
           </>
         )}
 

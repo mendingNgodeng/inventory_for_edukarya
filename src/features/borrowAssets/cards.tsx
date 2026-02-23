@@ -1,20 +1,7 @@
 import React, { useMemo } from "react";
 import Button from "../../components/ui/button";
 import { Hand } from "lucide-react";
-
-type StockItem = {
-  id_asset_stock: number;
-  quantity: number;
-  status: string;     // "TERSEDIA" | "TIDAK_TERSEDIA" | ...
-  condition: string;  // "BAIK" | "RUSAK" | ...
-  asset: { asset_name: string; asset_code: string; is_rentable?: boolean };
-  location: { name: string };
-};
-
-interface Props {
-  data: StockItem[];
-  onBorrow: (stock: StockItem) => void; // buka modal pinjam
-}
+import type { CardsProps } from "./Types";
 
 const statusStyle: Record<string, string> = {
   TERSEDIA: "bg-green-100 text-green-700",
@@ -28,7 +15,7 @@ const conditionStyle: Record<string, string> = {
 
 const ALLOWED_STATUSES = new Set(["TERSEDIA", "TIDAK_TERSEDIA"]);
 
-const Cards: React.FC<Props> = ({ data, onBorrow }) => {
+const Cards: React.FC<CardsProps> = ({ data, onBorrow }) => {
   const filtered = useMemo(
     () => data.filter((x) => ALLOWED_STATUSES.has(x.status)),
     [data]
@@ -48,10 +35,10 @@ const Cards: React.FC<Props> = ({ data, onBorrow }) => {
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="text-base font-semibold text-gray-900 truncate">
-                  {loc.asset.asset_name}
+                  {loc.asset?.asset_name ?? "-"}
                 </div>
                 <div className="text-sm text-gray-500">
-                  {loc.asset.asset_code} • {loc.location.name}
+                  {loc.asset?.asset_code ?? "-"} • {loc.location?.name ?? "-"}
                 </div>
               </div>
 
