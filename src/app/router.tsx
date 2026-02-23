@@ -9,6 +9,8 @@ import Asset from '../features/Assets/pages/Page';
 import AssetStock from '../features/AssetsStock/pages/Page';
 import Borrowassets from '../features/borrowAssets/Page';
 import UseAssets from '../features/useAssets/Page';
+import MaintenanceAssets from '../features/maintenanceAssets/Page';
+
 
 
 export const router = createBrowserRouter([
@@ -30,6 +32,11 @@ export const router = createBrowserRouter([
        {
         path: '/dashboard',
         element: <DashboardPage />,
+      },
+
+         {
+        path: '/maintenance-assets',
+        element: <MaintenanceAssets />,
       },
 
         {

@@ -10,6 +10,7 @@ import {
   NotebookTabs,
   NotebookPen,
   X,
+  WrenchIcon
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -27,7 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
     { path: '/asset-stock', icon: NotebookPen, label: 'List Stock aset' },
     { path: '/borrow-assets', icon: NotebookPen, label: 'Pinjam Barang' },
     { path: '/use-assets', icon: NotebookPen, label: 'Pakai Barang' },
-
+    { path: '/maintenance-assets', icon: WrenchIcon, label: 'Barang Rusak' },
   ];
 
   return (
