@@ -7,6 +7,8 @@ import AssetCategoryPage from '../features/assetCategories/pages/Page';
 import User from '../features/user/pages/Page';
 import Asset from '../features/Assets/pages/Page';
 import AssetStock from '../features/AssetsStock/pages/Page';
+import Useassets from '../features/UseAssets/Page';
+
 
 
 
@@ -22,6 +24,10 @@ export const router = createBrowserRouter([
       {
         path: '/dashboard',
         element: <DashboardPage />,
+      },
+       {
+        path: '/BorrowUseAssets',
+        element: <Useassets />,
       },
       {
         path: '/locations',

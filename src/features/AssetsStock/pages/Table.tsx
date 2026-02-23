@@ -167,21 +167,26 @@ const Table: React.FC<AssetsTableProps> = ({
 </td>
 
                     <td className="px-6 py-4 text-right flex justify-space  text-sm font-medium">
-                      <Button
-                      
-                        variant="primary"
-                        onClick={() => onEdit(loc)}
-                        className="mr-2"
-                      >
-                          <Pencil className="w-4 h-4 mr-2" />
-                      </Button>
+                     
+                   {(loc.status === "TERSEDIA" ||
+    loc.status === "TIDAK_TERSEDIA") && (
+    <>
+      <Button
+        variant="primary"
+        onClick={() => onEdit(loc)}
+        className="mr-2"
+      >
+        <Pencil className="w-4 h-4 mr-2" />
+      </Button>
 
-                      <Button
-                        variant="danger"
-                        onClick={() => onDelete(loc.id_asset_stock)}
-                      >
-                        <TrashIcon className="w-4 h-4 mr-2" />
-                      </Button>
+      <Button
+        variant="danger"
+        onClick={() => onDelete(loc.id_asset_stock)}
+      >
+        <TrashIcon className="w-4 h-4 mr-2" />
+      </Button>
+    </>
+  )}
                     </td>
                   </tr>
                 ))
