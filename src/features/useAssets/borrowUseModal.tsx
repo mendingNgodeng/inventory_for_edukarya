@@ -1,60 +1,24 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect ,useMemo} from "react";
 import { useForm } from "react-hook-form";
 import Modal from "../../components/ui/Modal";
 import Button from "../../components/ui/button";
 import Input from "../../components/ui/input";
 import { toast } from "sonner";
 
-type BorrowRow = {
-  id_asset_borrowed: number;
-  id_asset_stock: number;
-  id_user: any;
-  quantity: number;
-  borrowed_date: string;
-  returned_date: string | null;
-  status: string; // DIPINJAM | DIPAKAI | DIKEMBALIKAN | TERLAMBAT
-  assetStock: {
-    asset: { asset_name: string; asset_code: string };
-    location: { name: string };
-  };
-  user:{
-    name:string,
-    jabatan:string,
-    no_hp:string
-  }
-};
-
-type StockItem = {
-  id_asset_stock: number;
-  quantity: number;
-  status: string;
-  condition: string;
-  asset: { asset_name: string; asset_code: string };
-  location: { name: string };
-};
-
-type Payload = {
-  id_asset_stock: number;
-  quantity: number;
-};
-
-type BorrowFormData = {
-  id_user: number;
-  quantity: number;
-};
+import type { StockItem, BorrowRow, UseFormData, CreateUsedPayload } from "./Types";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   stock: StockItem | null;
 
-  borrowedData: BorrowRow[];
-  createUsed: (payload: Payload) => Promise<void>;
+  borrowedData: BorrowRow[]; // buat info ringkas jika mau
+  createUsed: (payload: CreateUsedPayload) => Promise<void>;
 
   afterSuccess?: () => Promise<void> | void;
 }
 
-const BorrowModal: React.FC<Props> = ({
+const UseModal: React.FC<Props> = ({
   isOpen,
   onClose,
   stock,
@@ -62,82 +26,53 @@ const BorrowModal: React.FC<Props> = ({
   createUsed,
   afterSuccess,
 }) => {
-
   const {
     register,
     handleSubmit,
     reset,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<BorrowFormData>();
+  } = useForm<UseFormData>();
 
-  // reset saat modal dibuka / ganti stock
   useEffect(() => {
     if (!isOpen) return;
-    reset({
-      id_user: "" as any,
-      quantity: 1,
-    });
+    reset({ quantity: 1 });
   }, [isOpen, stock, reset]);
 
-  // transaksi terkait untuk stock ini
-  const related = useMemo(() => {
-    if (!stock) return [];
-    return borrowedData.filter((x) => x.id_asset_stock === stock.id_asset_stock);
-  }, [borrowedData, stock]);
+   const related = useMemo(() => {
+      if (!stock) return [];
+      return borrowedData.filter((x) => x.id_asset_stock === stock.id_asset_stock);
+    }, [borrowedData, stock]);
+  
+    const active = useMemo(() => {
+      return related.filter((x) => x.status !== "DIKEMBALIKAN") ;
+    }, [related]);
 
-  // yang masih aktif (belum dikembalikan) 
-  const active = useMemo(() => {
-    return related.filter((x) => x.status !== "DIKEMBALIKAN");
-  }, [related]);
-
-  const borrowedByEmployees = useMemo(() => {
-    return active.filter((x) => x.status === "DIPINJAM" || x.status === "TERLAMBAT");
-  }, [active]);
-
-  const usedByOffice = useMemo(() => {
-    return active.filter((x) => x.status === "DIPAKAI");
-  }, [active]);
-
-  const totalBorrowedQty = useMemo(() => {
-    return borrowedByEmployees.reduce((sum, r) => sum + (r.quantity || 0), 0);
-  }, [borrowedByEmployees]);
-
-  const totalUsedQty = useMemo(() => {
-    return usedByOffice.reduce((sum, r) => sum + (r.quantity || 0), 0);
-  }, [usedByOffice]);
-
-  const onSubmitForm = async (data: BorrowFormData) => {
+  const onSubmitForm = async (data: UseFormData) => {
     if (!stock) return;
 
-    // validasi quantity terhadap stock (dynamic)
     if (!data.quantity || data.quantity <= 0) {
       setError("quantity", { type: "manual", message: "Quantity harus lebih dari 0" });
       return;
     }
     if (data.quantity > stock.quantity) {
-      setError("quantity", {
-        type: "manual",
-        message: "Quantity melebihi stock tersedia",
-      });
+      setError("quantity", { type: "manual", message: "Quantity melebihi stock tersedia" });
       return;
     }
 
-    const payload: Payload = {
+    const payload: CreateUsedPayload = {
       id_asset_stock: stock.id_asset_stock,
       quantity: data.quantity,
+      id_user: null, // ✅ DIPAKAI
     };
 
     try {
       await createUsed(payload);
-      toast.success("Asset berhasil digunakan");
-
+      toast.success("Asset berhasil dipakai");
       await afterSuccess?.();
       onClose();
     } catch (error: any) {
-      const message =
-        error?.response?.data?.message || error?.message || "Gagal memproses.";
-      toast.error(message);
+      toast.error(error?.response?.data?.message || error?.message || "Gagal memproses.");
     }
   };
 
@@ -145,15 +80,15 @@ const BorrowModal: React.FC<Props> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Pinjam Asset"
+      title="Pakai Asset (Kantor)"
       size="lg"
       footer={
         <div className="flex justify-end gap-3">
           <Button type="button" variant="secondary" onClick={onClose}>
             Batal
           </Button>
-          <Button type="submit" form="BorrowForm" isLoading={isSubmitting}>
-            Pinjam
+          <Button type="submit" form="UseForm" isLoading={isSubmitting}>
+            Pakai
           </Button>
         </div>
       }
@@ -161,55 +96,32 @@ const BorrowModal: React.FC<Props> = ({
       {!stock ? (
         <div className="text-sm text-gray-600">Tidak ada stock dipilih.</div>
       ) : (
-        <form
-          id="BorrowForm"
-          onSubmit={handleSubmit(onSubmitForm)}
-          className="space-y-4"
-        >
-          {/* Info stock */}
+        <form id="UseForm" onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
           <div className="p-3 rounded-lg border border-gray-200 bg-gray-50">
             <div className="font-semibold text-gray-900">
-              {stock.asset.asset_name} ({stock.asset.asset_code})
+              {stock?.asset?.asset_name ?? "-"} ({stock?.asset?.asset_code ?? "-"})
             </div>
             <div className="text-sm text-gray-600">
-              Lokasi: {stock.location.name} • Stock tersedia:{" "}
-              <span className="font-semibold">{stock.quantity}</span>
-            </div>
-
-            <div className="mt-2 text-xs text-gray-600 flex flex-wrap gap-2">
-              <span className="px-2 py-1 rounded bg-blue-50 text-blue-700">
-                Dipinjam karyawan: <b>{totalBorrowedQty}</b>
-              </span>
-              <span className="px-2 py-1 rounded bg-orange-50 text-orange-700">
-                Dipakai kantor: <b>{totalUsedQty}</b>
-              </span>
+              Lokasi: {stock?.location?.name ?? "-"} • Stock tersedia:{" "}
+              <span className="font-semibold">{stock?.quantity ?? 0}</span>
             </div>
           </div>
 
-          {/* Form */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="Quantity"
-              type="number"
-              {...register("quantity", {
-                required: "Quantity wajib diisi",
-                valueAsNumber: true,
-              })}
-              error={errors.quantity?.message}
-            />
+          <Input
+            label="Quantity"
+            type="number"
+            {...register("quantity", { required: "Quantity wajib diisi", valueAsNumber: true })}
+            error={errors.quantity?.message}
+          />
 
-          </div>
+          {/* optional: kamu bisa tampilkan ringkas total sedang DIPAKAI untuk stock ini */}
+          {/* biar simple, skip dulu */}
 
-          {/* List aktif */}
-          <div className="mt-2 space-y-3">
-            <div className="font-semibold text-gray-900">
-              Sedang dipinjam / dipakai
-            </div>
+             <div className="mt-2 space-y-3">
+            <div className="font-semibold text-gray-900">Sedang dipinjam / dipakai</div>
 
             {active.length === 0 ? (
-              <div className="text-sm text-gray-600">
-                Belum ada yang meminjam / memakai asset ini.
-              </div>
+              <div className="text-sm text-gray-600">Belum ada yang meminjam / memakai asset ini.</div>
             ) : (
               <div className="border border-gray-200 rounded-lg overflow-hidden">
                 <table className="w-full text-sm">
@@ -227,19 +139,11 @@ const BorrowModal: React.FC<Props> = ({
                     {active.map((r) => (
                       <tr key={r.id_asset_borrowed} className="border-t">
                         <td className="px-4 py-2 font-medium">{r.status}</td>
-                        <td className="px-4 py-2">
-                          {r.status === "DIPAKAI" ? "Kantor" : (r.user.name ?? "-")}
-                        </td>
-                          <td className="px-4 py-2">
-                          {r.status === "DIPAKAI" ? "Kantor" : (r.user.jabatan ?? "-")}
-                        </td>
-                          <td className="px-4 py-2">
-                          {r.status === "DIPAKAI" ? "Kantor" : (r.user.no_hp ?? "-")}
-                        </td>
+                        <td className="px-4 py-2">{r.status === "DIPAKAI" ? "Kantor" : (r.user?.name ?? "-")}</td>
+                        <td className="px-4 py-2">{r.status === "DIPAKAI" ? "-" : (r.user?.jabatan ?? "-")}</td>
+                        <td className="px-4 py-2">{r.status === "DIPAKAI" ? "-" : (r.user?.no_hp ?? "-")}</td>
                         <td className="px-4 py-2">{r.quantity}</td>
-                        <td className="px-4 py-2">
-                          {new Date(r.borrowed_date).toLocaleString()}
-                        </td>
+                        <td className="px-4 py-2">{new Date(r.borrowed_date).toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -253,4 +157,4 @@ const BorrowModal: React.FC<Props> = ({
   );
 };
 
-export default BorrowModal;
+export default UseModal;

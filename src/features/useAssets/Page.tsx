@@ -4,7 +4,7 @@ import Cards from "./cards";
 import Pagination from "../../components/ui/pagination";
 import BorrowUseModal from "./borrowUseModal";
 import Tabs from "./component/tabs";
-
+import type { TabKey, StockItem, BorrowRow, ReturnPayload } from "./Types";
 import BorrowActiveTable from "./component/borrowActiveTable";
 import BorrowReturnedTable from "./component/borrowReturnedTable";
 import ReturnModal from "./component/returnModal";
@@ -12,7 +12,7 @@ import ReturnModal from "./component/returnModal";
 import { useData as useStock } from "../../api/assetsStock/hooks";
 import { useData as useBorrowed } from "../../api/UseAssets/hooks";
 
-type TabKey = "STOCK" | "ACTIVE" | "RETURNED";
+
 // pagination
 
 const Page: React.FC = () => {
@@ -39,8 +39,8 @@ useEffect(() => {
   const {
     Data: borrowedData,
     loading: borrowLoading,
-    // createUsed,
-    createUsed, // kalau dipakai kantor ada
+    createUsed,
+    // createUsed, // kalau dipakai kantor ada
     updateData, // ⬅️ kamu perlu punya fungsi ini di hook (nanti aku jelasin)
     fetchData: refetchBorrow,
   } = useBorrowed() as any;
@@ -88,11 +88,9 @@ useEffect(() => {
     });
   }, [borrowedData, searchTerm]);
 
-  const activeBorrow = useMemo(() => {
-    return (filteredBorrow ?? []).filter((x: any) =>
-      ["DIPINJAM", "TERLAMBAT", "DIPAKAI"].includes(x.status)
-    );
-  }, [filteredBorrow]);
+ const usedOnly = useMemo(() => {
+  return (filteredBorrow ?? []).filter((x: any) => x.status === "DIPAKAI");
+}, [filteredBorrow]);
 
   const returnedBorrow = useMemo(() => {
     return (filteredBorrow ?? []).filter((x: any) => x.status === "DIKEMBALIKAN");
@@ -141,7 +139,7 @@ useEffect(() => {
           onChange={setTab}
           counts={{
             stock: filteredStock?.length ?? 0,
-            active: activeBorrow.length,
+            active: usedOnly.length,
             returned: returnedBorrow.length,
           }}
         />
@@ -173,7 +171,7 @@ useEffect(() => {
 
         {tab === "ACTIVE" && (
           <BorrowActiveTable
-            data={activeBorrow}
+            data={usedOnly}
             loading={borrowLoading}
             onReturn={handleOpenReturn}
           />

@@ -7,9 +7,8 @@ import AssetCategoryPage from '../features/assetCategories/pages/Page';
 import User from '../features/user/pages/Page';
 import Asset from '../features/Assets/pages/Page';
 import AssetStock from '../features/AssetsStock/pages/Page';
-import Useassets from '../features/borrowAssets/Page';
-
-
+import Borrowassets from '../features/borrowAssets/Page';
+import UseAssets from '../features/useAssets/Page';
 
 
 export const router = createBrowserRouter([
@@ -24,7 +23,7 @@ export const router = createBrowserRouter([
      
        {
         path: '/borrow-assets',
-        element: <Useassets />,
+        element: <Borrowassets />,
       },
 
       // admin only below
@@ -35,7 +34,7 @@ export const router = createBrowserRouter([
 
         {
         path: '/use-assets',
-        element: <Useassets />,
+        element: <UseAssets />,
       },
       {
         path: '/locations',

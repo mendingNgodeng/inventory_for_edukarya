@@ -2,28 +2,14 @@ import React, { useState } from "react";
 import Modal from "../../../components/ui/Modal";
 import Button from "../../../components/ui/button";
 import { toast } from "sonner";
-import type { UpdateData } from "../../../api/UseAssets/types"; // sesuaikan path
+import type { ReturnModalProps, ReturnPayload } from "../Types";
 
-export default function ReturnModal({
-  isOpen,
-  onClose,
-  row,
-  onReturn,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  row: any | null;
-  onReturn: (payload: UpdateData) => Promise<void>;
-}) {
+export default function ReturnModal({ isOpen, onClose, row, onReturn }: ReturnModalProps) {
   const [loading, setLoading] = useState(false);
 
   const handleReturn = async () => {
     if (!row) return;
-
-    // payload minimal (sesuaikan dengan UpdateData kamu)
-    const payload = {
-      status: "DIKEMBALIKAN",
-    } as UpdateData;
+    const payload: ReturnPayload = { status: "DIKEMBALIKAN" };
 
     try {
       setLoading(true);
@@ -59,15 +45,15 @@ export default function ReturnModal({
       ) : (
         <div className="space-y-2 text-sm text-gray-700">
           <div>
-            <b>Asset:</b> {row.assetStock?.asset?.asset_name} ({row.assetStock?.asset?.asset_code})
+            <b>Asset:</b> {row.assetStock?.asset?.asset_name ?? "-"} ({row.assetStock?.asset?.asset_code ?? "-"})
           </div>
           <div>
-            <b>User:</b> {row.user?.name ?? row.id_user ?? "-"}
+            <b>User:</b> {row.status === "DIPAKAI" ? "Kantor" : (row.user?.name ?? row.id_user ?? "-")}
           </div>
           <div>
             <b>Qty:</b> {row.quantity}
           </div>
-          <div className="text-gray-500">
+             <div className="text-gray-500">
             Pastikan barang sudah diterima kembali sebelum menekan <b>Kembalikan</b>.
           </div>
         </div>

@@ -32,7 +32,7 @@ export default function Tabs({
   return (
     <div className="flex flex-wrap gap-2">
       {btn("STOCK", "Stock", counts.stock)}
-      {btn("ACTIVE", "Sedang dipinjam", counts.active)}
+      {btn("ACTIVE", "Sedang dipakai", counts.active)}
       {btn("RETURNED", "Dikembalikan", counts.returned)}
     </div>
   );

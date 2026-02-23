@@ -1,21 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
-import Pagination from "../../../components/ui/pagination";
-export default function BorrowReturnedTable({
-  data,
-  loading,
-  pageSizeDefault = 5,
-}: {
-  data: any[];
-  loading: boolean;
-  pageSizeDefault?: number;
-}) {
-// pagination
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(pageSizeDefault);
+import type { BorrowReturnedTableProps } from "../Types";
+import Pagination from "../../../components/ui/pagination"; 
 
- const total = data?.length ?? 0;
+
+
+export default function BorrowReturnedTable({ data, loading }: BorrowReturnedTableProps) {
+ const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+
+  // reset page saat data berubah (misalnya search berubah)
+  useEffect(() => {
+    setPage(1);
+  }, [data]);
+
+  const total = data?.length ?? 0;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
+  // jaga-jaga kalau page > totalPages setelah filter
   useEffect(() => {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
@@ -25,11 +26,9 @@ export default function BorrowReturnedTable({
     return data.slice(start, start + pageSize);
   }, [data, page, pageSize]);
 
-  if (loading) return <div className="text-sm text-gray-600">Memuat riwayat...</div>;
 
-  if (!data.length) {
-    return <div className="text-sm text-gray-600">Belum ada asset yang dikembalikan.</div>;
-  }
+  if (loading) return <div className="text-sm text-gray-600">Memuat riwayat...</div>;
+  if (!data.length) return <div className="text-sm text-gray-600">Belum ada asset yang dikembalikan.</div>;
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
@@ -47,9 +46,11 @@ export default function BorrowReturnedTable({
           {pageData.map((r) => (
             <tr key={r.id_asset_borrowed} className="border-t">
               <td className="px-4 py-2">
-                {r.assetStock?.asset?.asset_name} ({r.assetStock?.asset?.asset_code})
+                {r.assetStock?.asset?.asset_name ?? "-"} ({r.assetStock?.asset?.asset_code ?? "-"})
               </td>
-              <td className="px-4 py-2">{r.user?.name ?? r.id_user ?? "Dipakai Kantor"}</td>
+              <td className="px-4 py-2">
+                {r.status === "DIPAKAI" ? "Dipakai Kantor" : (r.user?.name ?? r.id_user ?? "Kantor")}
+              </td>
               <td className="px-4 py-2">{r.quantity}</td>
               <td className="px-4 py-2">{new Date(r.borrowed_date).toLocaleString()}</td>
               <td className="px-4 py-2">
@@ -59,17 +60,18 @@ export default function BorrowReturnedTable({
           ))}
         </tbody>
       </table>
-       <Pagination
-        page={page}
-        pageSize={pageSize}
-        total={total}
-        onPageChange={setPage}
-        onPageSizeChange={(s) => {
-          setPageSize(s);
-          setPage(1);
-        }}
-      />
-    
+        {/*  Pagination */}
+            <Pagination
+              page={page}
+              pageSize={pageSize}
+              total={total}
+              onPageChange={setPage}
+              onPageSizeChange={(s: number) => {
+                setPageSize(s);
+                setPage(1);
+              }}
+              pageSizeOptions={[5, 10, 20, 50]}
+            />
     </div>
   );
 }

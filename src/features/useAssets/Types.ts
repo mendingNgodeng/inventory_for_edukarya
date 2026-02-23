@@ -29,7 +29,6 @@ export interface BorrowRow {
   returned_date: string | null;
 
   status: string; // DIPINJAM | DIPAKAI | DIKEMBALIKAN | TERLAMBAT
-
   user?: {
     id_user?: number;
     name?: string;
@@ -53,8 +52,6 @@ export interface CreateBorrowPayload {
 /** Payload return (sesuaikan dengan UpdateData kamu) */
 export interface ReturnPayload {
   status: "DIKEMBALIKAN" | string;
-  // optional: returned_date?: string;
-  // optional: notes?: string;
 }
 
 /** Props Cards */
@@ -82,4 +79,14 @@ export interface ReturnModalProps {
   onClose: () => void;
   row: BorrowRow | null;
   onReturn: (payload: ReturnPayload) => Promise<void>;
+}
+
+export interface CreateUsedPayload {
+  id_asset_stock: number;
+  quantity: number;
+  id_user?: number | null; // untuk DIPAKAI biasanya null
+}
+
+export interface UseFormData {
+  quantity: number;
 }
