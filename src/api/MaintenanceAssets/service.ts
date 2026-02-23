@@ -44,7 +44,7 @@ static async returnAsset(
   return data.data;
 }
 
-static async updateData(
+static async update(
   id: number,
   payload: UpdateData
 ): Promise<data> {

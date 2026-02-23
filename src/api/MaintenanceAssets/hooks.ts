@@ -34,6 +34,19 @@ export const useData = () => {
     );
   };
 
+   const updateData = async (
+    id: number,
+    payload:UpdateData
+  ) => {
+    const updated = await dataService.update(id,payload);
+    setData((prev) =>
+      prev.map((loc) =>
+        loc.id_asset_maintenance === id ? updated : loc
+      )
+    );
+  };
+
+
   const deleteData = async (id: number) => {
     await dataService.delete(id);
     setData((prev) =>
@@ -49,6 +62,7 @@ export const useData = () => {
     Data,
     loading,
     fetchData,
+    updateData,
     createMaintenance,
     returnAsset,
     deleteData,
