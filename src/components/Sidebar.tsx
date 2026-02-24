@@ -5,7 +5,7 @@ import {
   MapPin,
   Package,
   Tag,
-  LogOut,
+  // LogOut,
   UserCheck,
   NotebookTabs,
   NotebookPen,
@@ -31,13 +31,13 @@ const admin = getAdmin();
 const isAuthed = isAuthenticated();
 const allMenus: MenuItem[] = [
   { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', adminOnly: true },
-  { path: '/borrow-assets', icon: NotebookPen, label: 'Pinjam Barang', adminOnly: false },
   { path: '/asset-types', icon: Package, label: 'List Tipe Aset', adminOnly: true },
   { path: '/locations', icon: MapPin, label: 'List Lokasi', adminOnly: true },
   { path: '/asset-categories', icon: Tag, label: 'List Kategori Aset', adminOnly: true },
   { path: '/user-karyawan', icon: UserCheck, label: 'List Karyawan', adminOnly: true },
   { path: '/asset', icon: NotebookTabs, label: 'List Aset', adminOnly: true },
   { path: '/asset-stock', icon: NotebookPen, label: 'List Stock aset', adminOnly: true },
+  { path: '/borrow-assets', icon: NotebookPen, label: 'Pinjam Barang', adminOnly: false },
   { path: '/use-assets', icon: NotebookPen, label: 'Pakai Barang', adminOnly: true },
   { path: '/maintenance-assets', icon: WrenchIcon, label: 'Barang Rusak', adminOnly: true },
 ];

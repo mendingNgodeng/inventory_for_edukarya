@@ -11,8 +11,6 @@ type LoginForm = {
 
 type LoginErrors = Partial<Record<keyof LoginForm, string>>;
 
-const DEMO = { username: "admin", password: "admin123" };
-
 export default function LoginPage() {
   const [form, setForm] = useState<LoginForm>({ username: "", password: "" });
   const [errors, setErrors] = useState<LoginErrors>({});
