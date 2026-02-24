@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Bell, Search, User, Menu, ChevronDown } from 'lucide-react';
+import Button from './ui/button'
+import { useNavigate } from "react-router-dom";
 
 interface NavbarProps {
   onToggleSidebar: () => void;
@@ -8,7 +10,9 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
+const navigate = useNavigate();
+
+  // const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-10">
@@ -31,18 +35,13 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }) => {
           {/* Search bar - Desktop */}
           <div className="hidden md:flex flex-1 max-w-lg mx-4">
             <div className="relative w-full">
-              <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${
-                isSearchFocused ? 'text-blue-500' : 'text-gray-400'
-              }`} />
-              <input
-                type="text"
-                placeholder="Cari aset, lokasi, atau kategori..."
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg 
-                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                         transition-all duration-200"
-              />
+            <Button
+      type="button"
+      variant="outline_blue"
+      onClick={() => navigate("/login")}
+    >
+      Login Admin
+    </Button>
             </div>
           </div>
 

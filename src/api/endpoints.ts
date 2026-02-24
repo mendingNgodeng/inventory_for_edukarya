@@ -9,8 +9,10 @@ export const ENDPOINTS = {
   RENTAL_CUSTOMER: '/rentalCustomer', // revise entire backend later
   STATISTIC:'/statistic/getDashboardSummary',
   CTGRANK:'/statistic/rankCtgByStock',
+  
   ASSET_STOCK:'/assetStock',
   ASSET_USE:"/assetBorrow",
-  ASSET_MAINTENANCE:"/assetMaintenance"
-
+  ASSET_MAINTENANCE:"/assetMaintenance",
+  LOGIN:"/login",
+  LOGOUT:"/logout"
 };

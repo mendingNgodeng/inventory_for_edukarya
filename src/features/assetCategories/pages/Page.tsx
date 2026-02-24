@@ -76,7 +76,7 @@ const handleSubmit = async (data: CtgFormData) => {
   );
 
   return (
-    <DashboardLayout>
+    <>
       <div className="space-y-6">
        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
   <h1 className="text-xl sm:text-2xl font-bold text-black">
@@ -127,7 +127,7 @@ const handleSubmit = async (data: CtgFormData) => {
   onCancel={() => setDeleteId(null)}
   loading={deleteLoading}
 />
-    </DashboardLayout>
+</>
   );
 };
 

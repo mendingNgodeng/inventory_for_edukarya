@@ -13,7 +13,7 @@ export const useDashboard = () => {
     setLoading(true);
     setError(null);
 
-    console.log("ranking:",categoryRanking);
+    // console.log("ranking:",categoryRanking);
     const data = await dashboardService.getDashboard();
     const ctgRank = await dashboardService.getCtgRank();
 
