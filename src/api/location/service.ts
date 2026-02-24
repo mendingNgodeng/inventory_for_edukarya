@@ -1,6 +1,6 @@
 // api/location/service.ts
 
-import { apiClient } from '../client';
+import { privateClient } from '../client';
 import { ENDPOINTS } from '../endpoints';
 import type {
   Location,
@@ -11,7 +11,7 @@ import type {
 
 export class LocationService {
 static async getAll(): Promise<Location[]> {
-  const { data } = await apiClient.get<ApiResponse<Location[]>>(
+  const { data } = await privateClient.get<ApiResponse<Location[]>>(
     ENDPOINTS.LOCATION
   );
 
@@ -20,7 +20,7 @@ static async getAll(): Promise<Location[]> {
 
 
 static async getById(id: number): Promise<Location> {
-  const { data } = await apiClient.get<ApiResponse<Location>>(
+  const { data } = await privateClient.get<ApiResponse<Location>>(
     `${ENDPOINTS.LOCATION}/${id}`
   );
 
@@ -28,7 +28,7 @@ static async getById(id: number): Promise<Location> {
 }
 
 static async create(payload: CreateLocationDTO): Promise<Location> {
-  const { data } = await apiClient.post<ApiResponse<Location>>(
+  const { data } = await privateClient.post<ApiResponse<Location>>(
     ENDPOINTS.LOCATION,
     payload
   );
@@ -40,7 +40,7 @@ static async update(
   id: number,
   payload: UpdateLocationDTO
 ): Promise<Location> {
-  const { data } = await apiClient.put<ApiResponse<Location>>(
+  const { data } = await privateClient.put<ApiResponse<Location>>(
     `${ENDPOINTS.LOCATION}/${id}`,
     payload
   );
@@ -49,6 +49,6 @@ static async update(
 }
 
   static async delete(id: number): Promise<void> {
-    await apiClient.delete(`${ENDPOINTS.LOCATION}/${id}`);
+    await privateClient.delete(`${ENDPOINTS.LOCATION}/${id}`);
   }
 }

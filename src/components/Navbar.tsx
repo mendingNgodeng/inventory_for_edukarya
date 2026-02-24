@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Bell, Search, User, Menu, ChevronDown } from 'lucide-react';
 import Button from './ui/button'
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "../api/auth/hooks";
 interface NavbarProps {
   onToggleSidebar: () => void;
   isSidebarOpen: boolean;
@@ -11,7 +11,9 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 const navigate = useNavigate();
-
+const { logout, getAdmin, isAuthenticated } = useAuth();
+const admin = getAdmin();
+const isAuthed = isAuthenticated();
   // const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   return (
@@ -35,13 +37,15 @@ const navigate = useNavigate();
           {/* Search bar - Desktop */}
           <div className="hidden md:flex flex-1 max-w-lg mx-4">
             <div className="relative w-full">
-            <Button
-      type="button"
-      variant="outline_blue"
-      onClick={() => navigate("/login")}
-    >
-      Login Admin
-    </Button>
+           {!isAuthed && (
+  <Button
+    type="button"
+    variant="outline_blue"
+    onClick={() => navigate("/login")}
+  >
+    Login Admin
+  </Button>
+)}
             </div>
           </div>
 
@@ -68,8 +72,14 @@ const navigate = useNavigate();
                   <User className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
                 <div className="hidden lg:block text-left">
-                  <p className="text-sm font-medium text-gray-700">Admin User</p>
-                  <p className="text-xs text-gray-500">admin@invent.com</p>
+                  {/*aku mau ganti, jika ida admin maka tampilakn username dan role admin , jika tidak maka hanya tampilkan user*/}
+               <p className="text-sm font-medium text-gray-700">
+  {isAuthed && admin ? admin.username : "User"}
+</p>
+
+<p className="text-xs text-gray-500">
+  {isAuthed && admin ? admin.role : "Guest"}
+</p>
                 </div>
                 <ChevronDown className="hidden sm:block w-4 h-4 text-gray-500" />
               </button>
@@ -80,7 +90,14 @@ const navigate = useNavigate();
                   <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profil</a>
                   <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Pengaturan</a>
                   <hr className="my-1 border-gray-200" />
-                  <a href="#" className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Keluar</a>
+
+                  {/* fungsi logout disini please */}
+                 <button
+                onClick={logout}
+                className="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+              >
+                Keluar
+            </button>
                 </div>
               )}
             </div>

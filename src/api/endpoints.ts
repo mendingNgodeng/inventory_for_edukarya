@@ -13,6 +13,7 @@ export const ENDPOINTS = {
   ASSET_STOCK:'/assetStock',
   ASSET_USE:"/assetBorrow",
   ASSET_MAINTENANCE:"/assetMaintenance",
-  LOGIN:"/login",
-  LOGOUT:"/logout"
+  AUTH_LOGIN:"/auth/login",
+  AUTH_LOGOUT:"/auth/logout",
 };
+

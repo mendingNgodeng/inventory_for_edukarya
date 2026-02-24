@@ -1,11 +1,11 @@
-import { apiClient } from '../client';
+import { publicClient } from '../client';
 import { ENDPOINTS } from '../endpoints';
 import type { ApiResponse, CtgRankByStock, DashboardSummary } from './types';
 
 export class dashboardService {
   static async getDashboard() {
       // const start = performance.now();
-    const { data } = await apiClient.get<ApiResponse<DashboardSummary>>(
+    const { data } = await publicClient.get<ApiResponse<DashboardSummary>>(
       ENDPOINTS.STATISTIC
     );
 //         const end = performance.now();
@@ -14,7 +14,7 @@ export class dashboardService {
   }
   
   static async getCtgRank() {
-    const { data } = await apiClient.get<ApiResponse<CtgRankByStock[]>>(
+    const { data } = await publicClient.get<ApiResponse<CtgRankByStock[]>>(
       ENDPOINTS.CTGRANK
     );
     return data.data;

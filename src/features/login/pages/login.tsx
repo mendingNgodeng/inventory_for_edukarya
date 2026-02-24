@@ -1,11 +1,8 @@
-// src/features/Login.tsx
-
-console.log("LOGIT route hit")
-
 import React, { useMemo, useState } from "react";
 import { Package, LogIn } from "lucide-react";
 import Button from "../../../components/ui/button";
 import Input from "../../../components/ui/input";
+import { useAuth } from "../../../api/auth/hooks";
 
 type LoginForm = {
   username: string;
@@ -19,15 +16,12 @@ const DEMO = { username: "admin", password: "admin123" };
 export default function LoginPage() {
   const [form, setForm] = useState<LoginForm>({ username: "", password: "" });
   const [errors, setErrors] = useState<LoginErrors>({});
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { login, loading, error } = useAuth();
 
   const canSubmit = useMemo(() => {
     return form.username.trim() && form.password.trim();
   }, [form]);
-
-  const clearError = (name: keyof LoginForm) => {
-    setErrors((prev) => ({ ...prev, [name]: undefined }));
-  };
 
   const validate = () => {
     const newErrors: LoginErrors = {};
@@ -42,29 +36,17 @@ export default function LoginPage() {
     e.preventDefault();
     if (!validate()) return;
 
-    try {
-      setIsLoading(true);
-
-      // Simulasi API call
-      await new Promise((r) => setTimeout(r, 800));
-
-      console.log("Login success:", form);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fillDemo = () => {
-    setErrors({});
-    setForm(DEMO);
+    await login({
+      identifier: form.username,
+      password: form.password,
+    });
   };
 
   return (
-    // <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-    <div className="fixed inset-0 z-[9999] bg-slate-50 flex items-center justify-center p-4 overflow-y-auto">  
+    // temporary fix
+    <div className="fixed inset-0 z-[9999] bg-slate-50 flex items-center justify-center p-4 overflow-y-auto">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 px-8 py-10">
-          
           {/* Icon */}
           <div className="flex justify-center">
             <div className="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center">
@@ -90,7 +72,6 @@ export default function LoginPage() {
               placeholder="Masukkan username"
               value={form.username}
               error={errors.username}
-            //   clearError={clearError}
               onChange={(e) =>
                 setForm((p) => ({ ...p, username: e.target.value }))
               }
@@ -103,7 +84,6 @@ export default function LoginPage() {
               placeholder="Masukkan password"
               value={form.password}
               error={errors.password}
-            //   clearError={clearError}
               onChange={(e) =>
                 setForm((p) => ({ ...p, password: e.target.value }))
               }
@@ -112,8 +92,8 @@ export default function LoginPage() {
             <Button
               type="submit"
               fullWidth
-              isLoading={isLoading}
-              disabled={!canSubmit || isLoading}
+              isLoading={loading}
+              disabled={!canSubmit || loading}
               className="rounded-xl"
             >
               <LogIn className="h-4 w-4" />
@@ -121,28 +101,14 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* Demo Login */}
-          <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3">
-            <div className="flex items-start justify-between gap-3">
-              <div className="text-sm text-blue-700">
-                <p className="font-semibold">Demo Login:</p>
-                <p>
-                  Username: <span className="font-medium">{DEMO.username}</span>
-                </p>
-                <p>
-                  Password: <span className="font-medium">{DEMO.password}</span>
-                </p>
-              </div>
+          {error && (
+            <p className="mt-3 text-sm text-red-600 text-center">
+              {error}
+            </p>
+          )}
 
-              <Button
-                type="button"
-                variant="outline_blue"
-                size="sm"
-                onClick={fillDemo}
-              >
-                Pakai Demo
-              </Button>
-            </div>
+          <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3">
+          
           </div>
         </div>
 

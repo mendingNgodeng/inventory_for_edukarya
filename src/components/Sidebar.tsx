@@ -12,25 +12,41 @@ import {
   X,
   WrenchIcon
 } from 'lucide-react';
+import { useAuth } from "../api/auth/hooks";
+import type { LucideIcon } from "lucide-react";
 
+interface MenuItem {
+  path: string;
+  icon: LucideIcon;
+  label: string;
+  adminOnly: boolean;
+}
 interface SidebarProps {
   onClose?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
-  const menuItems = [
-    { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/asset-types', icon: Package, label: 'List Tipe Aset' },
-    { path: '/locations', icon: MapPin, label: 'List Lokasi' },
-    { path: '/asset-categories', icon: Tag, label: 'List Kategori Aset' },
-    { path: '/user-karyawan', icon: UserCheck, label: 'List Karyawan' },
-    { path: '/asset', icon: NotebookTabs, label: 'List Aset' },
-    { path: '/asset-stock', icon: NotebookPen, label: 'List Stock aset' },
-    { path: '/borrow-assets', icon: NotebookPen, label: 'Pinjam Barang' },
-    { path: '/use-assets', icon: NotebookPen, label: 'Pakai Barang' },
-    { path: '/maintenance-assets', icon: WrenchIcon, label: 'Barang Rusak' },
-  ];
-
+const {getAdmin, isAuthenticated } = useAuth();
+const admin = getAdmin();
+const isAuthed = isAuthenticated();
+const allMenus: MenuItem[] = [
+  { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', adminOnly: true },
+  { path: '/borrow-assets', icon: NotebookPen, label: 'Pinjam Barang', adminOnly: false },
+  { path: '/asset-types', icon: Package, label: 'List Tipe Aset', adminOnly: true },
+  { path: '/locations', icon: MapPin, label: 'List Lokasi', adminOnly: true },
+  { path: '/asset-categories', icon: Tag, label: 'List Kategori Aset', adminOnly: true },
+  { path: '/user-karyawan', icon: UserCheck, label: 'List Karyawan', adminOnly: true },
+  { path: '/asset', icon: NotebookTabs, label: 'List Aset', adminOnly: true },
+  { path: '/asset-stock', icon: NotebookPen, label: 'List Stock aset', adminOnly: true },
+  { path: '/use-assets', icon: NotebookPen, label: 'Pakai Barang', adminOnly: true },
+  { path: '/maintenance-assets', icon: WrenchIcon, label: 'Barang Rusak', adminOnly: true },
+];
+ const menuItems = allMenus.filter((item) => {
+    if (!item.adminOnly) return true;
+    if (!isAuthed) return false;
+    if (admin?.role !== "ADMIN") return false;
+    return true;
+  });
   return (
     <aside className="h-full flex flex-col bg-white">
       {/* Header Sidebar dengan tombol close di mobile */}
@@ -78,8 +94,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
       <div className="p-3 sm:p-4 border-t border-gray-200">
         
         <button className="flex items-center w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors mt-1">
-          <LogOut className="w-5 h-5 mr-3 flex-shrink-0" />
-          <span className="truncate">Keluar</span>
+          {/* <LogOut className="w-5 h-5 mr-3 flex-shrink-0" />
+          <span className="truncate">Keluar</span> */}
         </button>
       </div>
 
@@ -90,8 +106,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
             <span className="text-blue-600 font-semibold">A</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">Admin User</p>
-            <p className="text-xs text-gray-500 truncate">admin@invent.com</p>
+            {/*aku mau ganti, jika ida admin maka tampilakn username dan role admin , jika tidak maka hanya tampilkan user*/}
+            <p className="text-sm font-medium text-gray-700">
+  {isAuthed && admin ? admin.username : "User"}
+</p>
+
+<p className="text-xs text-gray-500">
+  {isAuthed && admin ? admin.role : "Guest"}
+</p>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 // api/location/service.ts
 
-import { apiClient } from '../client';
+import { privateClient } from "../client";
+
 import { ENDPOINTS } from '../endpoints';
 import type {
   data,
@@ -11,16 +12,14 @@ import type {
 
 export class dataService {
 static async getAll(): Promise<data[]> {
-  const { data } = await apiClient.get<ApiResponse<data[]>>(
+  const { data } = await privateClient.get<ApiResponse<data[]>>(
     ENDPOINTS.CATEGORIES
   );
-
   return data.data; // ambil array di dalamnya
 }
 
-
 static async getById(id: number): Promise<data> {
-  const { data } = await apiClient.get<ApiResponse<data>>(
+  const { data } = await privateClient.get<ApiResponse<data>>(
     `${ENDPOINTS.CATEGORIES}/${id}`
   );
 
@@ -28,7 +27,7 @@ static async getById(id: number): Promise<data> {
 }
 
 static async create(payload: CreateData): Promise<data> {
-  const { data } = await apiClient.post<ApiResponse<data>>(
+  const { data } = await privateClient.post<ApiResponse<data>>(
     ENDPOINTS.CATEGORIES,
     payload
   );
@@ -40,7 +39,7 @@ static async update(
   id: number,
   payload: UpdateData
 ): Promise<data> {
-  const { data } = await apiClient.put<ApiResponse<data>>(
+  const { data } = await privateClient.put<ApiResponse<data>>(
     `${ENDPOINTS.CATEGORIES}/${id}`,
     payload
   );
@@ -49,6 +48,6 @@ static async update(
 }
 
   static async delete(id: number): Promise<void> {
-    await apiClient.delete(`${ENDPOINTS.CATEGORIES}/${id}`);
+    await privateClient.delete(`${ENDPOINTS.CATEGORIES}/${id}`);
   }
 }
