@@ -1,11 +1,10 @@
 // api/user/types.ts
 
 export interface data {
-  id_renta_customer: number;
+  id_rental_customer: number;
   name: string;
   phone: string;
-  email: string;
-  address: string;
+  pictureKtp:string;
 }
 export interface ApiResponse<T> {
   success: boolean;
@@ -14,13 +13,10 @@ export interface ApiResponse<T> {
 export interface CreateData {
   name: string;
   phone: string;
-  email: string;
-  address: string;
+  pictureKtp:string;
 }
 
 export interface UpdateData {
   name?: string;
   phone?: string;
-  email?: string;
-  address?: string;
 }

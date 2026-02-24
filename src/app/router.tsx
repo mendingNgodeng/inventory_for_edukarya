@@ -14,17 +14,24 @@ import Asset from "../features/Assets/pages/Page";
 import AssetStock from "../features/AssetsStock/pages/Page";
 import UseAssets from "../features/useAssets/Page";
 import MaintenanceAssets from "../features/maintenanceAssets/Page";
+import Rental from "../features/rental/pages/page";
+
 
 export const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
 
-  // ✅ public
+  // public
   {
     path: "/borrow-assets",
     element: <Dashboardlayout />,
     children: [{ index: true, element: <Borrowassets /> }],
   },
-  // ✅ admin protected
+    {
+    path: "/rental",
+    element: <Dashboardlayout />,
+    children: [{ index: true, element: <Rental /> }],
+  },
+  // admin protected
   {
     element: <ProtectedRoute />,
     children: [

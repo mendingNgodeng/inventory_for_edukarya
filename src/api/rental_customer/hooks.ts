@@ -30,7 +30,7 @@ export const useData = () => {
     const updated = await dataService.update(id, payload);
     setData((prev) =>
       prev.map((loc) =>
-        loc.id_renta_customer === id ? updated : loc
+        loc.id_rental_customer === id ? updated : loc
       )
     );
   };
@@ -38,7 +38,7 @@ export const useData = () => {
   const deleteData = async (id: number) => {
     await dataService.delete(id);
     setData((prev) =>
-      prev.filter((loc) => loc.id_renta_customer !== id)
+      prev.filter((loc) => loc.id_rental_customer !== id)
     );
   };
 
