@@ -14,7 +14,7 @@ import Asset from "../features/Assets/pages/Page";
 import AssetStock from "../features/AssetsStock/pages/Page";
 import UseAssets from "../features/useAssets/Page";
 import MaintenanceAssets from "../features/maintenanceAssets/Page";
-import Rental from "../features/rental/pages/page";
+import Rental from "../features/rental/asset_rental/page";
 
 
 export const router = createBrowserRouter([

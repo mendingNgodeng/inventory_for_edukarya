@@ -1,5 +1,5 @@
 import React, { useMemo, useState,useEffect} from "react";
-import DashboardLayout from "../../layouts/Dashboardlayout";
+// import DashboardLayout from "../../layouts/Dashboardlayout";
 import Cards from "./cards";
 import Pagination from "../../components/ui/pagination";
 import BorrowUseModal from "./borrowUseModal";
@@ -69,7 +69,7 @@ const stockTotalPages = Math.max(1, Math.ceil(stockTotal / stockPageSize));
 useEffect(() => {
   if (stockPage > stockTotalPages) setStockPage(stockTotalPages);
 }, [stockPage, stockTotalPages]);
-  // ====== FILTER BORROW LIST (tab ACTIVE + RETURNED) ======
+  //  FILTER BORROW LIST tab ACTIVE + RETURNED
   const filteredBorrow = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
     if (!term) return borrowedData;

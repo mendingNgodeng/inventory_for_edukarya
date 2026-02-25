@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
-import DashboardLayout from '../../../layouts/Dashboardlayout';
+// import DashboardLayout from '../../../layouts/Dashboardlayout';
 import Button from '../../../components/ui/button';
 import Table from './Table';
 import Modal from './Modal';
