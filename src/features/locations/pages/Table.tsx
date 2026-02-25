@@ -1,4 +1,5 @@
-import React from 'react';
+import React,{useState,useEffect,useMemo} from 'react';
+import Pagination from "../../../components/ui/pagination";
 import type { LocationTableProps } from './Types';
 import Button from '../../../components/ui/button';
 import {Pencil, TrashIcon} from 'lucide-react'
@@ -7,7 +8,27 @@ const LocationTable: React.FC<LocationTableProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const total = locations.length;
+
+  // pagination state
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+  
+    // reset page saat data berubah (misal search)
+    useEffect(() => {
+      setPage(1);
+    }, [locations]);
+
+  const total = locations.length;   
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+    
+    useEffect(() => {
+      if (page > totalPages) setPage(totalPages);
+    }, [page, totalPages]);
+    
+    const pageData = useMemo(() => {
+      const start = (page - 1) * pageSize;
+      return (locations ?? []).slice(start, start + pageSize);
+    }, [locations, page, pageSize]);
 
   const EmptyState = () => (
     <tr>
@@ -77,8 +98,8 @@ const LocationTable: React.FC<LocationTableProps> = ({
             </thead>
 
             <tbody className="bg-white divide-y divide-gray-200">
-              {locations.length > 0 ? (
-                locations.map((loc) => (
+              {pageData.length > 0 ? (
+                pageData.map((loc) => (
                   <tr
                     key={loc.id_location}
                     className="hover:bg-gray-50 transition-colors"
@@ -121,13 +142,19 @@ const LocationTable: React.FC<LocationTableProps> = ({
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 text-sm text-gray-500">
-        Menampilkan{" "}
-        <span className="font-medium text-gray-700">
-          {total}
-        </span>{" "}
-        lokasi
-      </div>
+    <div className="border-t border-gray-200 bg-white">
+            <Pagination
+              page={page}
+              pageSize={pageSize}
+              total={total}
+              onPageChange={setPage}
+              onPageSizeChange={(s: number) => {
+                setPageSize(s);
+                setPage(1);
+              }}
+              pageSizeOptions={[5, 10, 20, 50]}
+            />
+          </div>
     </div>
   );
 };

@@ -15,7 +15,7 @@ export default function ActiveRentalCard({
   const assetCode = rental.assetStock?.asset?.asset_code ?? "-";
   const custName = rental.customer?.name ?? "-";
   const custPhone = rental.customer?.phone ?? "-";
-  const ktp = rental.customer?.pictureKtp;
+  // const ktp = rental.customer?.pictureKtp;
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-3">
@@ -37,7 +37,7 @@ export default function ActiveRentalCard({
       </div>
 
       <div>
-        <div className="text-xs text-gray-500 mb-1">Foto KTP</div>
+        {/* <div className="text-xs text-gray-500 mb-1">Foto KTP</div>
         {ktp ? (
           <img
             src={ktp}
@@ -48,7 +48,7 @@ export default function ActiveRentalCard({
           <div className="w-full h-36 rounded-lg border bg-gray-50 flex items-center justify-center text-sm text-gray-500">
             KTP kosong
           </div>
-        )}
+        )} */}
       </div>
 
       <div className="flex justify-end gap-2 pt-1">

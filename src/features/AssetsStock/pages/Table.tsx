@@ -1,4 +1,5 @@
-import React from 'react';
+import React,{useState,useEffect,useMemo} from 'react';
+import Pagination from "../../../components/ui/pagination";
 import type { AssetsTableProps } from './Types';
 import Button from '../../../components/ui/button';
 import {Pencil,TrashIcon} from 'lucide-react'
@@ -8,14 +9,13 @@ const Table: React.FC<AssetsTableProps> = ({
   onEdit,
   onDelete,
 }) => {
-
   const statusStyle: Record<string, string> = {
-  TERSEDIA: "bg-green-100 text-green-700",
-  "TIDAK TERSEDIA": "bg-red-100 text-red-700",
-  "MAINTENANCE": "bg-yellow-100 text-yellow-700",
+   TERSEDIA: "bg-emerald-100 text-emerald-700",
+  "TIDAK TERSEDIA": "bg-rose-100 text-rose-700",
+  "MAINTENANCE": "bg-amber-100 text-amber-700",
   "DIPINJAM": "bg-blue-100 text-blue-700",
-  "DIPAKAI": "bg-orange-100 text-orange-700",
-
+  "DIPAKAI": "bg-purple-100 text-purple-700",
+  "DISEWA": "bg-indigo-100 text-indigo-700",
 };
 
   const conditionStyle: Record<string, string> = {
@@ -23,7 +23,30 @@ const Table: React.FC<AssetsTableProps> = ({
   "RUSAK": "bg-red-100 text-red-700",
   // "DI MAINTENANCE": "bg-yellow-100 text-yellow-700",
 };
+  // pagination state
+      const [page, setPage] = useState(1);
+      const [pageSize, setPageSize] = useState(10);
+    
+      // reset page saat data berubah (misal search)
+      useEffect(() => {
+        setPage(1);
+      }, [data]);
+      
   const total = data.length;
+
+const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+useEffect(() => {
+  if (page > totalPages) setPage(totalPages);
+}, [page, totalPages]);
+
+const pageData = useMemo(() => {
+  const start = (page - 1) * pageSize;
+  return (data ?? []).slice(start, start + pageSize);
+}, [data, page, pageSize]);
+
+const startIndex = (page - 1) * pageSize; // untuk nomor urut...belh
+
   const EmptyState = () => (
     <tr>
       <td colSpan={4} className="px-6 py-10 text-center">
@@ -111,8 +134,8 @@ const Table: React.FC<AssetsTableProps> = ({
             </thead>
 
             <tbody className="bg-white divide-y divide-gray-200">
-              {data.length > 0 ? (
-                data.map((loc,i) => (
+              {pageData.length > 0 ? (
+                pageData.map((loc,i) => (
                   <tr
                     key={loc.id_asset_stock}
                     className="hover:bg-gray-50 transition-colors"
@@ -202,13 +225,19 @@ const Table: React.FC<AssetsTableProps> = ({
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 text-sm text-gray-500">
-        Menampilkan{" "}
-        <span className="font-medium text-gray-700">
-          {total}
-        </span>{" "}
-        Asset
-      </div>
+         <div className="border-t border-gray-200 bg-white">
+                         <Pagination
+                           page={page}
+                           pageSize={pageSize}
+                           total={total}
+                           onPageChange={setPage}
+                           onPageSizeChange={(s: number) => {
+                             setPageSize(s);
+                             setPage(1);
+                           }}
+                           pageSizeOptions={[5, 10, 20, 50]}
+                         />
+                       </div>
     </div>
   );
 };

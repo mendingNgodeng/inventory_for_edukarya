@@ -1,5 +1,5 @@
 // src/pages/rental/component/RentalModalStock.tsx
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import Modal from "../../../components/ui/Modal";
 import Input from "../../../components/ui/input";
 import Button from "../../../components/ui/button";
@@ -83,7 +83,7 @@ export default function RentalModalStock({ isOpen, onClose, stock, customers, on
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Pilih Customer (KTP wajib)</label>
             <select
-              className="w-full border rounded-lg px-3 py-2"
+              className="w-full border rounded-lg px-3 py-2 text-gray-700"
               {...register("id_rental_customer", { required: "Customer wajib dipilih" })}
             >
               <option value="">-- pilih --</option>
@@ -110,9 +110,11 @@ export default function RentalModalStock({ isOpen, onClose, stock, customers, on
             label="Rental Start"
             type="datetime-local"
             {...register("rental_start", { required: "Tanggal mulai wajib" })}
-            error={errMsg(errors.rental_start)}
-          />
+            // error={errMsg(errors.rental_start)}
+           error={errors.rental_start?.message} 
 
+          />
+    {/* error={errors.purchase_price?.message} */}
           <Input
             label="Rental End"
             type="datetime-local"

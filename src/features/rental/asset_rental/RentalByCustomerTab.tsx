@@ -1,5 +1,5 @@
 // src/pages/rental/component/RentalByCustomerTab.tsx
-import React, { useMemo, useState } from "react";
+import  { useMemo, useState } from "react";
 import ActiveRentalCard from "../components/ActiveRentalCard";
 import FinishRentalModal from "../components/FinishRentalModal";
 import { toast } from "sonner";

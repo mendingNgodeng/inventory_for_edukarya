@@ -1,5 +1,5 @@
 // src/pages/rental/Page.tsx
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Tabs from "../components/tabs";
 import type { RentalTabKey } from "../pages/Types";
 
@@ -99,11 +99,11 @@ export default function Page() {
       {/* TAB 1 */}
       {tab === "CUSTOMER" && <CustomerTab searchTerm={searchTerm} />}
 
-      {/* TAB 2 (ACTIVE RENTALS: finish/cancel) ✅ perubahan besar */}
+      {/* TAB 2 (ACTIVE RENTALS: finish/cancel) */}
       {tab === "RENTAL_BY_CUSTOMER" && (
         <RentalByCustomerTab
           searchTerm={searchTerm}
-          rentals={activeRentals}         // ✅ langsung kasih yg AKTIF biar tab gampang
+          rentals={activeRentals}         
           finishRental={finishRental}
           cancelRental={cancelRental}
           afterAction={refreshAll}

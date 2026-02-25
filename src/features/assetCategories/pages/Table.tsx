@@ -1,4 +1,5 @@
-import React from 'react';
+import React,{useState,useEffect,useMemo} from 'react';
+import Pagination from "../../../components/ui/pagination";
 import type { CtgTableProps } from './Types';
 import Button from '../../../components/ui/button';
 import { Pencil,TrashIcon } from 'lucide-react';
@@ -7,7 +8,27 @@ const Table: React.FC<CtgTableProps> = ({
   onEdit,
   onDelete,
 }) => {
+
+   // pagination state
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    // reset page saat data berubah (misal search)
+    useEffect(() => {
+      setPage(1);
+    }, [data]);
+
   const total = data.length;
+
+const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+useEffect(() => {
+  if (page > totalPages) setPage(totalPages);
+}, [page, totalPages]);
+
+const pageData = useMemo(() => {
+  const start = (page - 1) * pageSize;
+  return (data ?? []).slice(start, start + pageSize);
+}, [data, page, pageSize]);
 
   const EmptyState = () => (
     <tr>
@@ -77,8 +98,8 @@ const Table: React.FC<CtgTableProps> = ({
             </thead>
 
             <tbody className="bg-white divide-y divide-gray-200">
-              {data.length > 0 ? (
-                data.map((loc) => (
+              {pageData.length > 0 ? (
+                pageData.map((loc) => (
                   <tr
                     key={loc.id_asset_categories}
                     className="hover:bg-gray-50 transition-colors"
@@ -119,15 +140,21 @@ const Table: React.FC<CtgTableProps> = ({
         {/* Bottom gradient */}
         <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-gray-50 to-transparent pointer-events-none" />
       </div>
-
-      {/* Footer */}
-      <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 text-sm text-gray-500">
-        Menampilkan{" "}
-        <span className="font-medium text-gray-700">
-          {total}
-        </span>{" "}
-        Kategori
+ <div className="border-t border-gray-200 bg-white">
+        <Pagination
+          page={page}
+          pageSize={pageSize}
+          total={total}
+          onPageChange={setPage}
+          onPageSizeChange={(s: number) => {
+            setPageSize(s);
+            setPage(1);
+          }}
+          pageSizeOptions={[5, 10, 20, 50]}
+        />
       </div>
+      {/* Footer */}
+   
     </div>
   );
 };
