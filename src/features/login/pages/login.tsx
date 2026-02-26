@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { Package, LogIn } from "lucide-react";
+import { Package, LogIn,UserCircle } from "lucide-react";
 import Button from "../../../components/ui/button";
 import Input from "../../../components/ui/input";
 import { useAuth } from "../../../api/auth/hooks";
+import { useNavigate } from "react-router-dom";
 
 type LoginForm = {
   username: string;
@@ -14,7 +15,7 @@ type LoginErrors = Partial<Record<keyof LoginForm, string>>;
 export default function LoginPage() {
   const [form, setForm] = useState<LoginForm>({ username: "", password: "" });
   const [errors, setErrors] = useState<LoginErrors>({});
-
+  const navigate = useNavigate()
   const { login, loading, error } = useAuth();
 
   const canSubmit = useMemo(() => {
@@ -104,10 +105,20 @@ export default function LoginPage() {
               {error}
             </p>
           )}
-
-          <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3">
-          
-          </div>
+  <br />
+          {/* <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3"> */}
+          <Button
+              type="submit"
+              fullWidth
+              isLoading={loading}
+              className="rounded-xl"
+              onClick={() => navigate("/borrow-assets")} 
+              // path: '/borrow-assets'
+            >
+              <UserCircle className="h-4 w-4" />
+              Sebagai Tamu
+            </Button>
+          {/* </div> */}
         </div>
 
         <p className="mt-4 text-center text-xs text-slate-400">

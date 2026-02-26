@@ -1,5 +1,5 @@
 // FinishRentalModal.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../../components/ui/Modal";
 import Button from "../../../components/ui/button";
 import { toast } from "sonner";
@@ -29,7 +29,7 @@ export default function FinishRentalModal({
   const [image, setImage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ✅ state untuk KTP decrypted
+  // state untuk KTP decrypted
   const [customerDetail, setCustomerDetail] = useState<RentalCustomerData | null>(null);
   const [loadingKtp, setLoadingKtp] = useState(false);
 
@@ -47,7 +47,7 @@ export default function FinishRentalModal({
       try {
         setLoadingKtp(true);
         const detail = await rentalCustomerService.getById(id);
-        setCustomerDetail(detail); // ✅ sudah decrypt dari backend
+        setCustomerDetail(detail); // sudah decrypt dari backend
       } catch (e) {
         setCustomerDetail(null);
       } finally {
@@ -56,7 +56,7 @@ export default function FinishRentalModal({
     })();
   }, [isOpen, rental?.id_rental_customer]);
 
-  const ktp = customerDetail?.pictureKtp; // ✅ decrypted dataURL
+  const ktp = customerDetail?.pictureKtp; // decrypted dataURL
 
   return (
     <Modal
@@ -106,7 +106,7 @@ export default function FinishRentalModal({
               Customer: {rental.customer?.name ?? "-"} • {rental.customer?.phone ?? "-"}
             </div>
 
-            {/* ✅ Foto KTP dari getById */}
+            {/*  Foto KTP dari getById */}
             <div>
               <div className="text-xs text-gray-500 mb-1">Foto KTP</div>
               {loadingKtp ? (

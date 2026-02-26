@@ -9,6 +9,7 @@ import RentableStockTab from "../components/RentableStockTab";
 import RentalHistoryTab from "../components/RentalHistoryTab";
 
 import { useData as useCustomers } from "../../../api/rental_customer/hooks";
+
 import { useData as useRentals } from "../../../api/rental_asset/hooks";
 import { useData as useStock } from "../../../api/assetsStock/hooks";
 
@@ -20,6 +21,9 @@ export default function Page() {
     Data: customers,
     loading: customerLoading,
     fetchData: refetchCustomers,
+    createData,
+    updateData,
+    deleteData
   } = useCustomers() as any;
 
   const {
@@ -90,14 +94,21 @@ export default function Page() {
         onChange={setTab}
         counts={{
           customer: customers?.length ?? 0,
-          byCustomer: activeRentals.length,   // ✅ tab 2 = rental aktif
+          byCustomer: activeRentals.length,   // tab 2 = rental aktif
           stock: rentableStocks.length,
           history: historyRentals.length,
         }}
       />
 
       {/* TAB 1 */}
-      {tab === "CUSTOMER" && <CustomerTab searchTerm={searchTerm} />}
+      {tab === "CUSTOMER" && <CustomerTab 
+                searchTerm={searchTerm}
+                rows={customers ?? []}
+                updateData={updateData}
+                createData={createData}
+                deleteData={deleteData}
+                afterAction={refreshAll}
+                />}
 
       {/* TAB 2 (ACTIVE RENTALS: finish/cancel) */}
       {tab === "RENTAL_BY_CUSTOMER" && (

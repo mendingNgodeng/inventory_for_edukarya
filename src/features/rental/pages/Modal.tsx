@@ -150,7 +150,7 @@ const LocationModal: React.FC<ModalProps> = ({
           {...register("pictureKtp", {
             required: editingData ? false : "KTP wajib diisi",
           })}
-          error={errors.pictureKtp?.message}
+          // error={errors.pictureKtp?.message}
         />
 
         {/* EDIT MODE: preview saja */}
@@ -182,7 +182,7 @@ const LocationModal: React.FC<ModalProps> = ({
             <input
               type="file"
               accept="image/*"
-              className="w-full px-3 py-2 border rounded-lg shadow-sm"
+              className="w-full px-3 py-2 border rounded-lg shadow-sm text-gray-700"
               onChange={async (e) => {
                 const file = e.target.files?.[0];
                 if (!file) {

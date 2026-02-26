@@ -37,15 +37,7 @@ const isAuthed = isAuthenticated();
           {/* Search bar - Desktop */}
           <div className="hidden md:flex flex-1 max-w-lg mx-4">
             <div className="relative w-full">
-           {!isAuthed && (
-  <Button
-    type="button"
-    variant="outline_blue"
-    onClick={() => navigate("/login")}
-  >
-    Login Admin
-  </Button>
-)}
+         
             </div>
           </div>
 
@@ -58,8 +50,15 @@ const isAuthed = isAuthenticated();
 
             {/* Notifications */}
             <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+            {!isAuthed && (
+  <Button
+    type="button"
+    variant="outline_blue"
+    onClick={() => navigate("/login")}
+  >
+    Login Admin
+  </Button>
+)}
             </button>
 
             {/* Profile dropdown */}
@@ -87,17 +86,21 @@ const isAuthed = isAuthenticated();
               {/* Dropdown menu */}
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profil</a>
+                  {/* if i have time to polish */}
+                  {/* <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profil</a>
                   <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Pengaturan</a>
-                  <hr className="my-1 border-gray-200" />
+                  <hr className="my-1 border-gray-200" /> */}
 
                   {/* fungsi logout disini please */}
-                 <button
+               
+             {isAuthed && (
+            <button
                 onClick={logout}
                 className="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50"
               >
                 Keluar
             </button>
+)}
                 </div>
               )}
             </div>

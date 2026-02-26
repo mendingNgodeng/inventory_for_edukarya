@@ -22,7 +22,7 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  // ✅ 1) SEARCH
+  // 1) SEARCH
   const searched = useMemo(() => {
     const term = (searchTerm ?? "").toLowerCase().trim();
     if (!term) return rentals ?? [];
@@ -41,13 +41,13 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
     });
   }, [rentals, searchTerm]);
 
-  // ✅ 2) STATUS FILTER
+  // 2) STATUS FILTER
   const statusFiltered = useMemo(() => {
     if (status === "ALL") return searched;
     return searched.filter((r: any) => r.status === status);
   }, [searched, status]);
 
-  // ✅ 3) SORT BY DATE
+  // 3) SORT BY DATE
   const sorted = useMemo(() => {
     if (!statusFiltered.length) return [];
 
@@ -62,7 +62,7 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
     setPage(1);
   }, [searchTerm, status, sortBy, sortOrder, pageSize]);
 
-  // ✅ 4) PAGINATION (HARUS setelah filter+sort)
+  // 4) PAGINATION (HARUS setelah filter+sort)
   const total = sorted.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
@@ -81,7 +81,7 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
 
   return (
     <>
-      {/* ✅ FILTER BAR */}
+      {/* FILTER BAR */}
       <div className="bg-white border border-gray-200 rounded-lg p-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <div className="text-sm font-medium text-gray-700">Status</div>
@@ -109,8 +109,8 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
         />
       </div>
 
-      {/* ✅ TABLE */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+      {/*  TABLE */}
+      <div className="border border-gray-200 rounded-lg overflow-auto bg-white">
         <table className="w-full text-sm">
           <thead className="bg-gray-50">
             <tr className="text-gray-700">
@@ -167,7 +167,7 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
           </tbody>
         </table>
 
-        {/* ✅ PAGINATION */}
+        {/*  PAGINATION */}
         <div className="border-t border-gray-200 bg-white">
           <Pagination
             page={page}
@@ -183,7 +183,7 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
         </div>
       </div>
 
-      {/* ✅ MODAL PREVIEW */}
+      {/*  MODAL PREVIEW */}
       <Modal
         isOpen={open}
         onClose={() => setOpen(false)}

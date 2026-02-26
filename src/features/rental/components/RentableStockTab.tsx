@@ -1,5 +1,5 @@
 // src/pages/rental/component/RentableStockTab.tsx
-import React, { useState } from "react";
+import  { useState } from "react";
 import RentableStockCard from "./RentableStockCard";
 import RentalModalStock from "./RentalModalStock";
 
