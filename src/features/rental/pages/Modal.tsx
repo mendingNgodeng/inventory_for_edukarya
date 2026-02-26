@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Modal from "../../../components/ui/Modal";
 import Button from "../../../components/ui/button";
+import ImagePicker from "../../../components/ui/image-picker";
 import Input from "../../../components/ui/input";
 import type { FormData, ModalProps } from "./Types";
 
@@ -150,7 +151,6 @@ const LocationModal: React.FC<ModalProps> = ({
           {...register("pictureKtp", {
             required: editingData ? false : "KTP wajib diisi",
           })}
-          // error={errors.pictureKtp?.message}
         />
 
         {/* EDIT MODE: preview saja */}
@@ -179,7 +179,7 @@ const LocationModal: React.FC<ModalProps> = ({
           <>
             <label className="block text-sm font-medium mb-1 text-gray-700">Upload KTP</label>
 
-            <input
+            {/* <input
               type="file"
               accept="image/*"
               className="w-full px-3 py-2 border rounded-lg shadow-sm text-gray-700"
@@ -194,7 +194,17 @@ const LocationModal: React.FC<ModalProps> = ({
                 setValue("pictureKtp", base64, { shouldValidate: true });
                 setKtpPreview(base64);
               }}
-            />
+            /> */}  <>
+    <ImagePicker
+      value={ktpPreview}
+      required={!editingData}
+      error={errors.pictureKtp?.message}
+      onChange={(b64:any) => {
+        setValue("pictureKtp", b64, { shouldValidate: true });
+        setKtpPreview(b64);
+      }}
+    />
+  </>
 
             {errors.pictureKtp?.message && (
               <p className="text-red-500 text-sm mt-1">{errors.pictureKtp.message}</p>

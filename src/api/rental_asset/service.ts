@@ -44,4 +44,7 @@ export class rentalAssetService {
   static async delete(id: number): Promise<void> {
     await apiClient.delete(`${ENDPOINTS.ASSET_RENTAL}/${id}`);
   }
+    static async deleteAllNonActive(): Promise<void> {
+    await apiClient.delete(`${ENDPOINTS.ASSET_RENTAL}/nonActive`);
+  }
 }

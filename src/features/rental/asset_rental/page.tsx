@@ -33,6 +33,8 @@ export default function Page() {
     createRental,
     finishRental,
     cancelRental,
+    deleteDataHistory,
+    deleteAllnonActive,
   } = useRentals() as any;
 
   const {
@@ -134,7 +136,11 @@ export default function Page() {
 
       {/* TAB 4 (history) */}
       {tab === "HISTORY" && (
-        <RentalHistoryTab searchTerm={searchTerm} rentals={historyRentals} />
+        <RentalHistoryTab searchTerm={searchTerm} 
+        rentals={historyRentals}
+        deleteData={deleteDataHistory}
+        onClearhistory={deleteAllnonActive}
+         />
       )}
     </div>
   );

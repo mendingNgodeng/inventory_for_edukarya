@@ -1,17 +1,25 @@
 // src/pages/rental/component/RentalHistoryTab.tsx
 import { useEffect, useMemo, useState } from "react";
+import {Trash} from 'lucide-react'
 import Modal from "../../../components/ui/Modal";
 import Button from "../../../components/ui/button";
 import Pagination from "../../../components/ui/pagination";
 import TableFilters, { type SortOrder } from "../../../components/ui/tablefilters";
+import Alert from "../../../components/ui/alert";
+
+import {toast} from 'sonner'
 import { sortByDate } from "../../../components/helper/dateSort";
 
-type SortKey = "START_DATE" | "END_DATE";
+type SortKey = "START_DATE" | "END_DATE" | "RETURNED_DATE";
 type StatusFilter = "ALL" | "SELESAI" | "DIBATALKAN";
 
-export default function RentalHistoryTab({ rentals, searchTerm }: any) {
+export default function RentalHistoryTab({ rentals, searchTerm,deleteDatahistory, deleteAllnonActive }: any) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<any | null>(null);
+
+  // delete all nonative
+  const [bulkDelete,setBulkDelete] = useState(false)
+  const [bulkLoading,setBulkLoading] = useState(false)
 
   // filter & sort state
   const [status, setStatus] = useState<StatusFilter>("ALL");
@@ -54,7 +62,10 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
     if (sortBy === "START_DATE") {
       return sortByDate(statusFiltered, (r: any) => r.rental_start, sortOrder);
     }
-    return sortByDate(statusFiltered, (r: any) => r.rental_end, sortOrder);
+     if (sortBy === "END_DATE") {
+      return sortByDate(statusFiltered, (r: any) => r.rental_end, sortOrder);
+    }
+    return sortByDate(statusFiltered, (r: any) => r.returned_date, sortOrder);
   }, [statusFiltered, sortBy, sortOrder]);
 
   // reset page kalau result berubah / filter berubah
@@ -82,6 +93,7 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
   return (
     <>
       {/* FILTER BAR */}
+
       <div className="bg-white border border-gray-200 rounded-lg p-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <div className="text-sm font-medium text-gray-700">Status</div>
@@ -105,8 +117,18 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
           sortOptions={[
             { value: "END_DATE", label: "Tanggal Selesai (Rental End)" },
             { value: "START_DATE", label: "Tanggal Mulai (Rental Start)" },
+            { value: "RETURNED_DATE", label: "Tanggal Pengembalian" },
           ]}
         />
+        <Button
+        type="submit"
+        variant="danger"
+        onClick={() => setBulkDelete(true)}
+        className="gap-2"
+        disabled={sorted.length === 0}
+        >
+          <Trash className="w-4 h-4"/>
+        </Button>
       </div>
 
       {/*  TABLE */}
@@ -119,7 +141,9 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
               <th className="px-4 py-2 text-left">Qty</th>
               <th className="px-4 py-2 text-left">Status</th>
               <th className="px-4 py-2 text-left">After Rental</th>
+              <th className="px-4 py-2 text-left">Tanggal Pengembalian</th>
               <th className="px-4 py-2 text-left">Periode</th>
+              <th className="px-4 py-2 text-left">Aksi</th>
             </tr>
           </thead>
 
@@ -157,11 +181,24 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
                     <span className="text-gray-400 text-xs">Tidak ada foto</span>
                   )}
                 </td>
+                <td className="px-4 py-2 font-medium">  {new Date(r.returned_date).toLocaleString()}</td>
 
                 <td className="px-4 py-2">
-                  {new Date(r.rental_start).toLocaleDateString()} →{" "}
-                  {new Date(r.rental_end).toLocaleDateString()}
+                  {new Date(r.rental_start).toLocaleString()} →{" "}
+                  {new Date(r.rental_end).toLocaleString()}
                 </td>
+
+                  <td className="px-4 py-2 font-medium">  
+                    {/* <Button
+                       variant="danger"
+                       className = 'text-gray-700'
+                      >
+                 
+                  <Trash className="text-white px-4 py-4"/>
+
+                    </Button> */}
+                    <p>None</p>
+                  </td>
               </tr>
             ))}
           </tbody>
@@ -183,6 +220,28 @@ export default function RentalHistoryTab({ rentals, searchTerm }: any) {
         </div>
       </div>
 
+{/*BULK DELETE ALERT*/}
+<Alert
+open={bulkDelete}
+title="Hapus Semua history Rental"
+description="Semua daya history (SELESAI & DIBATALKAN) akan dihapus PERMANEN, Lanjutkan?"
+confirmText="Ya, Hapus Semua"
+cancelText="Batal"
+loading={bulkLoading}
+onCancel={() => setBulkDelete(false)}
+onConfirm={async () => {
+  try{
+    setBulkLoading(true);
+    await deleteAllnonActive?.();
+    toast.success("Semua history rental berhasil dihapus!")
+    setBulkDelete(false)
+  }catch(err:any){
+    toast.error(err?.message || "Gagal mengahpus semua history")
+  }finally{
+    setBulkLoading(false)
+  }
+}}
+/>
       {/*  MODAL PREVIEW */}
       <Modal
         isOpen={open}

@@ -50,6 +50,11 @@ export const useData = () => {
     setData((prev) => prev.filter((x) => x.id_asset_rental !== id));
   };
 
+   const deletAllnonActive = async () => {
+    await rentalAssetService.deleteAllNonActive();
+    setData((prev) => prev.filter((x) => {x.status === "AKTIF"}));
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -62,6 +67,7 @@ export const useData = () => {
     updateData,
     finishRental,
     cancelRental,
-    deleteData, //not yet made actually
+    deletAllnonActive,
+    deleteData, //only for non active
   };
 };

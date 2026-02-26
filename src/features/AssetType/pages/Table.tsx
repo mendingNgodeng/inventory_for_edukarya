@@ -74,7 +74,7 @@ const Table: React.FC<TypesTableProps> = ({ data, onEdit, onDelete }) => {
                 <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Deskripsi
                 </th>
-                <th className="w-[20%] px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="w-[20%] px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Aksi
                 </th>
               </tr>
@@ -86,7 +86,7 @@ const Table: React.FC<TypesTableProps> = ({ data, onEdit, onDelete }) => {
                   <tr key={loc.id_asset_types} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">{loc.name}</td>
                     <td className="px-6 py-4 text-sm text-gray-500 truncate">{loc.description || "-"}</td>
-                    <td className="px-6 py-4 text-right flex justify-space text-sm font-medium">
+                    <td className="px-6 py-4 text-center flex gap-2 text-sm font-medium">
                       <Button variant="primary" onClick={() => onEdit(loc)} className="mr-2">
                         <Pencil className="w-4 h-4 mr-2" />
                       </Button>

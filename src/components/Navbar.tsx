@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, Search, User, Menu, ChevronDown } from 'lucide-react';
+import { Search, User, Menu, ChevronDown } from 'lucide-react';
 import Button from './ui/button'
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../api/auth/hooks";
