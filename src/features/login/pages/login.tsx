@@ -43,6 +43,7 @@ export default function LoginPage() {
 
   return (
     // temporary fix
+    <>
     <div className="fixed inset-0 z-[9999] bg-slate-50 flex items-center justify-center p-4 overflow-y-auto">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 px-8 py-10">
@@ -126,5 +127,6 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+    </>
   );
 }

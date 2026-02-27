@@ -1,9 +1,9 @@
-// src/components/ui/KtpInput.tsx
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import Webcam from "react-webcam";
 
 type Props = {
   label?: string;
-  value?: string; // base64
+  value?: string;
   error?: string;
   required?: boolean;
   onChange: (base64: string) => void;
@@ -29,79 +29,46 @@ export default function ImagePicker({
   disabled,
 }: Props) {
   const [openCamera, setOpenCamera] = useState(false);
-  const [cameraError, setCameraError] = useState<string>("");
-  const [loadingCam, setLoadingCam] = useState(false);
-
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  const [cameraError, setCameraError] = useState("");
+  const webcamRef = useRef<Webcam>(null);
 
   const isMobile = useMemo(() => {
     if (typeof navigator === "undefined") return false;
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   }, []);
 
-  const stopCamera = () => {
-    streamRef.current?.getTracks().forEach((t) => t.stop());
-    streamRef.current = null;
-  };
-
-  useEffect(() => {
-    // cleanup on unmount
-    return () => stopCamera();
-  }, []);
-
-  const startCamera = async () => {
-    setCameraError("");
-    setLoadingCam(true);
-    try {
-      // gunakan facingMode "environment" kalau ada (mobile), kalau tidak ya default
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } },
-        audio: false,
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-      setOpenCamera(true);
-    } catch (e: any) {
-      setCameraError(
-        e?.message ||
-          "Kamera tidak tersedia / tidak diizinkan. Silakan upload file."
-      );
-      setOpenCamera(false);
-      stopCamera();
-    } finally {
-      setLoadingCam(false);
-    }
-  };
-
-  const takePhoto = () => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (!video || !canvas) return;
-
-    const w = video.videoWidth || 1280;
-    const h = video.videoHeight || 720;
-    canvas.width = w;
-    canvas.height = h;
-
-    const ctx = canvas.getContext("2d");
-    ctx?.drawImage(video, 0, 0, w, h);
-
-    const base64 = canvas.toDataURL("image/jpeg", 0.9);
-    onChange(base64);
-
-    stopCamera();
-    setOpenCamera(false);
-  };
+  // ✅ constraints aman (jangan terlalu keras biar ga error di linux)
+  const videoConstraints = useMemo(
+    () => ({
+      width: 1280,
+      height: 720,
+      facingMode: { ideal: "environment" }, // fallback otomatis
+    }),
+    []
+  );
 
   const handleFile = async (file?: File | null) => {
     if (!file) return;
     const base64 = await fileToBase64(file);
     onChange(base64);
+  };
+
+  const handleOpenCamera = () => {
+    setCameraError("");
+    setOpenCamera(true);
+  };
+
+  const handleTakePhoto = () => {
+    setCameraError("");
+    const imageSrc = webcamRef.current?.getScreenshot();
+    if (!imageSrc) {
+      setCameraError(
+        "Gagal mengambil foto. Pastikan kamera aktif dan browser mengizinkan akses kamera."
+      );
+      return;
+    }
+    onChange(imageSrc);
+    setOpenCamera(false);
   };
 
   return (
@@ -113,9 +80,8 @@ export default function ImagePicker({
         </label>
       )}
 
-      {/* Action buttons */}
       <div className="flex flex-wrap gap-2">
-        {/* Upload file (all platforms) */}
+        {/* Upload file (semua platform) */}
         <label
           className={[
             "px-3 py-2 border rounded-lg text-sm cursor-pointer text-gray-700",
@@ -132,7 +98,7 @@ export default function ImagePicker({
           />
         </label>
 
-        {/* Mobile: capture camera via input (best UX for phones) */}
+        {/* Mobile capture: paling reliable di HP */}
         {isMobile && (
           <label
             className={[
@@ -152,18 +118,18 @@ export default function ImagePicker({
           </label>
         )}
 
-        {/* Desktop: use WebRTC */}
+        {/* Desktop webcam */}
         {!isMobile && (
           <button
             type="button"
-            disabled={disabled || loadingCam}
-            onClick={startCamera}
+            disabled={disabled}
+            onClick={handleOpenCamera}
             className={[
               "px-3 py-2 border rounded-lg text-sm text-gray-700",
               disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-50",
             ].join(" ")}
           >
-            {loadingCam ? "Membuka Kamera..." : "Buka Kamera (Desktop)"}
+            Buka Kamera (Desktop)
           </button>
         )}
 
@@ -183,37 +149,47 @@ export default function ImagePicker({
         )}
       </div>
 
-      {/* Camera area (desktop WebRTC) */}
+      {/* Webcam area */}
       {openCamera && (
         <div className="border rounded-xl p-3 space-y-2 bg-white">
-          <video ref={videoRef} className="w-full rounded-lg border" />
+          <Webcam
+            ref={webcamRef}
+            audio={false}
+            screenshotFormat="image/jpeg"
+            videoConstraints={videoConstraints}
+            className="w-full rounded-lg border bg-black"
+            onUserMedia={() => setCameraError("")}
+            onUserMediaError={(e) =>
+              setCameraError(
+                (e as any)?.message ||
+                  "Kamera tidak bisa dibuka. Coba browser lain / cek permission."
+              )
+            }
+          />
+
           <div className="flex justify-end gap-2">
             <button
               type="button"
-              onClick={() => {
-                stopCamera();
-                setOpenCamera(false);
-              }}
+              onClick={() => setOpenCamera(false)}
               className="px-3 py-2 border rounded-lg text-sm hover:bg-gray-50 text-gray-700"
             >
               Tutup
             </button>
+
             <button
               type="button"
-              onClick={takePhoto}
-              className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 text-gray-700"
+              onClick={handleTakePhoto}
+              className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700"
             >
               Ambil Foto
             </button>
           </div>
-          <canvas ref={canvasRef} className="hidden" />
-        </div>
-      )}
 
-      {/* Camera error */}
-      {cameraError && (
-        <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-2">
-          {cameraError}
+          {cameraError && (
+            <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg p-2">
+              {cameraError}
+            </div>
+          )}
         </div>
       )}
 
@@ -223,7 +199,7 @@ export default function ImagePicker({
           <div className="text-xs text-gray-500 mb-1">Preview</div>
           <img
             src={value}
-            alt="Preview KTP"
+            alt="Preview"
             className="w-full max-h-60 object-contain rounded-lg border bg-white"
           />
         </div>

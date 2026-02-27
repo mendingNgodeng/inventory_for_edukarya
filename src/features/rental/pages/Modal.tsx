@@ -28,13 +28,13 @@ const LocationModal: React.FC<ModalProps> = ({
   const [detailData, setDetailData] = useState<RentalCustomerData | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
 
-  const fileToBase64 = (file: File) =>
-    new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file); // "data:image/jpeg;base64,..."
-    });
+  // const fileToBase64 = (file: File) =>
+  //   new Promise<string>((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.onload = () => resolve(reader.result as string);
+  //     reader.onerror = reject;
+  //     reader.readAsDataURL(file); // "data:image/jpeg;base64,..."
+  //   });
 
   // Fetch detail (GET by ID) saat modal edit dibuka
   useEffect(() => {
