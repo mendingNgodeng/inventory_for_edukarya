@@ -2,7 +2,21 @@ import React,{useState,useEffect,useMemo} from 'react';
 import Pagination from "../../../components/ui/pagination";
 import type { AssetsTableProps } from './Types';
 import Button from '../../../components/ui/button';
+import TableFilterBar from '../../../components/ui/tablefilter-bar';
 import {Pencil,TrashIcon} from 'lucide-react'
+// import TableFilterBar from "../../../components/ui/table-filter-bar";
+
+type StatusFilter =
+  | "ALL"
+  | "TERSEDIA"
+  | "TIDAK_TERSEDIA"
+  | "MAINTENANCE"
+  | "DIPINJAM"
+  | "DIPAKAI"
+  | "DISEWA";
+
+type ConditionFilter = "ALL" | "BAIK" | "RUSAK";
+
 
 const Table: React.FC<AssetsTableProps> = ({
   data,
@@ -11,7 +25,7 @@ const Table: React.FC<AssetsTableProps> = ({
 }) => {
   const statusStyle: Record<string, string> = {
    TERSEDIA: "bg-emerald-100 text-emerald-700",
-  "TIDAK TERSEDIA": "bg-rose-100 text-rose-700",
+  "TIDAK_TERSEDIA": "bg-rose-100 text-rose-700",
   "MAINTENANCE": "bg-amber-100 text-amber-700",
   "DIPINJAM": "bg-blue-100 text-blue-700",
   "DIPAKAI": "bg-purple-100 text-purple-700",
@@ -36,16 +50,47 @@ const Table: React.FC<AssetsTableProps> = ({
 
 const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
+const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
+const [conditionFilter, setConditionFilter] = useState<ConditionFilter>("ALL");
+const [locationFilter, setLocationFilter] = useState<string>("ALL");
+
+const locationOptions = useMemo(() => {
+  const map = new Map<string, string>();
+  (data ?? []).forEach((x: any) => {
+    const id = String(x.location?.id_location ?? x.location?.id ?? x.location?.name ?? "");
+    const name = x.location?.name ?? "-";
+    if (id) map.set(id, name);
+  });
+  return [{ value: "ALL", label: "Semua" }].concat(
+    Array.from(map.entries()).map(([id, name]) => ({ value: id, label: name }))
+  );
+}, [data]);
+
+const filteredData = useMemo(() => {
+  return (data ?? []).filter((x: any) => {
+    const okStatus = statusFilter === "ALL" ? true : x.status === statusFilter;
+    const okCond = conditionFilter === "ALL" ? true : x.condition === conditionFilter;
+
+    const locId = String(x.location?.id_location ?? x.location?.id ?? "");
+    const locName = String(x.location?.name ?? "");
+    const okLoc =
+      locationFilter === "ALL" ? true : locId === locationFilter || locName === locationFilter;
+
+    return okStatus && okCond && okLoc;
+  });
+}, [data, statusFilter, conditionFilter, locationFilter]);
+
+
 useEffect(() => {
   if (page > totalPages) setPage(totalPages);
 }, [page, totalPages]);
 
 const pageData = useMemo(() => {
   const start = (page - 1) * pageSize;
-  return (data ?? []).slice(start, start + pageSize);
-}, [data, page, pageSize]);
+  return (filteredData ?? []).slice(start, start + pageSize);
+}, [filteredData, page, pageSize]);
 
-const startIndex = (page - 1) * pageSize; // untuk nomor urut...belh
+// const startIndex = (page - 1) * pageSize; // untuk nomor urut...belh
 
   const EmptyState = () => (
     <tr>
@@ -84,8 +129,54 @@ const startIndex = (page - 1) * pageSize; // untuk nomor urut...belh
             <h2 className="text-base font-semibold text-gray-800">
               Data Aset
             </h2>
+         
           </div>
-
+           <TableFilterBar
+  fields={[
+    {
+      key: "status",
+      label: "Status",
+      value: statusFilter,
+      onChange: (v) => setStatusFilter(v as StatusFilter),
+      options: [
+        { value: "ALL", label: "Semua" },
+        { value: "TERSEDIA", label: "TERSEDIA" },
+        { value: "TIDAK_TERSEDIA", label: "TIDAK_TERSEDIA" },
+        { value: "MAINTENANCE", label: "MAINTENANCE" },
+        { value: "DIPINJAM", label: "DIPINJAM" },
+        { value: "DIPAKAI", label: "DIPAKAI" },
+        { value: "DISEWA", label: "DISEWA" },
+      ],
+    },
+    {
+      key: "condition",
+      label: "Condition",
+      value: conditionFilter,
+      onChange: (v) => setConditionFilter(v as ConditionFilter),
+      options: [
+        { value: "ALL", label: "Semua" },
+        { value: "BAIK", label: "BAIK" },
+        { value: "RUSAK", label: "RUSAK" },
+      ],
+    },
+    {
+      key: "location",
+      label: "Lokasi",
+      value: locationFilter,
+      onChange: setLocationFilter,
+      options: locationOptions,
+    },
+  ]}
+  onReset={() => {
+    setStatusFilter("ALL");
+    setConditionFilter("ALL");
+    setLocationFilter("ALL");
+  }}
+  rightSlot={
+    // optional: tambah tombol add/export dll
+    null
+  }
+/>
           <span className="text-sm text-gray-500">
             Total:{" "}
             <span className="font-medium text-gray-700">
@@ -174,7 +265,7 @@ const startIndex = (page - 1) * pageSize; // untuk nomor urut...belh
     statusStyle[loc.status] || "bg-gray-100 text-gray-700"
   }`}
 >
-  {loc.status}
+  {loc.quantity >= 0 ? loc.status : "TIDAK TERSEDIA"}
 </span>
 </td> 
                    <td className="px-6 py-4 text-sm font-medium">
@@ -191,8 +282,9 @@ const startIndex = (page - 1) * pageSize; // untuk nomor urut...belh
 
                     <td className="px-6 py-4 text-right flex justify-space  text-sm font-medium">
                      
-                   {(loc.status === "TERSEDIA" ||
-    loc.status === "TIDAK_TERSEDIA") && (
+                   {(loc.status === "TERSEDIA" 
+    || loc.status === "TIDAK_TERSEDIA"
+  ) && (
     <>
       <Button
         variant="primary"
