@@ -3,17 +3,10 @@ import { useEffect, useState } from "react";
 import Modal from "../../../components/ui/Modal";
 import Button from "../../../components/ui/button";
 import { toast } from "sonner";
+import ImagePicker from "../../../components/ui/image-picker";
 
-import { dataService as rentalCustomerService } from "../../../api/rental_customer/service"; 
+import { dataService as rentalCustomerService } from "../../../api/rental_customer/service";
 import type { data as RentalCustomerData } from "../../../api/rental_customer/types";
-
-const fileToBase64 = (file: File) =>
-  new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
 
 export default function FinishRentalModal({
   isOpen,
@@ -26,29 +19,31 @@ export default function FinishRentalModal({
   rental: any | null;
   onSubmit: (payload: { image_after_rental: string }) => Promise<void>;
 }) {
-  const [image, setImage] = useState("");
+  // ✅ foto barang setelah rental (yang wajib)
+  const [afterImage, setAfterImage] = useState<string>("");
+
   const [loading, setLoading] = useState(false);
 
-  // state untuk KTP decrypted
+  // ✅ KTP decrypted via getById
   const [customerDetail, setCustomerDetail] = useState<RentalCustomerData | null>(null);
   const [loadingKtp, setLoadingKtp] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    setImage("");
+    setAfterImage("");
     setLoading(false);
     setCustomerDetail(null);
 
-    const id = rental?.id_rental_customer; // pastikan field ini ada di rental
+    const id = rental?.id_rental_customer;
     if (!id) return;
 
     (async () => {
       try {
         setLoadingKtp(true);
         const detail = await rentalCustomerService.getById(id);
-        setCustomerDetail(detail); // sudah decrypt dari backend
-      } catch (e) {
+        setCustomerDetail(detail); // pictureKtp sudah decrypt di backend
+      } catch {
         setCustomerDetail(null);
       } finally {
         setLoadingKtp(false);
@@ -56,7 +51,7 @@ export default function FinishRentalModal({
     })();
   }, [isOpen, rental?.id_rental_customer]);
 
-  const ktp = customerDetail?.pictureKtp; // decrypted dataURL
+  const ktp = customerDetail?.pictureKtp;
 
   return (
     <Modal
@@ -69,17 +64,20 @@ export default function FinishRentalModal({
           <Button type="button" variant="secondary" onClick={onClose}>
             Batal
           </Button>
+
           <Button
             type="button"
             isLoading={loading}
             onClick={async () => {
-              if (!image) {
+              if (!afterImage) {
                 toast.error("Foto barang wajib diupload sebelum selesai.");
                 return;
               }
+
               try {
                 setLoading(true);
-                await onSubmit({ image_after_rental: image });
+                await onSubmit({ image_after_rental: afterImage });
+                toast.success("Rental berhasil diselesaikan");
                 onClose();
               } catch (e: any) {
                 toast.error(e?.message || "Gagal menyelesaikan rental");
@@ -97,16 +95,18 @@ export default function FinishRentalModal({
         <div className="text-sm text-gray-600">Tidak ada data rental.</div>
       ) : (
         <div className="space-y-4">
+          {/* ✅ detail rental */}
           <div className="p-3 rounded-lg border bg-gray-50 space-y-2">
             <div className="font-semibold text-gray-900">
               {rental.assetStock?.asset?.asset_name ?? "-"} (
               {rental.assetStock?.asset?.asset_code ?? "-"})
             </div>
+
             <div className="text-sm text-gray-600">
               Customer: {rental.customer?.name ?? "-"} • {rental.customer?.phone ?? "-"}
             </div>
 
-            {/*  Foto KTP dari getById */}
+            {/* ✅ Foto KTP dari getById (decrypt backend) */}
             <div>
               <div className="text-xs text-gray-500 mb-1">Foto KTP</div>
               {loadingKtp ? (
@@ -125,34 +125,15 @@ export default function FinishRentalModal({
             </div>
           </div>
 
+          {/* ✅ Foto barang after rental (WAJIB) */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
-              Upload Foto Barang (wajib)
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full px-3 py-2 border rounded-lg shadow-sm"
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                if (!file) {
-                  setImage("");
-                  return;
-                }
-                const base64 = await fileToBase64(file);
-                setImage(base64);
-              }}
+            <ImagePicker
+              label="Upload Foto Barang Setelah Rental (Wajib)"
+              value={afterImage}
+              required
+              onChange={(b64) => setAfterImage(b64)}
+              onClear={() => setAfterImage("")}
             />
-            {image && (
-              <div className="mt-2">
-                <div className="text-xs text-gray-500 mb-1">Preview</div>
-                <img
-                  src={image}
-                  alt="after rental"
-                  className="w-full max-h-60 object-contain rounded border"
-                />
-              </div>
-            )}
           </div>
         </div>
       )}

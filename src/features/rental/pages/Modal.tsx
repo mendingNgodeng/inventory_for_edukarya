@@ -206,7 +206,7 @@ const LocationModal: React.FC<ModalProps> = ({
     />
   </>
 
-            {errors.pictureKtp?.message && (
+            {/* {errors.pictureKtp?.message && (
               <p className="text-red-500 text-sm mt-1">{errors.pictureKtp.message}</p>
             )}
 
@@ -219,7 +219,7 @@ const LocationModal: React.FC<ModalProps> = ({
                   className="max-h-48 rounded border object-contain"
                 />
               </div>
-            )}
+            )} */}
           </>
         )}
       </form>

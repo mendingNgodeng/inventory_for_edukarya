@@ -1,22 +1,27 @@
 // src/pages/rental/components/ActiveRentalCard.tsx
 // import React from "react";
 import Button from "../../../components/ui/button";
+import Alert from "../../../components/ui/alert";
+import { useState } from "react";
 
 export default function ActiveRentalCard({
   rental,
   onFinish,
   onCancel,
+
 }: {
   rental: any;
   onFinish: () => void;
-  onCancel: () => void;
+  onCancel: () => Promise<void>;
+
 }) {
   const assetName = rental.assetStock?.asset?.asset_name ?? "-";
   const assetCode = rental.assetStock?.asset?.asset_code ?? "-";
   const custName = rental.customer?.name ?? "-";
   const custPhone = rental.customer?.phone ?? "-";
   // const ktp = rental.customer?.pictureKtp;
-
+  const [openCancel,setOpenCancel] = useState(false)
+  const [loadingCancel,setLoadingCancel] = useState(false)
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm space-y-3">
       <div>
@@ -37,28 +42,37 @@ export default function ActiveRentalCard({
       </div>
 
       <div>
-        {/* <div className="text-xs text-gray-500 mb-1">Foto KTP</div>
-        {ktp ? (
-          <img
-            src={ktp}
-            alt="KTP"
-            className="w-full h-36 object-cover rounded-lg border"
-          />
-        ) : (
-          <div className="w-full h-36 rounded-lg border bg-gray-50 flex items-center justify-center text-sm text-gray-500">
-            KTP kosong
-          </div>
-        )} */}
+      
       </div>
 
       <div className="flex justify-end gap-2 pt-1">
         <Button variant="outline_blue" type="button" onClick={onFinish}>
           Selesaikan
         </Button>
-        <Button variant="danger" type="button" onClick={onCancel}>
+        <Button variant="danger" type="button" onClick={() => setOpenCancel(true)}>
           Batalkan
         </Button>
       </div>
+    <Alert 
+    open={openCancel}
+    title="Batalkan Rental?"
+    description={`Rental Untuk ${assetName}(${assetCode}) akan dibatalkan. Aksi ini tidak dapat dibatalkan`}
+    confirmText="Ya, Batalkan"
+    cancelText="Kembali"
+    loading={loadingCancel}
+    onCancel={() => setOpenCancel(false)}
+    onConfirm={async () => {
+      try{
+        setLoadingCancel(true);
+        await onCancel();
+        setLoadingCancel(false);
+      }finally{
+        setLoadingCancel(false);
+      }
+    }}
+     
+    />
     </div>
+
   );
 }

@@ -16,7 +16,7 @@ export default function CustomerRentalCardsTab({
   const [selectedCustomer, setSelectedCustomer] = useState<any | null>(null);
   const [open, setOpen] = useState(false);
 
-  // ✅ pagination state (untuk cards customer)
+  //  pagination state (untuk cards customer)
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(9); // cocok 3 kolom: 9 = 3 baris
 

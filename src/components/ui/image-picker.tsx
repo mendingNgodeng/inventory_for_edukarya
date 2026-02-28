@@ -1,3 +1,4 @@
+// input file and foto with preview included with base64 
 import { useMemo, useRef, useState } from "react";
 import Webcam from "react-webcam";
 
@@ -20,7 +21,7 @@ const fileToBase64 = (file: File) =>
   });
 
 export default function ImagePicker({
-  label = "Foto KTP",
+  label = "Foto or upload foto",
   value,
   error,
   required,

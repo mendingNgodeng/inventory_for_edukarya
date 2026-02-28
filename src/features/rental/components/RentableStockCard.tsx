@@ -1,5 +1,5 @@
 // src/pages/rental/component/RentableStockCard.tsx
-import React from "react";
+// import React from "react";
 import Button from "../../../components/ui/button";
 
 export default function RentableStockCard({ stock, onRent }: any) {
