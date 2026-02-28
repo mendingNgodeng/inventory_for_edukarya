@@ -1,5 +1,6 @@
 // src/pages/rental/component/CustomerCard.tsx
 // import React from "react";
+// unused
 import Button from "../../../components/ui/button";
 
 export default function CustomerCard({ customer, onRental }: any) {

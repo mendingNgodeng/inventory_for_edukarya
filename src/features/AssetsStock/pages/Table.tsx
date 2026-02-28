@@ -4,7 +4,6 @@ import type { AssetsTableProps } from './Types';
 import Button from '../../../components/ui/button';
 import TableFilterBar from '../../../components/ui/tablefilter-bar';
 import {Pencil,TrashIcon} from 'lucide-react'
-// import TableFilterBar from "../../../components/ui/table-filter-bar";
 
 type StatusFilter =
   | "ALL"

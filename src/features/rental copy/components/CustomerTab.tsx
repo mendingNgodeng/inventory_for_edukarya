@@ -1,28 +1,39 @@
 // src/pages/rental_customer/component/CustomerTab.tsx
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Plus } from "lucide-react";
 import Button from "../../../components/ui/button";
 import Table from "../pages/Table";
 import Modal from "../pages/Modal";
-import { useData } from "../../../api/rental_customer/hooks";
 import type { Data, FormData } from "../pages/Types";
 import { toast } from "sonner";
 import Alert from "../../../components/ui/alert";
 
-export default function CustomerTab({ searchTerm }: { searchTerm: string }) {
+export default function CustomerTab({
+  searchTerm,
+  rows,
+  createData,
+  updateData,
+  deleteData,
+  afterAction,
+}: {
+  searchTerm: string;
+  rows: Data[];
+  createData: (payload: FormData) => Promise<void>;
+  updateData: (id: number, payload: FormData) => Promise<void>;
+  deleteData: (id: number) => Promise<void>;
+  afterAction?: () => Promise<void>;
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingData, setEditingData] = useState<Data | null>(null);
 
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
-  const { Data: rows, createData, updateData, deleteData } = useData();
-
   const filtered = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
-    if (!term) return rows;
+    if (!term) return rows ?? [];
 
-    return rows.filter((x) => {
+    return (rows ?? []).filter((x) => {
       const name = (x.name ?? "").toLowerCase();
       const phone = (x.phone ?? "").toLowerCase();
       return name.includes(term) || phone.includes(term);
@@ -43,11 +54,11 @@ export default function CustomerTab({ searchTerm }: { searchTerm: string }) {
 
   const handleConfirmDelete = async () => {
     if (!deleteId) return;
-
     try {
       setDeleteLoading(true);
       await deleteData(deleteId);
       toast.success("Customer rental berhasil dihapus");
+      await afterAction?.(); // refresh list
     } catch {
       toast.error("Gagal menghapus customer. data ini masih digunakan oleh tabel lain!");
     } finally {
@@ -65,15 +76,13 @@ export default function CustomerTab({ searchTerm }: { searchTerm: string }) {
       toast.success("Data Customer berhasil ditambahkan");
     }
     setIsModalOpen(false);
+    await afterAction?.(); // refresh list
   };
 
   return (
     <>
-      {/* Header mini tab (opsional) */}
       <div className="flex items-center justify-between">
-        <div className="text-sm text-gray-600">
-          Kelola data customer rental
-        </div>
+        <div className="text-sm text-gray-600">Kelola data customer rental</div>
 
         <Button onClick={handleAdd} variant="outline_blue">
           <Plus className="w-4 h-4 mr-2" />

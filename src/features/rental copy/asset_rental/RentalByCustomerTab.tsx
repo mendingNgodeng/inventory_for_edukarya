@@ -1,81 +1,88 @@
-// src/pages/rental/component/RentalByCustomerTab.tsx
-import React, { useMemo, useState } from "react";
-import CustomerCard from "../components/CustomerCard";
-import RentalModalCustomer from "../components/RentalModalCustomer";
-import CustomerRentalTable from "../components/CustomerRentalTable";
+// src/pages/rental/component/RentalByCustomerTab.tsx tab ke-2
+import  { useMemo, useState } from "react";
+import ActiveRentalCard from "../components/ActiveRentalCard";
+import FinishRentalModal from "../components/FinishRentalModal";
+import { toast } from "sonner";
 
 export default function RentalByCustomerTab({
-  customers,
   rentals,
-  createRental,
   finishRental,
   cancelRental,
   afterAction,
-}: any) {
-  const [selectedCustomer, setSelectedCustomer] = useState<any | null>(null);
-  const [open, setOpen] = useState(false);
+  searchTerm,
+}: {
+  rentals: any[];
+  finishRental: (id: number, payload: { image_after_rental: string }) => Promise<void>;
+  cancelRental: (id: number) => Promise<void>;
+  afterAction: () => Promise<void>;
+  searchTerm: string;
+}) {
+  const [selectedRental, setSelectedRental] = useState<any | null>(null);
+  const [openFinish, setOpenFinish] = useState(false);
 
-  const customerRentals = useMemo(() => {
-    if (!selectedCustomer) return [];
-    return (rentals ?? []).filter((r: any) => r.id_rental_customer === selectedCustomer.id_rental_customer);
-  }, [rentals, selectedCustomer]);
+  const activeRentals = useMemo(() => {
+    const base = (rentals ?? []).filter((r: any) => r.status === "AKTIF");
 
-  const activeRows = useMemo(
-    () => customerRentals.filter((r: any) => r.status === "AKTIF"),
-    [customerRentals]
-  );
+    const term = searchTerm.toLowerCase().trim();
+    if (!term) return base;
+
+    return base.filter((r: any) => {
+      const assetName = r.assetStock?.asset?.asset_name?.toLowerCase?.() ?? "";
+      const assetCode = r.assetStock?.asset?.asset_code?.toLowerCase?.() ?? "";
+      const custName = r.customer?.name?.toLowerCase?.() ?? "";
+      const custPhone = r.customer?.phone?.toLowerCase?.() ?? "";
+      return (
+        assetName.includes(term) ||
+        assetCode.includes(term) ||
+        custName.includes(term) ||
+        custPhone.includes(term)
+      );
+    });
+  }, [rentals, searchTerm]);
+
+  if (!activeRentals.length) {
+    return (
+      <div className="text-sm text-gray-600">
+        Tidak ada rental yang sedang aktif.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
-      {/* cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {(customers ?? []).map((c: any) => (
-          <CustomerCard
-            key={c.id_rental_customer}
-            customer={c}
-            onRental={() => {
-              setSelectedCustomer(c);
-              setOpen(true);
+        {activeRentals.map((r: any) => (
+          <ActiveRentalCard
+            key={r.id_asset_rental}
+            rental={r}
+            onFinish={() => {
+              setSelectedRental(r);
+              setOpenFinish(true);
+            }}
+            onCancel={async () => {
+              try {
+                await cancelRental(r.id_asset_rental);
+                await afterAction();
+                toast.success("Rental berhasil dibatalkan");
+              } catch (e: any) {
+                toast.error(e?.message || "Gagal membatalkan rental");
+              }
             }}
           />
         ))}
       </div>
 
-      {/* table for selected */}
-      {selectedCustomer && (
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <div className="font-semibold text-gray-900">
-            Rental untuk: {selectedCustomer.name} ({selectedCustomer.phone ?? "-"})
-          </div>
-
-          <div className="mt-3">
-            <CustomerRentalTable
-              rows={activeRows}
-              onFinish={async (row: any) => {
-                await finishRental(row.id_asset_rental, {}); // foto optional, bisa tambah modal finish nanti
-                await afterAction?.();
-              }}
-              onCancel={async (row: any) => {
-                await cancelRental(row.id_asset_rental);
-                await afterAction?.();
-              }}
-            />
-          </div>
-        </div>
-      )}
-
-      <RentalModalCustomer
-        isOpen={open}
-        onClose={() => setOpen(false)}
-        customer={selectedCustomer}
-        onSubmit={async (payload: any) => {
-          await createRental(payload);
-          await afterAction?.();
-          setOpen(false);
+      <FinishRentalModal
+        isOpen={openFinish}
+        onClose={() => setOpenFinish(false)}
+        rental={selectedRental}
+        onSubmit={async (payload) => {
+          if (!selectedRental) return;
+          await finishRental(selectedRental.id_asset_rental, payload);
+          await afterAction();
+          toast.success("Rental selesai");
         }}
       />
-      {/* {console.log("RentalByCustomerTab customers:", customers)}
-{console.log("isArray?", Array.isArray(customers), "len:", customers?.length)} */}
     </div>
   );
 }

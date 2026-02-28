@@ -2,6 +2,8 @@ export interface Data {
   id_rental_customer: number;
   name: string;
   phone: string;
+  created_at:string;
+  updated_at:string;
   pictureKtp:string;
 }
 

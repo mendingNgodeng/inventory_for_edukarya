@@ -1,14 +1,15 @@
 // src/pages/rental/Page.tsx
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Tabs from "../components/tabs";
 import type { RentalTabKey } from "../pages/Types";
 
 import CustomerTab from "../components/CustomerTab";
-import RentalByCustomerTab from "./RentalByCustomerTab";
+import RentalByCustomerTab from "./RentalByCustomerTab"; // tab 2: ACTIVE rentals
 import RentableStockTab from "../components/RentableStockTab";
 import RentalHistoryTab from "../components/RentalHistoryTab";
 
 import { useData as useCustomers } from "../../../api/rental_customer/hooks";
+
 import { useData as useRentals } from "../../../api/rental_asset/hooks";
 import { useData as useStock } from "../../../api/assetsStock/hooks";
 
@@ -16,11 +17,13 @@ export default function Page() {
   const [tab, setTab] = useState<RentalTabKey>("CUSTOMER");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // fetch
   const {
     Data: customers,
     loading: customerLoading,
     fetchData: refetchCustomers,
+    createData,
+    updateData,
+    deleteData
   } = useCustomers() as any;
 
   const {
@@ -30,7 +33,8 @@ export default function Page() {
     createRental,
     finishRental,
     cancelRental,
-    updateData: updateRental, // kalau ada
+    deleteDataHistory,
+    deleteAllnonActive,
   } = useRentals() as any;
 
   const {
@@ -45,7 +49,7 @@ export default function Page() {
     await Promise.all([refetchCustomers?.(), refetchRentals?.(), refetchStocks?.()]);
   };
 
-  // ✅ rentables stock (filtered)
+  // stock rentable
   const rentableStocks = useMemo(() => {
     return (stocks ?? []).filter(
       (s: any) =>
@@ -56,11 +60,16 @@ export default function Page() {
     );
   }, [stocks]);
 
-  // ✅ history count
-  const historyCount = useMemo(() => {
+  // rentals aktif
+  const activeRentals = useMemo(() => {
+    return (rentals ?? []).filter((r: any) => r.status === "AKTIF");
+  }, [rentals]);
+
+  // rentals history
+  const historyRentals = useMemo(() => {
     return (rentals ?? []).filter(
       (r: any) => r.status === "SELESAI" || r.status === "DIBATALKAN"
-    ).length;
+    );
   }, [rentals]);
 
   return (
@@ -70,7 +79,7 @@ export default function Page() {
         <div className="text-sm text-gray-500">{loading ? "Loading..." : ""}</div>
       </div>
 
-      {/* Search BAR (1 untuk semua tab) */}
+      {/* Search BAR */}
       <input
         type="text"
         placeholder="Cari customer / asset / lokasi..."
@@ -87,30 +96,34 @@ export default function Page() {
         onChange={setTab}
         counts={{
           customer: customers?.length ?? 0,
-          byCustomer: customers?.length ?? 0,
+          byCustomer: activeRentals.length,   // tab 2 = rental aktif
           stock: rentableStocks.length,
-          history: historyCount,
+          history: historyRentals.length,
         }}
       />
 
-      {/* Content: ✅ pass props data dari parent */}
-      {tab === "CUSTOMER" && (
-        <CustomerTab searchTerm={searchTerm} />
-      )}
+      {/* TAB 1 */}
+      {tab === "CUSTOMER" && <CustomerTab 
+                searchTerm={searchTerm}
+                rows={customers ?? []}
+                updateData={updateData}
+                createData={createData}
+                deleteData={deleteData}
+                afterAction={refreshAll}
+                />}
 
+      {/* TAB 2 (ACTIVE RENTALS: finish/cancel) */}
       {tab === "RENTAL_BY_CUSTOMER" && (
         <RentalByCustomerTab
           searchTerm={searchTerm}
-          customers={customers ?? []}
-          rentals={rentals ?? []}
-          createRental={createRental}
+          rentals={activeRentals}         
           finishRental={finishRental}
           cancelRental={cancelRental}
-          updateRental={updateRental}
           afterAction={refreshAll}
         />
       )}
 
+      {/* TAB 3 (buat create rental) */}
       {tab === "RENTABLE_STOCK" && (
         <RentableStockTab
           searchTerm={searchTerm}
@@ -121,11 +134,13 @@ export default function Page() {
         />
       )}
 
+      {/* TAB 4 (history) */}
       {tab === "HISTORY" && (
-        <RentalHistoryTab
-          searchTerm={searchTerm}
-          rentals={rentals ?? []}
-        />
+        <RentalHistoryTab searchTerm={searchTerm} 
+        rentals={historyRentals}
+        deleteData={deleteDataHistory}
+        onClearhistory={deleteAllnonActive}
+         />
       )}
     </div>
   );

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Modal from "../../../components/ui/Modal";
 import Button from "../../../components/ui/button";
+import ImagePicker from "../../../components/ui/image-picker";
 import Input from "../../../components/ui/input";
 import type { FormData, ModalProps } from "./Types";
 
@@ -27,13 +28,13 @@ const LocationModal: React.FC<ModalProps> = ({
   const [detailData, setDetailData] = useState<RentalCustomerData | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
 
-  const fileToBase64 = (file: File) =>
-    new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file); // "data:image/jpeg;base64,..."
-    });
+  // const fileToBase64 = (file: File) =>
+  //   new Promise<string>((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.onload = () => resolve(reader.result as string);
+  //     reader.onerror = reject;
+  //     reader.readAsDataURL(file); // "data:image/jpeg;base64,..."
+  //   });
 
   // Fetch detail (GET by ID) saat modal edit dibuka
   useEffect(() => {
@@ -150,7 +151,6 @@ const LocationModal: React.FC<ModalProps> = ({
           {...register("pictureKtp", {
             required: editingData ? false : "KTP wajib diisi",
           })}
-          error={errors.pictureKtp?.message}
         />
 
         {/* EDIT MODE: preview saja */}
@@ -179,10 +179,10 @@ const LocationModal: React.FC<ModalProps> = ({
           <>
             <label className="block text-sm font-medium mb-1 text-gray-700">Upload KTP</label>
 
-            <input
+            {/* <input
               type="file"
               accept="image/*"
-              className="w-full px-3 py-2 border rounded-lg shadow-sm"
+              className="w-full px-3 py-2 border rounded-lg shadow-sm text-gray-700"
               onChange={async (e) => {
                 const file = e.target.files?.[0];
                 if (!file) {
@@ -194,9 +194,19 @@ const LocationModal: React.FC<ModalProps> = ({
                 setValue("pictureKtp", base64, { shouldValidate: true });
                 setKtpPreview(base64);
               }}
-            />
+            /> */}  <>
+    <ImagePicker
+      value={ktpPreview}
+      required={!editingData}
+      error={errors.pictureKtp?.message}
+      onChange={(b64:any) => {
+        setValue("pictureKtp", b64, { shouldValidate: true });
+        setKtpPreview(b64);
+      }}
+    />
+  </>
 
-            {errors.pictureKtp?.message && (
+            {/* {errors.pictureKtp?.message && (
               <p className="text-red-500 text-sm mt-1">{errors.pictureKtp.message}</p>
             )}
 
@@ -209,7 +219,7 @@ const LocationModal: React.FC<ModalProps> = ({
                   className="max-h-48 rounded border object-contain"
                 />
               </div>
-            )}
+            )} */}
           </>
         )}
       </form>

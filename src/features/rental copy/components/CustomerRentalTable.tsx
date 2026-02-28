@@ -1,5 +1,6 @@
 // src/pages/rental/component/CustomerRentalTable.tsx
 // import React from "react";
+// unused
 import Button from "../../../components/ui/button";
 
 export default function CustomerRentalTable({ rows, onFinish, onCancel }: any) {

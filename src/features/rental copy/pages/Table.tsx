@@ -1,14 +1,35 @@
-import React from 'react';
+import React, {useEffect,useState,useMemo}from 'react';
 import type { TableProps } from './Types';
 import Button from '../../../components/ui/button';
 import {Pencil,TrashIcon} from 'lucide-react'
+import Pagination from "../../../components/ui/pagination";
+
 const Table: React.FC<TableProps> = ({
   data,
   onEdit,
   onDelete,
 }) => {
-  const total = data.length;
-
+   // pagination state
+       const [page, setPage] = useState(1);
+       const [pageSize, setPageSize] = useState(10);
+     
+       // reset page saat data berubah (misal search)
+       useEffect(() => {
+         setPage(1);
+       }, [data]);
+   const total = data.length;
+ 
+ const totalPages = Math.max(1, Math.ceil(total / pageSize));
+ 
+ useEffect(() => {
+   if (page > totalPages) setPage(totalPages);
+ }, [page, totalPages]);
+ 
+ const pageData = useMemo(() => {
+   const start = (page - 1) * pageSize;
+   return (data ?? []).slice(start, start + pageSize);
+ }, [data, page, pageSize]);
+ 
   const EmptyState = () => (
     <tr>
       <td colSpan={4} className="px-6 py-10 text-center">
@@ -58,7 +79,7 @@ const Table: React.FC<TableProps> = ({
       </div>
 
       {/* Table Container (fixed height) */}
-      <div className="relative h-[450px]">
+      <div className="">
         <div className="h-full overflow-auto">
           <table className="w-full divide-y divide-gray-200 min-w-[600px] table-fixed">
             
@@ -68,17 +89,23 @@ const Table: React.FC<TableProps> = ({
                   Nama
                 </th>
                 <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Deskripsi
+                  Nomor HP
                 </th>
-                <th className="w-[20%] px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                  <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Daftar pada
+                </th>
+                <th className="w-[20%] px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Aksi
                 </th>
               </tr>
             </thead>
 
             <tbody className="bg-white divide-y divide-gray-200">
-              {data.length > 0 ? (
-                data.map((loc) => (
+              {pageData.length > 0 ? (
+                pageData.map((loc) => (
                   <tr
                     key={loc.id_rental_customer}
                     className="hover:bg-gray-50 transition-colors"
@@ -91,6 +118,22 @@ const Table: React.FC<TableProps> = ({
                       {loc.phone }
                     </td>
 
+                       <td className="px-6 py-4 text-sm text-gray-500 truncate">
+                     <span
+    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+      loc.pictureKtp
+        ? "bg-green-100 text-green-700"
+        : "bg-red-100 text-red-700"
+    }`}
+  >
+    {loc.pictureKtp ? "Aktif" : "Selesai Rental"}
+  </span>
+
+                    </td>
+ <td className="px-6 py-4 text-sm text-gray-500 truncate">
+  {new Date(loc.created_at).toLocaleString()}
+                   
+                    </td>
                     <td className="px-6 py-4 text-right flex justify-space  text-sm font-medium">
                       <Button
                       
@@ -118,16 +161,24 @@ const Table: React.FC<TableProps> = ({
         </div>
 
         {/* Bottom gradient */}
-        <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-gray-50 to-transparent pointer-events-none" />
+        {/* <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-gray-50 to-transparent pointer-events-none" /> */}
       </div>
 
       {/* Footer */}
       <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 text-sm text-gray-500">
-        Menampilkan{" "}
-        <span className="font-medium text-gray-700">
-          {total}
-        </span>{" "}
-        Data Customer
+         <div className="border-t border-gray-200 bg-white">
+                            <Pagination
+                              page={page}
+                              pageSize={pageSize}
+                              total={total}
+                              onPageChange={setPage}
+                              onPageSizeChange={(s: number) => {
+                                setPageSize(s);
+                                setPage(1);
+                              }}
+                              pageSizeOptions={[5, 10, 20, 50]}
+                            />
+                          </div>
       </div>
     </div>
   );

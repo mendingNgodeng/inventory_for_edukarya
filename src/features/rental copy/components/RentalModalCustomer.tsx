@@ -1,5 +1,6 @@
 // src/pages/rental/component/RentalModalCustomer.tsx
-import React, { useEffect } from "react";
+// unused
+import  { useEffect } from "react";
 import Modal from "../../../components/ui/Modal";
 import Input from "../../../components/ui/input";
 import Button from "../../../components/ui/button";
