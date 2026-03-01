@@ -1,13 +1,14 @@
 import React, { useMemo, useState,useEffect} from "react";
-import DashboardLayout from "../../layouts/Dashboardlayout";
 import Cards from "./cards";
 import Pagination from "../../components/ui/pagination";
 import BorrowUseModal from "./borrowUseModal";
 import Tabs from "./component/tabs";
-import type { TabKey, StockItem, BorrowRow, ReturnPayload } from "./Types";
-import BorrowActiveTable from "./component/borrowActiveTable";
+import type { TabKey } from "./Types";
+// import BorrowActiveTable from "./component/borrowActiveTable";
 import BorrowReturnedTable from "./component/borrowReturnedTable";
 import ReturnModal from "./component/returnModal";
+import BorrowActiveByUserTab from "./component/BorrowActiveKaryawanTab";
+
 
 import { useData as useStock } from "../../api/assetsStock/hooks";
 import { useData as useBorrowed } from "../../api/UseAssets/hooks";
@@ -171,13 +172,14 @@ useEffect(() => {
           </>
         )}
 
+
         {tab === "ACTIVE" && (
-          <BorrowActiveTable
-            data={activeBorrow}
-            loading={borrowLoading}
-            onReturn={handleOpenReturn}
-          />
-        )}
+  <BorrowActiveByUserTab
+    data={activeBorrow}
+    loading={borrowLoading}
+    onReturn={handleOpenReturn}
+  />
+)}
 
         {tab === "RETURNED" && (
           <BorrowReturnedTable data={returnedBorrow} loading={borrowLoading} />

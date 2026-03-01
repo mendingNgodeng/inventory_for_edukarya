@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import Button from "../../../components/ui/button";
 import Alert from "../../../components/ui/alert";
+import Pagination from "../../../components/ui/pagination";
 
 import CustomerRentalCard from "../components/CustomerRentalCard";
 import FinishRentalModal from "../components/FinishRentalModal";
@@ -30,6 +31,14 @@ export default function RentalByCustomerTab({
   const [cancelTarget, setCancelTarget] = useState<any | null>(null);
   const [cancelLoading, setCancelLoading] = useState(false);
 
+  // pagination state (untuk table detail)
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  // 
+  const [cardPage,setCardPage] = useState(1)
+  const [cardPageSize,setCardPageSize] = useState(9)
+
   // 1) ambil rental aktif + search
   const activeRentals = useMemo(() => {
     const base = (rentals ?? []).filter((r: any) => r.status === "AKTIF");
@@ -42,7 +51,12 @@ export default function RentalByCustomerTab({
       const assetCode = r.assetStock?.asset?.asset_code?.toLowerCase?.() ?? "";
       const custName = r.customer?.name?.toLowerCase?.() ?? "";
       const custPhone = r.customer?.phone?.toLowerCase?.() ?? "";
-      return assetName.includes(term) || assetCode.includes(term) || custName.includes(term) || custPhone.includes(term);
+      return (
+        assetName.includes(term) ||
+        assetCode.includes(term) ||
+        custName.includes(term) ||
+        custPhone.includes(term)
+      );
     });
   }, [rentals, searchTerm]);
 
@@ -77,10 +91,42 @@ export default function RentalByCustomerTab({
     return customerCards.find((c) => c.id === selectedCustomerId) ?? null;
   }, [customerCards, selectedCustomerId]);
 
+  // reset page saat ganti customer / hasil data berubah / pageSize berubah
+  useEffect(() => {
+    setPage(1);
+  }, [selectedCustomerId, searchTerm, pageSize]);
+
+  // pagination computed (HARUS pakai selectedCustomerRentals)
+  const total = selectedCustomerRentals.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
+  const pageData = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return selectedCustomerRentals.slice(start, start + pageSize);
+  }, [selectedCustomerRentals, page, pageSize]);
+
   if (!activeRentals.length) {
     return <div className="text-sm text-gray-600">Tidak ada rental yang sedang aktif.</div>;
   }
 
+  useEffect(() => {
+    setCardPage(1);
+  }, [searchTerm, activeRentals.length]);
+const cardTotal = customerCards.length;
+  const cardTotalPages = Math.max(1, Math.ceil(cardTotal / cardPageSize));
+
+  useEffect(() => {
+    if (cardPage > cardTotalPages) setCardPage(cardTotalPages);
+  }, [cardPage, cardTotalPages]);
+
+  const cardPageData = useMemo(() => {
+    const start = (cardPage - 1) * cardPageSize;
+    return customerCards.slice(start, start + cardPageSize);
+  }, [customerCards, cardPage, cardPageSize]);
   return (
     <div className="space-y-4">
       {/* HEADER ACTIONS */}
@@ -106,6 +152,7 @@ export default function RentalByCustomerTab({
               setSelectedCustomerId(null);
               setSelectedRental(null);
               setOpenFinish(false);
+              setPage(1);
             }}
           >
             Lihat semua
@@ -113,21 +160,7 @@ export default function RentalByCustomerTab({
         ) : null}
       </div>
 
-      {/* CARD LIST (hanya tampil saat belum pilih customer) */}
-      {!selectedCustomerId && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {customerCards.map((c) => (
-            <CustomerRentalCard
-              key={c.id}
-              name={c.name}
-              phone={c.phone}
-              totalActiveItems={c.items}
-              totalActiveQty={c.qty}
-              onSelect={() => setSelectedCustomerId(c.id)}
-            />
-          ))}
-        </div>
-      )}
+  
 
       {/* TABLE DETAIL (tampil saat pilih customer) */}
       {selectedCustomerId && (
@@ -135,7 +168,7 @@ export default function RentalByCustomerTab({
           <div className="px-4 py-3 border-b bg-gray-50">
             <div className="font-semibold text-gray-900">Daftar barang yang sedang dirental</div>
             <div className="text-sm text-gray-600">
-              Total item: <span className="font-medium">{selectedCustomerRentals.length}</span>
+              Total item: <span className="font-medium">{total}</span>
             </div>
           </div>
 
@@ -151,7 +184,7 @@ export default function RentalByCustomerTab({
               </thead>
 
               <tbody className="text-gray-700">
-                {selectedCustomerRentals.map((r: any) => (
+                {pageData.map((r: any) => (
                   <tr key={r.id_asset_rental} className="border-b last:border-b-0">
                     <td className="px-4 py-2">
                       {r.assetStock?.asset?.asset_name ?? "-"} ({r.assetStock?.asset?.asset_code ?? "-"})
@@ -176,18 +209,15 @@ export default function RentalByCustomerTab({
                           Selesaikan
                         </Button>
 
-                        <Button
-                          variant="danger"
-                          type="button"
-                          onClick={() => setCancelTarget(r)}
-                        >
+                        <Button variant="danger" type="button" onClick={() => setCancelTarget(r)}>
                           Batalkan
                         </Button>
                       </div>
                     </td>
                   </tr>
                 ))}
-                {selectedCustomerRentals.length === 0 && (
+
+                {total === 0 && (
                   <tr>
                     <td colSpan={4} className="px-4 py-6 text-center text-gray-500">
                       Tidak ada rental aktif untuk customer ini.
@@ -197,10 +227,25 @@ export default function RentalByCustomerTab({
               </tbody>
             </table>
           </div>
+
+          {/* PAGINATION */}
+          <div className="border-t border-gray-200 bg-white">
+            <Pagination
+              page={page}
+              pageSize={pageSize}
+              total={total}
+              onPageChange={setPage}
+              onPageSizeChange={(s: number) => {
+                setPageSize(s);
+                setPage(1);
+              }}
+              pageSizeOptions={[5, 10, 20, 50]}
+            />
+          </div>
         </div>
       )}
 
-      {/* FINISH MODAL (tetap pakai komponen kamu) */}
+      {/* FINISH MODAL */}
       <FinishRentalModal
         isOpen={openFinish}
         onClose={() => setOpenFinish(false)}
@@ -242,6 +287,39 @@ export default function RentalByCustomerTab({
           }
         }}
       />
+
+      {!selectedCustomerId && (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {cardPageData.map((c) => (
+              <CustomerRentalCard
+                key={c.id}
+                name={c.name}
+                phone={c.phone}
+                totalActiveItems={c.items}
+                totalActiveQty={c.qty}
+                onSelect={() => setSelectedCustomerId(c.id)}
+              />
+            ))}
+          </div>
+
+          {/* PAGINATION CARD */}
+      {/* CARD LIST (hanya tampil saat belum pilih customer) */}
+          <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+            <Pagination
+              page={cardPage}
+              pageSize={cardPageSize}
+              total={cardTotal}
+              onPageChange={setCardPage}
+              onPageSizeChange={(s: number) => {
+                setCardPageSize(s);
+                setCardPage(1);
+              }}
+              pageSizeOptions={[6, 9, 12, 24]}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }
