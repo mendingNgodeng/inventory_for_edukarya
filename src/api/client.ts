@@ -50,7 +50,7 @@ const handleResponseError = (err: any) => {
 
     setTimeout(() => {
       window.location.href = "/dashboard";
-    }, 1000);
+    }, 2000);
 
     return Promise.reject(err);
   }
