@@ -26,11 +26,11 @@ export const router = createBrowserRouter([
     element: <Dashboardlayout />,
     children: [{ index: true, element: <Borrowassets /> }],
   },
-    {
-    path: "/rental",
-    element: <Dashboardlayout />,
-    children: [{ index: true, element: <Rental /> }],
-  },
+  //   {
+  //   path: "/rental",
+  //   element: <Dashboardlayout />,
+  //   children: [{ index: true, element: <Rental /> }],
+  // },
   // admin protected
   {
     element: <ProtectedRoute />,
@@ -49,6 +49,8 @@ export const router = createBrowserRouter([
           { path: "user-karyawan", element: <User /> },
           { path: "asset", element: <Asset /> },
           { path: "asset-stock", element: <AssetStock /> },
+          { path: "rental", element: <Rental /> },
+
         ],
       },
     ],
