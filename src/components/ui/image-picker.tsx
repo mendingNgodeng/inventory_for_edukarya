@@ -160,7 +160,7 @@ export default function ImagePicker({
             videoConstraints={videoConstraints}
             className="w-full rounded-lg border bg-black"
             onUserMedia={() => setCameraError("")}
-            onUserMediaError={(e) =>
+            onUserMediaError={(e:any) =>
               setCameraError(
                 (e as any)?.message ||
                   "Kamera tidak bisa dibuka. Coba browser lain / cek permission."

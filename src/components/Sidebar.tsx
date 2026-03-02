@@ -38,7 +38,7 @@ const allMenus: MenuItem[] = [
   { path: '/asset', icon: NotebookTabs, label: 'List Aset', adminOnly: true },
   { path: '/asset-stock', icon: NotebookPen, label: 'List Stock aset', adminOnly: true },
   { path: '/borrow-assets', icon: NotebookPen, label: 'Pinjam Barang', adminOnly: false },
-  { path: '/rental', icon: NotebookPen, label: 'Rental', adminOnly: false },
+  { path: '/rental', icon: NotebookPen, label: 'Rental', adminOnly: true },
 
   { path: '/use-assets', icon: NotebookPen, label: 'Pakai Barang', adminOnly: true },
   { path: '/maintenance-assets', icon: WrenchIcon, label: 'Barang Rusak', adminOnly: true },

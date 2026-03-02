@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Package, LogIn,UserCircle } from "lucide-react";
+import {Toaster} from 'sonner'
 import Button from "../../../components/ui/button";
 import Input from "../../../components/ui/input";
 import { useAuth } from "../../../api/auth/hooks";
@@ -43,7 +44,7 @@ export default function LoginPage() {
 
   return (
     // temporary fix
-    <>
+    <><Toaster position="top-right" richColors />
     <div className="fixed inset-0 z-[9999] bg-slate-50 flex items-center justify-center p-4 overflow-y-auto">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 px-8 py-10">
