@@ -45,9 +45,7 @@ const Table: React.FC<AssetsTableProps> = ({
         setPage(1);
       }, [data]);
       
-  const total = data.length;
 
-const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
 const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
 const [conditionFilter, setConditionFilter] = useState<ConditionFilter>("ALL");
@@ -67,9 +65,10 @@ const locationOptions = useMemo(() => {
 
 const filteredData = useMemo(() => {
   return (data ?? []).filter((x: any) => {
-    const okStatus = statusFilter === "ALL" ? true : x.status === statusFilter;
+    const derivedStatus = x.quantity === 0 ? "TIDAK_TERSEDIA" : (x.status as StatusFilter)
+    // const okStatus = statusFilter === "ALL" ? true : x.status === statusFilter;
+    const okStatus = statusFilter === "ALL" ? true : derivedStatus === statusFilter;
     const okCond = conditionFilter === "ALL" ? true : x.condition === conditionFilter;
-
     const locId = String(x.location?.id_location ?? x.location?.id ?? "");
     const locName = String(x.location?.name ?? "");
     const okLoc =
@@ -79,7 +78,9 @@ const filteredData = useMemo(() => {
   });
 }, [data, statusFilter, conditionFilter, locationFilter]);
 
+  const total = filteredData.length;
 
+const totalPages = Math.max(1, Math.ceil(total / pageSize));
 useEffect(() => {
   if (page > totalPages) setPage(totalPages);
 }, [page, totalPages]);
@@ -231,7 +232,7 @@ const pageData = useMemo(() => {
                     className="hover:bg-gray-50 transition-colors"
                   >
                       <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                      {i++ + 1}
+                      {i + 1}
                     </td>
 
                     <td className="px-6 py-4 text-sm text-gray-500">
@@ -264,7 +265,7 @@ const pageData = useMemo(() => {
     statusStyle[loc.status] || "bg-gray-100 text-gray-700"
   }`}
 >
-  {loc.quantity >= 0 ? loc.status : "TIDAK TERSEDIA"}
+  {loc.quantity === 0 ?  "TIDAK TERSEDIA" : loc.status}
 </span>
 </td> 
                    <td className="px-6 py-4 text-sm font-medium">
@@ -282,7 +283,7 @@ const pageData = useMemo(() => {
                     <td className="px-6 py-4 text-right flex justify-space  text-sm font-medium">
                      
                    {(loc.status === "TERSEDIA" 
-    || loc.status === "TIDAK_TERSEDIA"
+    || loc.quantity === 0
   ) && (
     <>
       <Button

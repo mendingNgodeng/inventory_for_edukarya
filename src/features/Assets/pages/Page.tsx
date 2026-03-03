@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
-import DashboardLayout from '../../../layouts/Dashboardlayout';
+// import DashboardLayout from '../../../layouts/Dashboardlayout';
 import Button from '../../../components/ui/button';
 import Table from './Table';
 import Modal from './Modal';
@@ -42,9 +42,9 @@ const [deleteLoading, setDeleteLoading] = useState(false);
     setDeleteLoading(true);
     await deleteData(deleteId);
 
-    toast.success("Tipe Aset berhasil dihapus");
+    toast.success(" Aset berhasil dihapus");
   } catch (error) {
-    toast.error("Gagal menghapus Tipe Aset. data ini masih digunakan oleh tabel lain!");
+    toast.error("Gagal menghapus  Aset. data ini masih digunakan oleh tabel lain!");
   } finally {
     setDeleteLoading(false);
     setDeleteId(null);
@@ -57,10 +57,10 @@ const handleDelete = (id: number) => {
 const handleSubmit = async (data: AssetsFormData) => {
   if (editingData) {
     await updateData(editingData.id_assets, data);
-    toast.success("Tipe Aset berhasil diperbarui");
+    toast.success(" Aset berhasil diperbarui");
   } else {
     await createData(data);
-    toast.success("Tipe Aset berhasil ditambahkan");
+    toast.success(" Aset berhasil ditambahkan");
   }
 
   setIsModalOpen(false);
@@ -75,7 +75,7 @@ const handleSubmit = async (data: AssetsFormData) => {
       <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
   <h1 className="text-xl sm:text-2xl font-bold text-black">
-    Data Tipe Aset
+    Data  Aset
   </h1>
 
   <Button 
@@ -84,14 +84,14 @@ const handleSubmit = async (data: AssetsFormData) => {
     className="w-full sm:w-auto"
   >
     <Plus className="w-4 h-4 mr-2" />
-    Tambah Tipe Aset
+    Tambah  Aset
   </Button>
 </div>
 
 
         <input
           type="text"
-          placeholder="Cari Tipe Aset..."
+          placeholder="Cari  Aset..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm 
@@ -114,7 +114,7 @@ const handleSubmit = async (data: AssetsFormData) => {
       </div>
       <Alert
   open={deleteId !== null}
-  title="Hapus Tipe Aset"
+  title="Hapus  Aset"
   description="Data yang sudah dihapus tidak dapat dikembalikan."
   confirmText="Ya, hapus"
   cancelText="Batal"
