@@ -39,7 +39,7 @@ const {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={editingData ? 'Edit Tipe Aset' : 'Tambah Tipe Aset'}
+      title={editingData ? 'Edit User(karyawan)' : 'Tambah User(karyawan) Aset'}
       size="md"
       footer={
         <div className="flex justify-end gap-3">

@@ -13,22 +13,24 @@ const Table: React.FC<TableProps> = ({
        const [page, setPage] = useState(1);
        const [pageSize, setPageSize] = useState(10);
      
-       // reset page saat data berubah (misal search)
-       useEffect(() => {
-         setPage(1);
-       }, [data]);
-   const total = data.length;
- 
- const totalPages = Math.max(1, Math.ceil(total / pageSize));
- 
- useEffect(() => {
-   if (page > totalPages) setPage(totalPages);
- }, [page, totalPages]);
- 
- const pageData = useMemo(() => {
-   const start = (page - 1) * pageSize;
-   return (data ?? []).slice(start, start + pageSize);
- }, [data, page, pageSize]);
+   const safeData = useMemo(() => (Array.isArray(data) ? data : []).filter(Boolean), [data]);
+
+useEffect(() => {
+  setPage(1);
+}, [safeData]);
+
+const total = safeData.length;
+
+const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+useEffect(() => {
+  if (page > totalPages) setPage(totalPages);
+}, [page, totalPages]);
+
+const pageData = useMemo(() => {
+  const start = (page - 1) * pageSize;
+  return safeData.slice(start, start + pageSize);
+}, [safeData, page, pageSize]);
  
   const EmptyState = () => (
     <tr>

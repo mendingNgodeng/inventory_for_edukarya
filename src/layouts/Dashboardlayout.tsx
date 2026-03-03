@@ -2,6 +2,7 @@ import React, { type ReactNode, useState, useEffect } from 'react';
 // import { Menu } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
+import { Toaster } from 'sonner';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -40,6 +41,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   // <div className="flex min-h-screen bg-gray-50">
    <div className="flex min-h-screen w-screen bg-gray-50 overflow-hidden">   
     {/* Overlay Mobile */}
+        <Toaster position="top-right" richColors />
+    
     {isMobile && sidebarOpen && (
       <div
         className="fixed inset-0 bg-opacity-50 z-20"

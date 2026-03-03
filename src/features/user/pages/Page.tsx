@@ -42,9 +42,9 @@ const [deleteLoading, setDeleteLoading] = useState(false);
     setDeleteLoading(true);
     await deleteData(deleteId);
 
-    toast.success("Tipe Aset berhasil dihapus");
+    toast.success("User(karyawan) berhasil dihapus");
   } catch (error) {
-    toast.error("Gagal menghapus Tipe Aset. data ini masih digunakan oleh tabel lain!");
+    toast.error("Gagal menghapus User(karyawan). data ini masih digunakan oleh tabel lain!");
   } finally {
     setDeleteLoading(false);
     setDeleteId(null);
@@ -57,10 +57,10 @@ const handleDelete = (id: number) => {
 const handleSubmit = async (data: UserFormData) => {
   if (editingData) {
     await updateData(editingData.id_user, data);
-    toast.success("Tipe Aset berhasil diperbarui");
+    toast.success("User(karyawan) berhasil diperbarui");
   } else {
     await createData(data);
-    toast.success("Tipe Aset berhasil ditambahkan");
+    toast.success("User(karyawan) berhasil ditambahkan");
   }
 
   setIsModalOpen(false);
@@ -75,7 +75,7 @@ const handleSubmit = async (data: UserFormData) => {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
   <h1 className="text-xl sm:text-2xl font-bold text-black">
-    Data Tipe Aset
+    Data User(karyawan)
   </h1>
 
   <Button 
@@ -114,7 +114,7 @@ const handleSubmit = async (data: UserFormData) => {
       </div>
       <Alert
   open={deleteId !== null}
-  title="Hapus Tipe Aset"
+  title="Hapus User(karyawan)"
   description="Data yang sudah dihapus tidak dapat dikembalikan."
   confirmText="Ya, hapus"
   cancelText="Batal"

@@ -85,8 +85,8 @@ const allMenus: MenuItem[] = [
                 }`
               }
             >
-              <item.icon className="w-5 h-5 mr-3 flex-shrink-0" />
-              <span className="truncate">{item.label}</span>
+              <item.icon className=" text-black w-5 h-5 mr-3 flex-shrink-0" />
+              <span className="truncate text-black">{item.label}</span>
             </NavLink>
           ))}
         </div>
