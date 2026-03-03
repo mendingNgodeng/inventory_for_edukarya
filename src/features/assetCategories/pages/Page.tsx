@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
-import DashboardLayout from '../../../layouts/Dashboardlayout';
+// import DashboardLayout from '../../../layouts/Dashboardlayout';
 import Button from '../../../components/ui/button';
 import Table from './Table';
 import Modal from './Modal';
@@ -51,21 +51,17 @@ const [deleteLoading, setDeleteLoading] = useState(false);
   }
 };
 
-  // const handleDelete = async (id: number) => {
-  //   if (window.confirm('Apakah Anda yakin ingin menghapus lokasi ini?')) {
-  //     await deleteLocation(id);
-  //   }
-  // };
+
 const handleDelete = (id: number) => {
   setDeleteId(id);
 };
 const handleSubmit = async (data: CtgFormData) => {
   if (editingData) {
     await updateData(editingData.id_asset_categories, data);
-    toast.success("Lokasi berhasil diperbarui");
+    toast.success("Kategori berhasil diperbarui");
   } else {
     await createData(data);
-    toast.success("Lokasi berhasil ditambahkan");
+    toast.success("Kategori berhasil ditambahkan");
   }
 
   setIsModalOpen(false);
