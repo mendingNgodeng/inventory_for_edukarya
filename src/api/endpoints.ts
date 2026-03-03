@@ -15,6 +15,7 @@ export const ENDPOINTS = {
   ASSET_RENTAL:"/assetRental",
   AUTH_LOGIN:"/auth/login",
   AUTH_LOGOUT:"/auth/logout",
+  ASSET_LOGS:"/assetLogs",
 
 };
 
