@@ -10,7 +10,8 @@ import {
   NotebookTabs,
   NotebookPen,
   X,
-  WrenchIcon
+  WrenchIcon,
+  Logs
 } from 'lucide-react';
 import { useAuth } from "../api/auth/hooks";
 import type { LucideIcon } from "lucide-react";
@@ -42,6 +43,8 @@ const allMenus: MenuItem[] = [
 
   { path: '/use-assets', icon: NotebookPen, label: 'Pakai Barang', adminOnly: true },
   { path: '/maintenance-assets', icon: WrenchIcon, label: 'Barang Rusak', adminOnly: true },
+  { path: '/assetLogs', icon: Logs, label: 'Logs Data Aset', adminOnly: true },
+
 ];
  const menuItems = allMenus.filter((item) => {
     if (!item.adminOnly) return true;

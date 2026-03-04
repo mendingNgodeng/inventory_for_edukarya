@@ -15,6 +15,7 @@ import AssetStock from "../features/AssetsStock/pages/Page";
 import UseAssets from "../features/useAssets/Page";
 import MaintenanceAssets from "../features/maintenanceAssets/Page";
 import Rental from "../features/rental/asset_rental/page";
+import AssetLogs from "../features/assetLogs/pages/Page";
 
 
 export const router = createBrowserRouter([
@@ -50,7 +51,7 @@ export const router = createBrowserRouter([
           { path: "asset", element: <Asset /> },
           { path: "asset-stock", element: <AssetStock /> },
           { path: "rental", element: <Rental /> },
-
+          { path: "assetLogs", element: <AssetLogs /> },
         ],
       },
     ],
