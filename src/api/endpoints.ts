@@ -17,6 +17,8 @@ export const ENDPOINTS = {
   STATISTIC:'/statistic/getDashboardSummary',
   CTGRANK:'/statistic/rankCtgByStock',
   GET5LOGS:'/statistic/get5LatestLogs',
+  RENTAL_SUMMARY:'/statistic/rentalSummary',
+  BORROW_SUMMARY:'/statistic/BorrowSummary',
   
 };
 

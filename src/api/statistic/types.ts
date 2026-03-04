@@ -23,6 +23,26 @@ export interface DashboardResponse {
   category_ranking: CtgRankByStock[];
 }
 
+export interface BorrowSummaryBucket {
+  total_qty: number;
+  total_row: number;
+}
+
+export interface BorrowSummary {
+  dipinjam_aktif: BorrowSummaryBucket;
+  dipakai_aktif: BorrowSummaryBucket;
+  returned_today: BorrowSummaryBucket & { day_start: string };
+}
+
+export interface RentalSummary {
+  aktif_count: number;
+  selesai_count: number;
+  dibatalkan_count: number;
+  revenue_month: number;
+  revenue_total: number;
+  month_start: string;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;

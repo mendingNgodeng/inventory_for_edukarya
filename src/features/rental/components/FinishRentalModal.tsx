@@ -19,12 +19,12 @@ export default function FinishRentalModal({
   rental: any | null;
   onSubmit: (payload: { image_after_rental: string }) => Promise<void>;
 }) {
-  // ✅ foto barang setelah rental (yang wajib)
+  // foto barang setelah rental (yang wajib)
   const [afterImage, setAfterImage] = useState<string>("");
 
   const [loading, setLoading] = useState(false);
 
-  // ✅ KTP decrypted via getById
+  // KTP decrypted via getById
   const [customerDetail, setCustomerDetail] = useState<RentalCustomerData | null>(null);
   const [loadingKtp, setLoadingKtp] = useState(false);
 
@@ -77,7 +77,7 @@ export default function FinishRentalModal({
               try {
                 setLoading(true);
                 await onSubmit({ image_after_rental: afterImage });
-                toast.success("Rental berhasil diselesaikan");
+                // toast.success("Rental berhasil diselesaikan");
                 onClose();
               } catch (e: any) {
                 toast.error(e?.message || "Gagal menyelesaikan rental");
@@ -95,7 +95,7 @@ export default function FinishRentalModal({
         <div className="text-sm text-gray-600">Tidak ada data rental.</div>
       ) : (
         <div className="space-y-4">
-          {/* ✅ detail rental */}
+          {/* detail rental */}
           <div className="p-3 rounded-lg border bg-gray-50 space-y-2">
             <div className="font-semibold text-gray-900">
               {rental.assetStock?.asset?.asset_name ?? "-"} (
@@ -106,7 +106,7 @@ export default function FinishRentalModal({
               Customer: {rental.customer?.name ?? "-"} • {rental.customer?.phone ?? "-"}
             </div>
 
-            {/* ✅ Foto KTP dari getById (decrypt backend) */}
+            {/* Foto KTP dari getById (decrypt backend) */}
             <div>
               <div className="text-xs text-gray-500 mb-1">Foto KTP</div>
               {loadingKtp ? (
@@ -125,7 +125,7 @@ export default function FinishRentalModal({
             </div>
           </div>
 
-          {/* ✅ Foto barang after rental (WAJIB) */}
+          {/* Foto barang after rental (WAJIB) */}
           <div>
             <ImagePicker
               label="Upload Foto Barang Setelah Rental (Wajib)"

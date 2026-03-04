@@ -8,7 +8,7 @@ import CategoryRanking from "../components/CategoryRanking";
 import FooterStats from "../components/FooterStats";
 
 const DashboardPage = () => {
-  const { summary, categoryRanking,logs, loading, error, fetchDashboard } =
+  const { summary, categoryRanking,logs,borrowSummary,rentalSummary, loading, error, fetchDashboard } =
     useDashboard();
 
   if (loading) {
@@ -42,7 +42,11 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        <FooterStats />
+        <FooterStats
+  summary={summary}
+  borrowSummary={borrowSummary}
+  rentalSummary={rentalSummary}
+/>
       </div>
     
   );

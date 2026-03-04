@@ -36,13 +36,13 @@ const StatsGrid: React.FC<Props> = ({ summary }) => {
       bgColor: "bg-orange-50",
       textColor: "text-orange-600",
     },
-    {
-      title: "Aset Maintenance",
-      value: summary.total_maintenance_asset,
-      icon: TrendingUp,
-      bgColor: "bg-orange-50",
-      textColor: "text-orange-600",
-    },
+    // {
+    //   title: "Aset Maintenance",
+    //   value: summary.total_maintenance_asset,
+    //   icon: TrendingUp,
+    //   bgColor: "bg-orange-50",
+    //   textColor: "text-orange-600",
+    // },
   ];
 
   return (
