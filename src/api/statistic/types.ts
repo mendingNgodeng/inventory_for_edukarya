@@ -12,6 +12,11 @@ export interface CtgRankByStock {
   name: string;
   total_stock: number;
 }
+export interface getLatestLogs {
+id_asset_logs: number;
+  action: string;
+  description:string;
+}
 
 export interface DashboardResponse {
   summary: DashboardSummary;

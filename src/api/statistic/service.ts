@@ -1,6 +1,6 @@
 import { privateClient } from '../client';
 import { ENDPOINTS } from '../endpoints';
-import type { ApiResponse, CtgRankByStock, DashboardSummary } from './types';
+import type { ApiResponse, CtgRankByStock,getLatestLogs,DashboardSummary } from './types';
 
 export class dashboardService {
   static async getDashboard() {
@@ -19,5 +19,10 @@ export class dashboardService {
     );
     return data.data;
   }
-  
+    static async get5logs() {
+    const { data } = await privateClient.get<ApiResponse<getLatestLogs[]>>(
+      ENDPOINTS.GET5LOGS
+    );
+    return data.data;
+  }
 }

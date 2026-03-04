@@ -67,7 +67,12 @@ const handleSubmit = async (data: AssetsFormData) => {
 };
 
   const filtered = Data.filter((loc) =>
-    loc.asset_name.toLowerCase().includes(searchTerm.toLowerCase())
+    loc.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    loc.asset_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    loc.category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    loc.type.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(loc.purchase_price).toLowerCase().includes(searchTerm.toLowerCase()) 
+
   );
 
   return (

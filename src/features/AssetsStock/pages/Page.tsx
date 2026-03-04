@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
-import DashboardLayout from '../../../layouts/Dashboardlayout';
+
 import Button from '../../../components/ui/button';
 import Table from './Table';
 import Modal from './Modal';
@@ -42,9 +42,9 @@ const [deleteLoading, setDeleteLoading] = useState(false);
     setDeleteLoading(true);
     await deleteData(deleteId);
 
-    toast.success("Tipe Aset berhasil dihapus");
+    toast.success("Stok Aset  berhasil dihapus");
   } catch (error:any) {
-    // toast.error("Gagal menghapus Tipe Aset. data ini masih digunakan oleh tabel lain!");
+    // toast.error("Gagal menghapus Aset. data ini masih digunakan oleh tabel lain!");
      const message =
     error?.response?.data?.message ||
     error?.message ||
@@ -73,7 +73,14 @@ const handleSubmit = async (data: AssetsFormData) => {
 };
 
   const filtered = Data.filter((loc) =>
-    loc.asset.asset_name.toLowerCase().includes(searchTerm.toLowerCase())
+    loc.asset.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    loc.asset.asset_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(loc.quantity).includes(searchTerm.toLowerCase()) ||
+    loc.asset.category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    loc.asset.type.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    loc.status.toLowerCase().includes(searchTerm.toLowerCase())
+
+
   );
 
   return (

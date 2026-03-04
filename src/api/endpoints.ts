@@ -6,9 +6,7 @@ export const ENDPOINTS = {
   TYPES: '/assetTypes',
   ASSETS: '/asset',
   USER: '/user', //karyawan 
-  RENTAL_CUSTOMER: '/rentalCustomer', // revise entire backend later
-  STATISTIC:'/statistic/getDashboardSummary',
-  CTGRANK:'/statistic/rankCtgByStock',
+  RENTAL_CUSTOMER: '/rentalCustomer', // done and dusted
   ASSET_STOCK:'/assetStock',
   ASSET_USE:"/assetBorrow",
   ASSET_MAINTENANCE:"/assetMaintenance",
@@ -16,6 +14,9 @@ export const ENDPOINTS = {
   AUTH_LOGIN:"/auth/login",
   AUTH_LOGOUT:"/auth/logout",
   ASSET_LOGS:"/assetLogs",
-
+  STATISTIC:'/statistic/getDashboardSummary',
+  CTGRANK:'/statistic/rankCtgByStock',
+  GET5LOGS:'/statistic/get5LatestLogs',
+  
 };
 

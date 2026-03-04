@@ -122,7 +122,7 @@ export default function RentalModalStock({ isOpen, onClose, stock, customers, on
                 toast.success("Data Rental Berhasil dibuat")
               } catch (err: any) {
                 mapBackendErrors(err);
-                toast.success("Data Rental gagal dibuat: ",err)
+                toast.error("Data Rental gagal dibuat: ",err)
               }
             })}
           >

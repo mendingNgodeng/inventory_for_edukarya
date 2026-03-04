@@ -11,6 +11,12 @@ export interface data {
     asset_name: string;
     asset_code: string;
     is_rentable: boolean;
+    type:{
+      name:string,
+    }
+    category:{
+      name:string
+    }
   };
   location:{
     name:string

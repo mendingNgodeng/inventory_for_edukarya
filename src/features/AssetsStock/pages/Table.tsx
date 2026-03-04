@@ -199,6 +199,9 @@ const pageData = useMemo(() => {
                 <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Nama Asset
                 </th>
+                       <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Tipe - category
+                </th>
                 <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Kode Asset
                 </th>
@@ -237,6 +240,9 @@ const pageData = useMemo(() => {
 
                     <td className="px-6 py-4 text-sm text-gray-500">
                       {loc.asset.asset_name}
+                    </td>
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                      {loc.asset.type.name} - {loc.asset.category.name}  
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">
                       {loc.asset.asset_code}
