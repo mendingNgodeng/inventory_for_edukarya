@@ -1,13 +1,13 @@
-import React, { type ReactNode, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 // import { Menu } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import { Outlet } from "react-router-dom";
 import { Toaster } from 'sonner';
 
-interface DashboardLayoutProps {
-  children: ReactNode;
-}
+// interface DashboardLayoutProps {
+//   children: ReactNode;
+// }
 
 
 const DashboardLayout = () => {
