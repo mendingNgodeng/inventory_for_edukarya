@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm,Controller } from "react-hook-form";
 import Modal from "../../components/ui/Modal";
 import Button from "../../components/ui/button";
 import Input from "../../components/ui/input";
-import Select from "../../components/ui/select";
+// import Select from "../../components/ui/select";
 import { useData as useUser } from "../../api/user/hooks";
 import { toast } from "sonner";
+import SearchSelect from "../../components/ui/search-select";
 
 import type { BorrowRow, StockItem, CreateBorrowPayload, BorrowFormData } from "./Types";
 
@@ -35,8 +36,14 @@ const BorrowModal: React.FC<Props> = ({
     handleSubmit,
     reset,
     setError,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<BorrowFormData>();
+
+const userOpt = (user ?? []).map((l: any) => ({
+  value: l.id_user,
+  label: l.name,
+}));
 
   useEffect(() => {
     if (!isOpen) return;
@@ -154,7 +161,7 @@ const BorrowModal: React.FC<Props> = ({
               error={errors.quantity?.message}
             />
 
-            <Select
+            {/* <Select
               label="Karyawan"
               options={(user ?? []).map((u: any) => ({
                 value: u.id_user,
@@ -162,6 +169,20 @@ const BorrowModal: React.FC<Props> = ({
               }))}
               registration={register("id_user", { required: "User wajib dipilih", valueAsNumber: true })}
               error={errors.id_user?.message}
+            /> */}
+            <Controller
+              name="id_user"
+              control={control}
+              rules={{ required: "User (karyawan) wajib dipilih" }}
+              render={({ field }) => (
+                <SearchSelect
+                  label="User (karyawan)"
+                  value={field.value ?? null}
+                  onChange={(val) => field.onChange(val ?? "")}
+                  options={userOpt}
+                  error={errors.id_user?.message as any}
+                />
+              )}
             />
           </div>
 

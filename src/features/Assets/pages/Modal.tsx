@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm,Controller } from 'react-hook-form';
 import Modal from '../../../components/ui/Modal';
 import Button from '../../../components/ui/button';
 import Input from '../../../components/ui/input';
-import Select from "../../../components/ui/select";
+// import Select from "../../../components/ui/select";
 import type { AssetsFormData, AssetsModalProps } from './Types';
 import { useData as useCategories } from "../../../api/assetCategories/hooks";
 import { useData as useAssetTypes } from "../../../api/assetTypes/hooks";
-
+import SearchSelect from "../../../components/ui/search-select";
 
 const LocationModal: React.FC<AssetsModalProps> = ({
   isOpen,
@@ -24,8 +24,19 @@ const {
   handleSubmit,
   reset,
   setError,
+  control,
   formState: { errors, isSubmitting },
 } = useForm<AssetsFormData>();
+const optCatetegories = (categories ?? []).map((a: any) => ({
+  value: a.id_asset_categories,
+  label: `${a.name}`,
+}));
+
+const optTypes = (assetTypes ?? []).map((a: any) => ({
+  value: a.id_asset_types,
+  label: `${a.name}`,
+}));
+
 
   useEffect(() => {
     if (editingData) {
@@ -120,7 +131,7 @@ const {
           error={errors.purchase_price?.message}
         />
 
-        <Select
+        {/* <Select
   label="Tipe Aset"
   options={assetTypes.map((type) => ({
     value: type.id_asset_types,
@@ -131,19 +142,35 @@ const {
     valueAsNumber: true,
   })}
   error={errors.id_asset_types?.message}
+/> */}
+<Controller
+  name="id_asset_categories"
+  control={control}
+  rules={{ required: "Kategori wajib dipilih" }}
+  render={({ field }) => (
+    <SearchSelect
+      label="Kategori Aset"
+      value={field.value ?? null}
+      onChange={(val) => field.onChange(val ?? "")}
+      options={optCatetegories}
+      error={errors.id_asset_categories?.message as any}
+    />
+  )}
 />
 
-<Select
-  label="Kategori Aset"
-  options={categories.map((cat) => ({
-    value: cat.id_asset_categories,
-    label: cat.name,
-  }))}
-  registration={register("id_asset_categories", {
-    required: "Kategori wajib dipilih",
-    valueAsNumber: true,
-  })}
-  error={errors.id_asset_categories?.message}
+<Controller
+  name="id_asset_types"
+  control={control}
+  rules={{ required: "Tipe Aset wajib dipilih" }}
+  render={({ field }) => (
+    <SearchSelect
+      label="Tipe Aset"
+      value={field.value ?? null}
+      onChange={(val) => field.onChange(val ?? "")}
+      options={optTypes}
+      error={errors.id_asset_categories?.message as any}
+    />
+  )}
 />
 
 <div className="flex items-center gap-2">

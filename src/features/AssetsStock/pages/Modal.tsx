@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm,Controller } from 'react-hook-form';
 import Modal from '../../../components/ui/Modal';
 import Button from '../../../components/ui/button';
 import Input from '../../../components/ui/input';
-import Select from "../../../components/ui/select";
+// import Select from "../../../components/ui/select";
 import type { AssetsFormData, AssetsModalProps } from './Types';
 import { useLocations as Datalocation } from "../../../api/location/hooks";
 import { useData as DataAsset } from "../../../api/assets/hooks";
-
+import SearchSelect from "../../../components/ui/search-select";
 
 const LocationModal: React.FC<AssetsModalProps> = ({
   isOpen,
@@ -24,6 +24,7 @@ const {
   handleSubmit,
   reset,
   setError,
+  control,
   formState: { errors, isSubmitting },
 } = useForm<AssetsFormData>();
 const [serverError, setServerError] = React.useState<string | null>(null);
@@ -44,7 +45,15 @@ const [serverError, setServerError] = React.useState<string | null>(null);
       });
     }
   }, [editingData, reset]);
+const assetOptions = (asset ?? []).map((a: any) => ({
+  value: a.id_assets,
+  label: `${a.asset_name} - ${a.asset_code}`,
+}));
 
+const locationOptions = (location ?? []).map((l: any) => ({
+  value: l.id_location,
+  label: l.name,
+}));
   return (
     
     <Modal
@@ -105,7 +114,7 @@ const [serverError, setServerError] = React.useState<string | null>(null);
     {serverError}
   </div>
 )}
-        <Select
+        {/* <Select
   label="Aset"
   options={asset.map((asset) => ({
     value: asset.id_assets,
@@ -116,19 +125,34 @@ const [serverError, setServerError] = React.useState<string | null>(null);
     valueAsNumber: true,
   })}
   error={errors.id_asset?.message}
+/> */}
+<Controller
+  name="id_asset"
+  control={control}
+  rules={{ required: "Aset wajib dipilih" }}
+  render={({ field }) => (
+    <SearchSelect
+      label="Aset"
+      value={field.value ?? null}
+      onChange={(val) => field.onChange(val ?? "")}
+      options={assetOptions}
+      error={errors.id_asset?.message as any}
+    />
+  )}
 />
-
-<Select
-  label="Lokasi Aset"
-  options={location.map((loc) => ({
-    value: loc.id_location,
-    label: loc.name,
-  }))}
-  registration={register("id_location", {
-    required: "Lokasi wajib dipilih",
-    valueAsNumber: true,
-  })}
-  error={errors.id_location?.message}
+<Controller
+  name="id_location"
+  control={control}
+  rules={{ required: "Lokasi wajib dipilih" }}
+  render={({ field }) => (
+    <SearchSelect
+      label="Lokasi Aset"
+      value={field.value ?? null}
+      onChange={(val) => field.onChange(val ?? "")}
+      options={locationOptions}
+      error={errors.id_location?.message as any}
+    />
+  )}
 />
 
  <Input
