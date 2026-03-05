@@ -40,10 +40,7 @@ const Table: React.FC<AssetsTableProps> = ({
       const [page, setPage] = useState(1);
       const [pageSize, setPageSize] = useState(10);
     
-      // reset page saat data berubah (misal search)
-      useEffect(() => {
-        setPage(1);
-      }, [data]);
+  
       
 
 
@@ -79,7 +76,10 @@ const filteredData = useMemo(() => {
 }, [data, statusFilter, conditionFilter, locationFilter]);
 
   const total = filteredData.length;
-
+    // reset page saat data berubah (misal search)
+      useEffect(() => {
+        setPage(1);
+      }, [filteredData]);
 const totalPages = Math.max(1, Math.ceil(total / pageSize));
 useEffect(() => {
   if (page > totalPages) setPage(totalPages);
@@ -228,92 +228,92 @@ const pageData = useMemo(() => {
               </tr>
             </thead>
 
-            <tbody className="bg-white divide-y divide-gray-200">
-              {pageData.map((loc: any, i: number) => {
-  const derivedStatus = loc.quantity === 0 ? "TIDAK_TERSEDIA" : loc.status;
+         <tbody className="bg-white divide-y divide-gray-200">
+  {pageData.length > 0 ? (
+    pageData.map((loc: any, i: number) => {
+      const derivedStatus = loc.quantity === 0 ? "TIDAK_TERSEDIA" : loc.status;
 
-  return (
-    <tr
-      key={loc.id_asset_stock}
-      className="hover:bg-gray-50 transition-colors"
-    >
-      <td className="px-6 py-4 text-sm font-medium text-gray-900">
-        {(page - 1) * pageSize + i + 1}
-      </td>
-
-      <td className="px-6 py-4 text-sm text-gray-500">
-        {loc.asset?.asset_name ?? "-"}
-      </td>
-
-      <td className="px-6 py-4 text-sm text-gray-500">
-        {loc.asset?.type?.name ?? "-"} - {loc.asset?.category?.name ?? "-"}
-      </td>
-
-      <td className="px-6 py-4 text-sm font-medium text-gray-900">
-        {loc.asset?.asset_code ?? "-"}
-      </td>
-
-      <td className="px-6 py-4 text-sm font-medium text-gray-900">
-        {loc.location?.name ?? "-"}
-      </td>
-
-      <td className="px-6 py-4 text-sm font-medium text-gray-900">
-        {loc.quantity}
-      </td>
-
-      <td className="px-6 py-4 text-sm font-medium">
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-            conditionStyle[loc.condition] || "bg-gray-100 text-gray-700"
-          }`}
+      return (
+        <tr
+          key={loc.id_asset_stock}
+          className="hover:bg-gray-50 transition-colors"
         >
-          {loc.condition}
-        </span>
-      </td>
+          <td className="px-6 py-4 text-sm font-medium text-gray-900">
+            {(page - 1) * pageSize + i + 1}
+          </td>
 
-      {/* ✅ STATUS: pakai derivedStatus untuk style + text */}
-      <td className="px-6 py-4 text-sm font-medium">
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-            statusStyle[derivedStatus] || "bg-gray-100 text-gray-700"
-          }`}
-        >
-          {derivedStatus}
-        </span>
-      </td>
+          <td className="px-6 py-4 text-sm text-gray-500">
+            {loc.asset?.asset_name ?? "-"}
+          </td>
 
-      <td className="px-6 py-4 text-sm font-medium">
-        <span
-          className={`px-3 py-1 rounded-full text-xs font-semibold ${
-            loc.asset?.is_rentable
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}
-        >
-          {loc.asset?.is_rentable ? "Ya" : "Tidak"}
-        </span>
-      </td>
+          <td className="px-6 py-4 text-sm text-gray-500">
+            {loc.asset?.type?.name ?? "-"} - {loc.asset?.category?.name ?? "-"}
+          </td>
 
-      <td className="px-6 py-4 text-right flex justify-space text-sm font-medium">
-        {/* ✅ gunakan derivedStatus untuk kondisi */}
-        {(derivedStatus === "TERSEDIA" || derivedStatus === "TIDAK_TERSEDIA") && (
-          <>
-            <Button variant="primary" onClick={() => onEdit(loc)} className="mr-2">
-              <Pencil className="w-4 h-4 mr-2" />
-            </Button>
+          <td className="px-6 py-4 text-sm font-medium text-gray-900">
+            {loc.asset?.asset_code ?? "-"}
+          </td>
 
-            <Button variant="danger" onClick={() => onDelete(loc.id_asset_stock)}>
-              <TrashIcon className="w-4 h-4 mr-2" />
-            </Button>
-          </>
-        )}
-      </td>
-    </tr>
-  );
-})} : (
-                <EmptyState />
-              )
-            </tbody>
+          <td className="px-6 py-4 text-sm font-medium text-gray-900">
+            {loc.location?.name ?? "-"}
+          </td>
+
+          <td className="px-6 py-4 text-sm font-medium text-gray-900">
+            {loc.quantity}
+          </td>
+
+          <td className="px-6 py-4 text-sm font-medium">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                conditionStyle[loc.condition] || "bg-gray-100 text-gray-700"
+              }`}
+            >
+              {loc.condition}
+            </span>
+          </td>
+
+          <td className="px-6 py-4 text-sm font-medium">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                statusStyle[derivedStatus] || "bg-gray-100 text-gray-700"
+              }`}
+            >
+              {derivedStatus}
+            </span>
+          </td>
+
+          <td className="px-6 py-4 text-sm font-medium">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                loc.asset?.is_rentable
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+              }`}
+            >
+              {loc.asset?.is_rentable ? "Ya" : "Tidak"}
+            </span>
+          </td>
+
+          <td className="px-6 py-4 text-right flex justify-space text-sm font-medium">
+            {(derivedStatus === "TERSEDIA" || derivedStatus === "TIDAK_TERSEDIA") && (
+              <>
+                <Button variant="primary" onClick={() => onEdit(loc)} className="mr-2">
+                  <Pencil className="w-4 h-4 mr-2" />
+                </Button>
+
+                <Button variant="danger" onClick={() => onDelete(loc.id_asset_stock)}>
+                  <TrashIcon className="w-4 h-4 mr-2" />
+                </Button>
+              </>
+            )}
+          </td>
+        </tr>
+      );
+    })
+  ) : (
+    <EmptyState />
+  )}
+</tbody>
           </table>
         </div>
 
