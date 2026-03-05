@@ -8,21 +8,28 @@ function parseDescription(input?: string | null) {
   const text = input ?? "";
   if (!text) return { summary: "-", meta: null as any };
 
-  // Cari token "META=" (format kamu: "... | META={...}")
   const idx = text.indexOf("META=");
   if (idx === -1) return { summary: text, meta: null as any };
 
   const summary = text.slice(0, idx).trim().replace(/\|\s*$/, "").trim();
   const metaRaw = text.slice(idx + "META=".length).trim();
 
-  // metaRaw biasanya JSON object string, contoh: {"id_asset":5,...}
   try {
     const meta = JSON.parse(metaRaw);
     return { summary: summary || "-", meta };
   } catch {
-    // fallback kalau JSON parse gagal (misal ada format beda)
     return { summary: summary || "-", meta: { raw: metaRaw } };
   }
+}
+
+function formatTimeMobile(d: any) {
+  return new Date(d).toLocaleString("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function JsonViewer({ value }: { value: any }) {
@@ -49,14 +56,11 @@ function DetailModal({
   return (
     <div className="fixed inset-0 z-50">
       {/* overlay */}
-      <div
-        className="absolute inset-0 bg-black/40"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
       {/* modal */}
-      <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="w-full max-w-2xl bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
+      <div className="absolute inset-0 flex items-center justify-center p-0 md:p-4">
+        <div className="w-full h-full md:h-auto md:max-w-2xl bg-white md:rounded-xl shadow-xl border border-gray-200 overflow-hidden">
           <div className="px-5 py-4 border-b flex items-center justify-between">
             <div>
               <div className="text-base font-semibold text-gray-900">
@@ -76,7 +80,8 @@ function DetailModal({
             </button>
           </div>
 
-          <div className="p-5 space-y-4">
+          {/* ✅ scrollable content (biar enak di HP) */}
+          <div className="p-5 space-y-4 overflow-auto max-h-[calc(100vh-140px)] md:max-h-[70vh]">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="sm:col-span-1">
                 <div className="text-xs text-gray-500">Action</div>
@@ -87,22 +92,20 @@ function DetailModal({
 
               <div className="sm:col-span-2">
                 <div className="text-xs text-gray-500">Deskripsi</div>
-                <div className="text-sm text-gray-800">
-                  {parsed.summary}
-                </div>
+                <div className="text-sm text-gray-800">{parsed.summary}</div>
               </div>
             </div>
 
             <div>
-              <div className="text-xs text-black mb-2">META</div>
-              <p className="text-black">
-
+              <div className="text-xs mb-2 text-black">META</div>
               {parsed.meta ? (
+              <div className="text-black">
+
                 <JsonViewer value={parsed.meta} />
+                </div>
               ) : (
                 <div className="text-sm text-gray-500">Tidak ada META.</div>
               )}
-              </p>
             </div>
           </div>
 
@@ -161,8 +164,8 @@ export default function AssetLogsTable({ data, loading }: AssetLogsTableProps) {
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
-      {/* header sort */}
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-gray-50">
+      {/* header sort (sticky biar enak di mobile) */}
+      <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 border-b bg-gray-50">
         <div className="text-sm font-semibold text-gray-700">Riwayat Aktivitas</div>
 
         <div className="flex items-center gap-2">
@@ -178,54 +181,96 @@ export default function AssetLogsTable({ data, loading }: AssetLogsTableProps) {
         </div>
       </div>
 
-      <table className="w-full text-sm">
-        <thead className="bg-gray-50">
-          <tr className="text-gray-700">
-            <th className="px-4 py-2 text-left w-[170px]">Waktu</th>
-            <th className="px-4 py-2 text-left w-[220px]">Action</th>
-            <th className="px-4 py-2 text-left">Deskripsi</th>
-            <th className="px-4 py-2 text-right w-[120px]">Aksi</th>
-          </tr>
-        </thead>
+      {/* ✅ DESKTOP TABLE */}
+      <div className="hidden md:block">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-50">
+            <tr className="text-gray-700">
+              <th className="px-4 py-2 text-left w-[170px]">Waktu</th>
+              <th className="px-4 py-2 text-left w-[220px]">Action</th>
+              <th className="px-4 py-2 text-left">Deskripsi</th>
+              <th className="px-4 py-2 text-right w-[120px]">Aksi</th>
+            </tr>
+          </thead>
 
-        <tbody className="text-gray-700">
-          {pageData.map((r) => {
-            const parsed = parseDescription(r.description);
-            const hasMeta = !!parsed.meta;
+          <tbody className="text-gray-700">
+            {pageData.map((r) => {
+              const parsed = parseDescription(r.description);
+              const hasMeta = !!parsed.meta;
 
-            return (
-              <tr key={r.id_asset_logs} className="border-t align-top">
-                <td className="px-4 py-2 whitespace-nowrap">
-                  {new Date(r.created_at).toLocaleString()}
-                </td>
-                <td className="px-4 py-2 font-medium">{r.action}</td>
+              return (
+                <tr key={r.id_asset_logs} className="border-t align-top">
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    {new Date(r.created_at).toLocaleString()}
+                  </td>
+                  <td className="px-4 py-2 font-medium">{r.action}</td>
+                  <td className="px-4 py-2">
+                    <div className="line-clamp-2">{parsed.summary}</div>
+                  </td>
+                  <td className="px-4 py-2 text-right">
+                    {hasMeta ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedRow(r);
+                          setOpenDetail(true);
+                        }}
+                        className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 hover:bg-gray-50"
+                      >
+                        Lihat Detail
+                      </button>
+                    ) : (
+                      <span className="text-xs text-gray-400">-</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
 
-                {/* ✅ tampil summary saja */}
-                <td className="px-4 py-2">
-                  {parsed.summary}
-                </td>
+      {/* ✅ MOBILE LIST */}
+      <div className="md:hidden divide-y">
+        {pageData.map((r) => {
+          const parsed = parseDescription(r.description);
+          const hasMeta = !!parsed.meta;
 
-                <td className="px-4 py-2 text-right">
-                  {hasMeta ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedRow(r);
-                        setOpenDetail(true);
-                      }}
-                      className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 hover:bg-gray-50"
-                    >
-                      Lihat Detail
-                    </button>
-                  ) : (
-                    <span className="text-xs text-gray-400">-</span>
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+          return (
+            <div key={r.id_asset_logs} className="p-4 space-y-2">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-xs text-gray-500">
+                    {formatTimeMobile(r.created_at)}
+                  </div>
+                  <div className="text-sm font-semibold text-gray-900 truncate">
+                    {r.action}
+                  </div>
+                </div>
+
+                {hasMeta ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedRow(r);
+                      setOpenDetail(true);
+                    }}
+                    className="shrink-0 px-3 py-1.5 text-xs rounded-lg border border-gray-200 hover:bg-gray-50 text-black"
+                  >
+                    Detail
+                  </button>
+                ) : (
+                  <span className="text-xs text-gray-400 shrink-0">-</span>
+                )}
+              </div>
+
+              <div className="text-sm text-gray-700 line-clamp-3">
+                {parsed.summary}
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
       <Pagination
         page={page}
@@ -239,7 +284,6 @@ export default function AssetLogsTable({ data, loading }: AssetLogsTableProps) {
         pageSizeOptions={[5, 10, 20, 50]}
       />
 
-      {/* ✅ modal */}
       <DetailModal
         open={openDetail}
         onClose={() => {
