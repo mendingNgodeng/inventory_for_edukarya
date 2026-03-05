@@ -27,12 +27,6 @@ const FooterStats: React.FC<Props> = ({ summary, borrowSummary, rentalSummary })
   const dipinjamQty = borrowSummary?.dipinjam_aktif?.total_qty ?? 0;
   const dipakaiQty = borrowSummary?.dipakai_aktif?.total_qty ?? 0;
 
-
-  // “tersedia” belum ada endpoint khusus, jadi kita tampilkan info yang memang valid sekarang:
-  // - total asset overall (summary.total_asset)
-  // - dipinjam
-  // - maintenance
-  // - revenue bulan ini (rental summary)
   const revenueMonth = rentalSummary?.revenue_month ?? 0;
 
   const monthLabel = useMemo(() => {

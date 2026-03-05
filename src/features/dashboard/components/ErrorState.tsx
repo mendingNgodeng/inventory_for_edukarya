@@ -1,5 +1,5 @@
 import { AlertCircle, RefreshCw } from "lucide-react";
-import DashboardLayout from "../../../layouts/Dashboardlayout";
+// import DashboardLayout from "../../../layouts/Dashboardlayout";
 
 interface Props {
   error: string | null;
@@ -8,7 +8,7 @@ interface Props {
 
 const ErrorState: React.FC<Props> = ({ error, onRetry }) => {
   return (
-    <DashboardLayout>
+    <>
       <div className="p-6 min-h-screen bg-gray-50">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
@@ -27,7 +27,7 @@ const ErrorState: React.FC<Props> = ({ error, onRetry }) => {
           </button>
         </div>
       </div>
-    </DashboardLayout>
+    </>
   );
 };
 
