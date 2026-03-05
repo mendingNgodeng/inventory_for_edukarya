@@ -1,25 +1,18 @@
 // src/pages/rental/component/RentalHistoryTab.tsx
 import { useEffect, useMemo, useState } from "react";
-import {Trash} from 'lucide-react'
 import Modal from "../../../components/ui/Modal";
 import Button from "../../../components/ui/button";
 import Pagination from "../../../components/ui/pagination";
 import TableFilters, { type SortOrder } from "../../../components/ui/tablefilters";
-import Alert from "../../../components/ui/alert";
 
-import {toast} from 'sonner'
 import { sortByDate } from "../../../components/helper/dateSort";
 
 type SortKey = "START_DATE" | "END_DATE" | "RETURNED_DATE";
 type StatusFilter = "ALL" | "SELESAI" | "DIBATALKAN";
 
-export default function RentalHistoryTab({ rentals, searchTerm,deleteDatahistory, deleteAllnonActive }: any) {
+export default function RentalHistoryTab({ rentals, searchTerm,}: any) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<any | null>(null);
-
-  // delete all nonative
-  const [bulkDelete,setBulkDelete] = useState(false)
-  const [bulkLoading,setBulkLoading] = useState(false)
 
   // filter & sort state
   const [status, setStatus] = useState<StatusFilter>("ALL");
@@ -120,15 +113,7 @@ export default function RentalHistoryTab({ rentals, searchTerm,deleteDatahistory
             { value: "RETURNED_DATE", label: "Tanggal Pengembalian" },
           ]}
         />
-        <Button
-        type="submit"
-        variant="danger"
-        onClick={() => setBulkDelete(true)}
-        className="gap-2"
-        disabled={sorted.length === 0}
-        >
-          <Trash className="w-4 h-4"/>
-        </Button>
+     
       </div>
 
       {/*  TABLE */}
@@ -219,29 +204,6 @@ export default function RentalHistoryTab({ rentals, searchTerm,deleteDatahistory
           />
         </div>
       </div>
-
-{/*BULK DELETE ALERT*/}
-<Alert
-open={bulkDelete}
-title="Hapus Semua history Rental"
-description="Semua daya history (SELESAI & DIBATALKAN) akan dihapus PERMANEN, Lanjutkan?"
-confirmText="Ya, Hapus Semua"
-cancelText="Batal"
-loading={bulkLoading}
-onCancel={() => setBulkDelete(false)}
-onConfirm={async () => {
-  try{
-    setBulkLoading(true);
-    await deleteAllnonActive?.();
-    toast.success("Semua history rental berhasil dihapus!")
-    setBulkDelete(false)
-  }catch(err:any){
-    toast.error(err?.message || "Gagal mengahpus semua history")
-  }finally{
-    setBulkLoading(false)
-  }
-}}
-/>
       {/*  MODAL PREVIEW */}
       <Modal
         isOpen={open}

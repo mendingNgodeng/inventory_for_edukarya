@@ -4,6 +4,8 @@ export interface data {
   id_rental_customer: number;
   name: string;
   phone: string;
+  created_at:string;
+  updated_at:string;
   pictureKtp:string;
 }
 export interface ApiResponse<T> {

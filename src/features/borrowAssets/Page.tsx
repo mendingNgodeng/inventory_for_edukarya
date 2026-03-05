@@ -59,10 +59,10 @@ useEffect(() => {
     });
   }, [stockData, searchTerm]);
 // pagination
-  const pagedStock = useMemo(() => {
-  const start = (stockPage - 1) * stockPageSize;
-  return (filteredStock ?? []).slice(start, start + stockPageSize);
-}, [filteredStock, stockPage, stockPageSize]);
+//   const pagedStock = useMemo(() => {
+//   const start = (stockPage - 1) * stockPageSize;
+//   return (filteredStock ?? []).slice(start, start + stockPageSize);
+// }, [filteredStock, stockPage, stockPageSize]);
 
 const stockTotal = filteredStock?.length ?? 0;
 const stockTotalPages = Math.max(1, Math.ceil(stockTotal / stockPageSize));

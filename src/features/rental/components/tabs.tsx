@@ -1,5 +1,5 @@
 // src/pages/rental/component/Tabs.tsx
-import React from "react";
+// import React from "react";
 import type { RentalTabKey } from "../pages/Types";
 
 export default function Tabs({

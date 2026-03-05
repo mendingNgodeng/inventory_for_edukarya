@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import  { useEffect, useMemo, useState } from "react";
 import Button from "../../../components/ui/button";
 import Pagination from "../../../components/ui/pagination"; 
 import type { BorrowActiveTableProps } from "../Types";

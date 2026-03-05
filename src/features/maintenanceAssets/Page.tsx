@@ -1,10 +1,11 @@
 import React, { useMemo, useState,useEffect} from "react";
-import DashboardLayout from "../../layouts/Dashboardlayout";
 import Cards from "./cards";
 import Pagination from "../../components/ui/pagination";
 import BorrowUseModal from "./borrowUseModal";
 import Tabs from "./component/tabs";
-import type { TabKey, StockItem, ReturnPayload } from "./Types";
+// import type { TabKey, StockItem, ReturnPayload } from "./Types";
+import type { TabKey } from "./Types";
+
 import BorrowActiveTable from "./component/borrowActiveTable";
 import BorrowReturnedTable from "./component/borrowReturnedTable";
 import ReturnModal from "./component/returnModal";
@@ -40,7 +41,7 @@ useEffect(() => {
     loading: borrowLoading,
     createMaintenance,
     // createUsed, // kalau dipakai kantor ada
-    updateData, // 
+    // updateData, // 
     returnAsset,
     fetchData: refetchBorrow,
   } = useBorrowed() as any;
@@ -58,10 +59,10 @@ useEffect(() => {
     });
   }, [stockData, searchTerm]);
 // pagination
-  const pagedStock = useMemo(() => {
-  const start = (stockPage - 1) * stockPageSize;
-  return (filteredStock ?? []).slice(start, start + stockPageSize);
-}, [filteredStock, stockPage, stockPageSize]);
+//   const pagedStock = useMemo(() => {
+//   const start = (stockPage - 1) * stockPageSize;
+//   return (filteredStock ?? []).slice(start, start + stockPageSize);
+// }, [filteredStock, stockPage, stockPageSize]);
 
 const stockTotal = filteredStock?.length ?? 0;
 const stockTotalPages = Math.max(1, Math.ceil(stockTotal / stockPageSize));

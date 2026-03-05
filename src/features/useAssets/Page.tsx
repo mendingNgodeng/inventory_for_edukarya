@@ -4,7 +4,7 @@ import Cards from "./cards";
 import Pagination from "../../components/ui/pagination";
 import BorrowUseModal from "./borrowUseModal";
 import Tabs from "./component/tabs";
-import type { TabKey, StockItem, BorrowRow, ReturnPayload } from "./Types";
+import type { TabKey } from "./Types";
 import BorrowActiveTable from "./component/borrowActiveTable";
 import BorrowReturnedTable from "./component/borrowReturnedTable";
 import ReturnModal from "./component/returnModal";

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
-import DashboardLayout from '../../../layouts/Dashboardlayout';
 import Button from '../../../components/ui/button';
 import LocationTable from './Table';
 import LocationModal from './Modal';
