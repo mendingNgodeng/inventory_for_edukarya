@@ -109,9 +109,7 @@ export default function RentalByCustomerTab({
     return selectedCustomerRentals.slice(start, start + pageSize);
   }, [selectedCustomerRentals, page, pageSize]);
 
-  if (!activeRentals.length) {
-    return <div className="text-sm text-gray-600">Tidak ada rental yang sedang aktif.</div>;
-  }
+
 
   useEffect(() => {
     setCardPage(1);
@@ -127,199 +125,201 @@ const cardTotal = customerCards.length;
     const start = (cardPage - 1) * cardPageSize;
     return customerCards.slice(start, start + cardPageSize);
   }, [customerCards, cardPage, cardPageSize]);
-  return (
-    <div className="space-y-4">
-      {/* HEADER ACTIONS */}
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-gray-600">
-          {selectedCustomerId && selectedCustomerMeta ? (
-            <>
-              Menampilkan rental aktif untuk{" "}
-              <span className="font-semibold text-gray-900">
-                {selectedCustomerMeta.name} ({selectedCustomerMeta.phone})
-              </span>
-            </>
-          ) : (
-            "Pilih customer untuk melihat detail rental."
-          )}
-        </div>
-
-        {selectedCustomerId ? (
-          <Button
-            type="button"
-            variant="outline_blue"
-            onClick={() => {
-              setSelectedCustomerId(null);
-              setSelectedRental(null);
-              setOpenFinish(false);
-              setPage(1);
-            }}
-          >
-            Lihat semua
-          </Button>
-        ) : null}
-      </div>
-
-  
-
-      {/* TABLE DETAIL (tampil saat pilih customer) */}
-      {selectedCustomerId && (
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-          <div className="px-4 py-3 border-b bg-gray-50">
-            <div className="font-semibold text-gray-900">Daftar barang yang sedang dirental</div>
-            <div className="text-sm text-gray-600">
-              Total item: <span className="font-medium">{total}</span>
-            </div>
+  // if (!activeRentals.length) {
+  //   return <div className="text-sm text-gray-600">Tidak ada rental yang sedang aktif.</div>;
+  // }
+ return (
+  <div className="space-y-4">
+    {!activeRentals.length ? (
+      <div className="text-sm text-gray-600">Tidak ada rental yang sedang aktif.</div>
+    ) : (
+      <>
+        {/* HEADER ACTIONS */}
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-gray-600">
+            {selectedCustomerId && selectedCustomerMeta ? (
+              <>
+                Menampilkan rental aktif untuk{" "}
+                <span className="font-semibold text-gray-900">
+                  {selectedCustomerMeta.name} ({selectedCustomerMeta.phone})
+                </span>
+              </>
+            ) : (
+              "Pilih customer untuk melihat detail rental."
+            )}
           </div>
 
-          <div className="overflow-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-white">
-                <tr className="text-gray-700 border-b">
-                  <th className="px-4 py-2 text-left">Asset</th>
-                  <th className="px-4 py-2 text-left">Qty</th>
-                  <th className="px-4 py-2 text-left">Periode</th>
-                  <th className="px-4 py-2 text-right">Aksi</th>
-                </tr>
-              </thead>
-
-              <tbody className="text-gray-700">
-                {pageData.map((r: any) => (
-                  <tr key={r.id_asset_rental} className="border-b last:border-b-0">
-                    <td className="px-4 py-2">
-                      {r.assetStock?.asset?.asset_name ?? "-"} ({r.assetStock?.asset?.asset_code ?? "-"})
-                    </td>
-
-                    <td className="px-4 py-2">{r.quantity}</td>
-
-                    <td className="px-4 py-2">
-                      {new Date(r.rental_start).toLocaleString()} → {new Date(r.rental_end).toLocaleString()}
-                    </td>
-
-                    <td className="px-4 py-2">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="outline_blue"
-                          type="button"
-                          onClick={() => {
-                            setSelectedRental(r);
-                            setOpenFinish(true);
-                          }}
-                        >
-                          Selesaikan
-                        </Button>
-
-                        <Button variant="danger" type="button" onClick={() => setCancelTarget(r)}>
-                          Batalkan
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-
-                {total === 0 && (
-                  <tr>
-                    <td colSpan={4} className="px-4 py-6 text-center text-gray-500">
-                      Tidak ada rental aktif untuk customer ini.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* PAGINATION */}
-          <div className="border-t border-gray-200 bg-white">
-            <Pagination
-              page={page}
-              pageSize={pageSize}
-              total={total}
-              onPageChange={setPage}
-              onPageSizeChange={(s: number) => {
-                setPageSize(s);
+          {selectedCustomerId ? (
+            <Button
+              type="button"
+              variant="outline_blue"
+              onClick={() => {
+                setSelectedCustomerId(null);
+                setSelectedRental(null);
+                setOpenFinish(false);
                 setPage(1);
               }}
-              pageSizeOptions={[5, 10, 20, 50]}
-            />
-          </div>
+            >
+              Lihat semua
+            </Button>
+          ) : null}
         </div>
-      )}
 
-      {/* FINISH MODAL */}
-      <FinishRentalModal
-        isOpen={openFinish}
-        onClose={() => setOpenFinish(false)}
-        rental={selectedRental}
-        onSubmit={async (payload) => {
-          if (!selectedRental) return;
-          await finishRental(selectedRental.id_asset_rental, payload);
-          await afterAction();
-          toast.success("Rental selesai");
-          setOpenFinish(false);
-        }}
-      />
+        {/* TABLE DETAIL */}
+        {selectedCustomerId && (
+          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b bg-gray-50">
+              <div className="font-semibold text-gray-900">Daftar barang yang sedang dirental</div>
+              <div className="text-sm text-gray-600">
+                Total item: <span className="font-medium">{total}</span>
+              </div>
+            </div>
 
-      {/* CANCEL ALERT */}
-      <Alert
-        open={!!cancelTarget}
-        title="Batalkan Rental?"
-        description={
-          cancelTarget
-            ? `Rental untuk ${cancelTarget.assetStock?.asset?.asset_name ?? "-"} (${cancelTarget.assetStock?.asset?.asset_code ?? "-"}) akan dibatalkan. Aksi ini tidak dapat dibatalkan.`
-            : ""
-        }
-        confirmText="Ya, Batalkan"
-        cancelText="Kembali"
-        loading={cancelLoading}
-        onCancel={() => setCancelTarget(null)}
-        onConfirm={async () => {
-          if (!cancelTarget) return;
-          try {
-            setCancelLoading(true);
-            await cancelRental(cancelTarget.id_asset_rental);
-            await afterAction();
-            toast.success("Rental berhasil dibatalkan");
-            setCancelTarget(null);
-          } catch (e: any) {
-            toast.error(e?.message || "Gagal membatalkan rental");
-          } finally {
-            setCancelLoading(false);
-          }
-        }}
-      />
+            <div className="overflow-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-white">
+                  <tr className="text-gray-700 border-b">
+                    <th className="px-4 py-2 text-left">Asset</th>
+                    <th className="px-4 py-2 text-left">Qty</th>
+                    <th className="px-4 py-2 text-left">Periode</th>
+                    <th className="px-4 py-2 text-right">Aksi</th>
+                  </tr>
+                </thead>
 
-      {!selectedCustomerId && (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {cardPageData.map((c) => (
-              <CustomerRentalCard
-                key={c.id}
-                name={c.name}
-                phone={c.phone}
-                totalActiveItems={c.items}
-                totalActiveQty={c.qty}
-                onSelect={() => setSelectedCustomerId(c.id)}
+                <tbody className="text-gray-700">
+                  {pageData.map((r: any) => (
+                    <tr key={r.id_asset_rental} className="border-b last:border-b-0">
+                      <td className="px-4 py-2">
+                        {r.assetStock?.asset?.asset_name ?? "-"} ({r.assetStock?.asset?.asset_code ?? "-"})
+                      </td>
+                      <td className="px-4 py-2">{r.quantity}</td>
+                      <td className="px-4 py-2">
+                        {new Date(r.rental_start).toLocaleString()} → {new Date(r.rental_end).toLocaleString()}
+                      </td>
+                      <td className="px-4 py-2">
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            variant="outline_blue"
+                            type="button"
+                            onClick={() => {
+                              setSelectedRental(r);
+                              setOpenFinish(true);
+                            }}
+                          >
+                            Selesaikan
+                          </Button>
+
+                          <Button variant="danger" type="button" onClick={() => setCancelTarget(r)}>
+                            Batalkan
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+
+                  {total === 0 && (
+                    <tr>
+                      <td colSpan={4} className="px-4 py-6 text-center text-gray-500">
+                        Tidak ada rental aktif untuk customer ini.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="border-t border-gray-200 bg-white">
+              <Pagination
+                page={page}
+                pageSize={pageSize}
+                total={total}
+                onPageChange={setPage}
+                onPageSizeChange={(s: number) => {
+                  setPageSize(s);
+                  setPage(1);
+                }}
+                pageSizeOptions={[5, 10, 20, 50]}
               />
-            ))}
+            </div>
           </div>
+        )}
 
-          {/* PAGINATION CARD */}
-      {/* CARD LIST (hanya tampil saat belum pilih customer) */}
-          <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
-            <Pagination
-              page={cardPage}
-              pageSize={cardPageSize}
-              total={cardTotal}
-              onPageChange={setCardPage}
-              onPageSizeChange={(s: number) => {
-                setCardPageSize(s);
-                setCardPage(1);
-              }}
-              pageSizeOptions={[6, 9, 12, 24]}
-            />
-          </div>
-        </>
-      )}
-    </div>
-  );
+        {/* FINISH MODAL */}
+        <FinishRentalModal
+          isOpen={openFinish}
+          onClose={() => setOpenFinish(false)}
+          rental={selectedRental}
+          onSubmit={async (payload) => {
+            if (!selectedRental) return;
+            await finishRental(selectedRental.id_asset_rental, payload);
+            await afterAction();
+            toast.success("Rental selesai");
+            setOpenFinish(false);
+          }}
+        />
+
+        {/* CANCEL ALERT */}
+        <Alert
+          open={!!cancelTarget}
+          title="Batalkan Rental?"
+          description={
+            cancelTarget
+              ? `Rental untuk ${cancelTarget.assetStock?.asset?.asset_name ?? "-"} (${cancelTarget.assetStock?.asset?.asset_code ?? "-"}) akan dibatalkan. Aksi ini tidak dapat dibatalkan.`
+              : ""
+          }
+          confirmText="Ya, Batalkan"
+          cancelText="Kembali"
+          loading={cancelLoading}
+          onCancel={() => setCancelTarget(null)}
+          onConfirm={async () => {
+            if (!cancelTarget) return;
+            try {
+              setCancelLoading(true);
+              await cancelRental(cancelTarget.id_asset_rental);
+              await afterAction();
+              toast.success("Rental berhasil dibatalkan");
+              setCancelTarget(null);
+            } catch (e: any) {
+              toast.error(e?.message || "Gagal membatalkan rental");
+            } finally {
+              setCancelLoading(false);
+            }
+          }}
+        />
+
+        {/* CARD + PAGINATION */}
+        {!selectedCustomerId && (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {cardPageData.map((c) => (
+                <CustomerRentalCard
+                  key={c.id}
+                  name={c.name}
+                  phone={c.phone}
+                  totalActiveItems={c.items}
+                  totalActiveQty={c.qty}
+                  onSelect={() => setSelectedCustomerId(c.id)}
+                />
+              ))}
+            </div>
+
+            <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+              <Pagination
+                page={cardPage}
+                pageSize={cardPageSize}
+                total={cardTotal}
+                onPageChange={setCardPage}
+                onPageSizeChange={(s: number) => {
+                  setCardPageSize(s);
+                  setCardPage(1);
+                }}
+                pageSizeOptions={[6, 9, 12, 24]}
+              />
+            </div>
+          </>
+        )}
+      </>
+    )}
+  </div>
+);
 }
