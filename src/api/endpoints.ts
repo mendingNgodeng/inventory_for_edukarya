@@ -14,6 +14,7 @@ export const ENDPOINTS = {
   AUTH_LOGIN:"/auth/login",
   AUTH_LOGOUT:"/auth/logout",
   ASSET_LOGS:"/assetLogs",
+  DIVISI:"/divisi", // new
   STATISTIC:'/statistic/getDashboardSummary',
   CTGRANK:'/statistic/rankCtgByStock',
   GET5LOGS:'/statistic/get5LatestLogs',

@@ -6,6 +6,7 @@ import Input from '../../../components/ui/input';
 // import Select from "../../../components/ui/select";
 import type { AssetsFormData, AssetsModalProps } from './Types';
 import { useLocations as Datalocation } from "../../../api/location/hooks";
+// import { useData as DataDivisi} from "../../../api/divisi/hooks";
 import { useData as DataAsset } from "../../../api/assets/hooks";
 import SearchSelect from "../../../components/ui/search-select";
 
@@ -19,6 +20,7 @@ const LocationModal: React.FC<AssetsModalProps> = ({
 
 const { locations: location } = Datalocation();
 const { Data: asset } = DataAsset();
+// const { Data: divisi } = DataDivisi();
 const {
   register,
   handleSubmit,
@@ -54,6 +56,10 @@ const locationOptions = (location ?? []).map((l: any) => ({
   value: l.id_location,
   label: l.name,
 }));
+// const divisiOptions = (divisi ?? []).map((l: any) => ({
+//   value: l.id_divisi,
+//   label: l.name,
+// }));
   return (
     
     <Modal
@@ -154,6 +160,21 @@ const locationOptions = (location ?? []).map((l: any) => ({
     />
   )}
 />
+
+{/* <Controller
+  name="id_divisi"
+  control={control}
+  rules={{ required: "Divisi wajib dipilih" }}
+  render={({ field }) => (
+    <SearchSelect
+      label="Divisi Aset"
+      value={field.value ?? null}
+      onChange={(val) => field.onChange(val ?? "")}
+      options={divisiOptions}
+      error={errors.id_divisi?.message as any}
+    />
+  )}
+/> */}
 
  <Input
           label="Quantitas"
