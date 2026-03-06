@@ -34,7 +34,7 @@ const allMenus: MenuItem[] = [
   { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', adminOnly: true },
   { path: '/asset-types', icon: Package, label: 'List Tipe Aset', adminOnly: true },
   { path: '/locations', icon: MapPin, label: 'List Lokasi', adminOnly: true },
-  { path: '/divisi', icon: MapPin, label: 'List Divisi', adminOnly: true },
+  // { path: '/divisi', icon: MapPin, label: 'List Divisi', adminOnly: true },
   { path: '/asset-categories', icon: Tag, label: 'List Kategori Aset', adminOnly: true },
   { path: '/user-karyawan', icon: UserCheck, label: 'List Karyawan', adminOnly: true },
   { path: '/asset', icon: NotebookTabs, label: 'List Aset', adminOnly: true },
