@@ -48,7 +48,7 @@ export default function BorrowReturnedTable({ data, loading }: BorrowReturnedTab
   if (!sortedData.length) return <div className="text-sm text-gray-600">Belum ada asset yang dikembalikan.</div>;
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+    <div className="border border-gray-200 rounded-lg bg-white">
 
  <div className="bg-white border border-gray-200 rounded-lg p-3">
         <TableFilters<SortKey>
@@ -63,6 +63,8 @@ export default function BorrowReturnedTable({ data, loading }: BorrowReturnedTab
           ]}
         />
       </div>
+        <div className="h-full overflow-auto">
+
     
       <table className="w-full text-sm">
         <thead className="bg-gray-50">
@@ -105,5 +107,7 @@ export default function BorrowReturnedTable({ data, loading }: BorrowReturnedTab
               pageSizeOptions={[5, 10, 20, 50]}
             />
     </div>
+        </div>
+
   );
 }

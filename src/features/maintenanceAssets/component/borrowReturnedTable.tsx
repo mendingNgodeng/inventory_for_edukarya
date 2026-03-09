@@ -63,6 +63,7 @@ export default function BorrowReturnedTable({ data, loading }: MaintenanceReturn
           ]}
         />
       </div>
+        <div className="h-full overflow-auto">
     
       <table className="w-full text-sm">
         <thead className="bg-gray-50">
@@ -106,6 +107,7 @@ export default function BorrowReturnedTable({ data, loading }: MaintenanceReturn
               }}
               pageSizeOptions={[5, 10, 20, 50]}
             />
+    </div>
     </div>
   );
 }

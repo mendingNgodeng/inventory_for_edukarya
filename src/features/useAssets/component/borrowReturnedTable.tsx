@@ -58,11 +58,12 @@ export default function BorrowReturnedTable({ data, loading }: BorrowReturnedTab
           onChangeSortBy={setSortBy}
           onChangeSortOrder={setSortOrder}
           sortOptions={[
-            { value: "BORROWED_DATE", label: "Tanggal Pinjam" },
+            { value: "BORROWED_DATE", label: "Tanggal Pakai" },
             { value: "RETURNED_DATE", label: "Tanggal Kembali" },
           ]}
         />
       </div>
+        <div className="h-full overflow-auto">
     
       <table className="w-full text-sm">
         <thead className="bg-gray-50">
@@ -70,7 +71,7 @@ export default function BorrowReturnedTable({ data, loading }: BorrowReturnedTab
             <th className="px-4 py-2 text-left">Asset</th>
             <th className="px-4 py-2 text-left">User</th>
             <th className="px-4 py-2 text-left">Qty</th>
-            <th className="px-4 py-2 text-left">Tanggal Pinjam</th>
+            <th className="px-4 py-2 text-left">Tanggal Pakai</th>
             <th className="px-4 py-2 text-left">Tanggal Kembali</th>
           </tr>
         </thead>
@@ -104,6 +105,7 @@ export default function BorrowReturnedTable({ data, loading }: BorrowReturnedTab
               }}
               pageSizeOptions={[5, 10, 20, 50]}
             />
+    </div>
     </div>
   );
 }

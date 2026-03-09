@@ -28,9 +28,9 @@ export default function MaintenanceActiveTable({
   useEffect(() => {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
-console.log("ActiveTable data len:", data?.length);
-console.log("ActiveTable usedOnly len:", usedOnly.length);
-console.log("ActiveTable statuses:", (data ?? []).map(x => x.status));
+// console.log("ActiveTable data len:", data?.length);
+// console.log("ActiveTable usedOnly len:", usedOnly.length);
+// console.log("ActiveTable statuses:", (data ?? []).map(x => x.status));
   const pageData = useMemo(() => {
     const start = (page - 1) * pageSize;
     return usedOnly.slice(start, start + pageSize);
@@ -41,6 +41,8 @@ console.log("ActiveTable statuses:", (data ?? []).map(x => x.status));
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+        <div className="h-full overflow-auto">
+      
       <table className="w-full text-sm">
         <thead className="bg-gray-50">
           <tr className="text-gray-700">
@@ -86,6 +88,7 @@ console.log("ActiveTable statuses:", (data ?? []).map(x => x.status));
         }}
         pageSizeOptions={[5, 10, 20, 50]}
       />
+    </div>
     </div>
   );
 }

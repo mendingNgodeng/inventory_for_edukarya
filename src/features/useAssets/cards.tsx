@@ -74,12 +74,12 @@ const Cards: React.FC<CardsProps> = ({ data, onBorrow }) => {
                 disabled={!canBorrow}
                 title={
                   !canBorrow
-                    ? "Hanya bisa dipinjam jika BAIK, TERSEDIA, dan quantity > 0"
+                    ? "Hanya bisa dipakai jika BAIK, TERSEDIA, dan quantity > 0"
                     : ""
                 }
               >
                 <Hand className="w-4 h-4 mr-2" />
-                Pinjam
+                Pakai
               </Button>
             </div>
           </div>
