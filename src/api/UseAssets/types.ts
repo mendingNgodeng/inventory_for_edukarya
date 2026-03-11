@@ -29,13 +29,13 @@ export interface ApiResponse<T> {
 }
 export interface CreateData {
   id_asset_stock: number;
-  id_user: any;
+  borrower_id: any;
   quantity: number;
 }
 
 export interface UpdateData {
   id_asset_stock?: number;
-  id_user?: any;
+  borrower_id?: any;
   quantity?: number;
 }
 // id_asset_borrowed": 3,

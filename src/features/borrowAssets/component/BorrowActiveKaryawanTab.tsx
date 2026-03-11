@@ -23,7 +23,7 @@ export default function BorrowActiveByUserTab({
 
   // hanya status aktif (kalau mau include TERLAMBAT/DIPAKAI, ubah disini)
   const activeOnly = useMemo(
-    () => (data ?? []).filter((x: AnyRow) => x.status === "DIPINJAM"),
+    () => (data ?? []).filter((x: AnyRow) => x.status === "DIPINJAM" ),
     [data]
   );
 

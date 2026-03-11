@@ -1,6 +1,6 @@
 // src/pages/borrowAsset/types.ts
 
-export type TabKey = "STOCK" | "ACTIVE" | "RETURNED";
+export type TabKey = "STOCK" | "ACTIVE" | "OWN"| "RETURNED";
 
 /** Stock item untuk Cards */
 export interface StockItem {
@@ -47,7 +47,7 @@ export interface BorrowRow {
 /** Payload create borrow */
 export interface CreateBorrowPayload {
   id_asset_stock: number;
-  id_user: number;
+  borrower_id?: number;
   quantity: number;
 }
 
@@ -85,6 +85,6 @@ export interface ReturnModalProps {
   onReturn: (payload: ReturnPayload) => Promise<void>;
 }
 export interface BorrowFormData {
-  id_user: number;
+  borrower_id: number | "";
   quantity: number;
 }

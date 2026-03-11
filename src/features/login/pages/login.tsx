@@ -69,9 +69,9 @@ export default function LoginPage() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
             <Input
-              label="Username"
+              label="Masukan Identitas"
               name="username"
-              placeholder="Masukkan username"
+              placeholder="Masukkan username atau nama anda"
               value={form.username}
               error={errors.username}
               onChange={(e) =>
