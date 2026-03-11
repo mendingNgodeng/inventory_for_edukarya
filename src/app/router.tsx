@@ -55,7 +55,7 @@ export const router = createBrowserRouter([
           { path: "assetLogs", element: <AssetLogs /> },
           { path: "divisi", element: <Divisi /> },
           { path: "borrow-assets", element: <Borrowassets /> },
-            { path: "*", element: <NotFoundPage /> },
+            // { path: "*", element: <NotFoundPage /> },
         ],
       },
     ],
