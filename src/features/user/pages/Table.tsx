@@ -89,12 +89,19 @@ const Table: React.FC<UserTableProps> = ({
                   Nama
                 </th>
                 <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Username
+                </th>
+                <th className="w-[60%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Jabatan
                 </th>
                   <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   no_hp
                 </th>
-                <th className="w-[20%] px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+
+                <th className="w-[20%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  role
+                </th>
+                <th className="w-[40%] px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Aksi
                 </th>
               </tr>
@@ -110,13 +117,20 @@ const Table: React.FC<UserTableProps> = ({
                     <td className="px-6 py-4 text-sm font-medium text-gray-900">
                       {loc.name}
                     </td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                      {loc.username}
+                    </td>
 
-                    <td className="px-6 py-4 text-sm text-gray-500 truncate">
+                    <td  className="px-2 py-4 text-sm text-gray-500">
                       {loc.jabatan || "-"}
                     </td>
 
-                     <td className="px-6 py-4 text-sm text-gray-500 truncate">
+                     <td className="px-2 py-4 text-sm text-gray-500">
                       {loc.no_hp || "-"}
+                    </td>
+
+                    <td className="px-2 py-4 text-sm text-gray-500">
+                      {loc.role || "-"}
                     </td>
 
                     <td className="px-6 py-4 text-right flex justify-space  text-sm font-medium">

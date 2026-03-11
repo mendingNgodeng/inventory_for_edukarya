@@ -11,8 +11,8 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 const navigate = useNavigate();
-const { logout, getAdmin, isAuthenticated } = useAuth();
-const admin = getAdmin();
+const { logout, getUSER, isAuthenticated } = useAuth();
+const admin = getUSER();
 const isAuthed = isAuthenticated();
   // const [isSearchFocused, setIsSearchFocused] = useState(false);
 

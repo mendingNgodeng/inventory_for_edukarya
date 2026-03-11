@@ -4,7 +4,7 @@ import { authService } from "./service";
 import type { LoginRequest } from "./types";
 
 const TOKEN_KEY = "token";
-const ADMIN_KEY = "admin";
+const USER_KEY = "user";
 
 export const useAuth = () => {
   const navigate = useNavigate();
@@ -22,8 +22,8 @@ export const useAuth = () => {
       localStorage.setItem(TOKEN_KEY, response.token);
 
       // jangan simpan password
-      const { password, ...safeAdmin } = response.user;
-      localStorage.setItem(ADMIN_KEY, JSON.stringify(safeAdmin));
+      const { password, ...safeUSER } = response.user;
+      localStorage.setItem(USER_KEY, JSON.stringify(safeUSER));
 
       navigate("/dashboard");
 
@@ -47,7 +47,7 @@ export const useAuth = () => {
       // ignore error logout
     } finally {
       localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(ADMIN_KEY);
+      localStorage.removeItem(USER_KEY);
       navigate("/login");
     }
   };
@@ -56,8 +56,8 @@ export const useAuth = () => {
     return !!localStorage.getItem(TOKEN_KEY);
   };
 
-  const getAdmin = () => {
-    const data = localStorage.getItem(ADMIN_KEY);
+  const getUSER = () => {
+    const data = localStorage.getItem(USER_KEY);
     return data ? JSON.parse(data) : null;
   };
 
@@ -67,6 +67,6 @@ export const useAuth = () => {
     loading,
     error,
     isAuthenticated,
-    getAdmin,
+    getUSER,
   };
 };

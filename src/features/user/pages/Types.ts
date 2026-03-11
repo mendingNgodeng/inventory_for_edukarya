@@ -2,7 +2,7 @@ export interface Data {
   id_user: number;
   name: string;
   username: string;
-  password: string;
+  // password: string;
   role:string;
   jabatan: string;
   no_hp: string;

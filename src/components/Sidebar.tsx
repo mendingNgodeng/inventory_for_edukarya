@@ -27,8 +27,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
-const {getAdmin, isAuthenticated } = useAuth();
-const admin = getAdmin();
+const {getUSER, isAuthenticated } = useAuth();
+const admin = getUSER();
 const isAuthed = isAuthenticated();
 const allMenus: MenuItem[] = [
   { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', adminOnly: true },

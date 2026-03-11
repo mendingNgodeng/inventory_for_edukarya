@@ -1,6 +1,6 @@
 // api/location/service.ts
 
-import { privateClient,publicClient} from '../client';
+import { privateClient} from '../client';
 import { ENDPOINTS } from '../endpoints';
 import type {
   data,
@@ -11,7 +11,7 @@ import type {
 
 export class dataService {
 static async getAll(): Promise<data[]> {
-  const { data } = await publicClient.get<ApiResponse<data[]>>(
+  const { data } = await privateClient.get<ApiResponse<data[]>>(
     ENDPOINTS.USER
   );
 
@@ -20,7 +20,7 @@ static async getAll(): Promise<data[]> {
 
 
 static async getById(id: number): Promise<data> {
-  const { data } = await publicClient.get<ApiResponse<data>>(
+  const { data } = await privateClient.get<ApiResponse<data>>(
     `${ENDPOINTS.USER}/${id}`
   );
   return data.data;

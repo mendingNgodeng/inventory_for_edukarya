@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from "react";
-import { Package, LogIn,UserCircle } from "lucide-react";
+import { Package, LogIn } from "lucide-react";
 import {Toaster} from 'sonner'
 import Button from "../../../components/ui/button";
 import Input from "../../../components/ui/input";
 import { useAuth } from "../../../api/auth/hooks";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 type LoginForm = {
   username: string;
@@ -17,7 +17,7 @@ type LoginErrors = Partial<Record<keyof LoginForm, string>>;
 export default function LoginPage() {
   const [form, setForm] = useState<LoginForm>({ username: "", password: "",name:""});
   const [errors, setErrors] = useState<LoginErrors>({});
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const { login, loading, error } = useAuth();
 
   const canSubmit = useMemo(() => {
@@ -110,7 +110,7 @@ export default function LoginPage() {
           )}
   <br />
           {/* <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3"> */}
-          <Button
+          {/* <Button
               type="submit"
               fullWidth
               isLoading={loading}
@@ -120,7 +120,7 @@ export default function LoginPage() {
             >
               <UserCircle className="h-4 w-4" />
               Sebagai Tamu
-            </Button>
+            </Button> */}
           {/* </div> */}
         </div>
 
