@@ -3,9 +3,11 @@
 export interface data {
   id_user: number;
   name: string;
+  username: string;
+  password: string;
+  role:string;
   jabatan: string;
   no_hp: string;
-
 }
 export interface ApiResponse<T> {
   success: boolean;
@@ -13,12 +15,18 @@ export interface ApiResponse<T> {
 }
 export interface CreateData {
   name: string;
+  username: string;
+  password: string;
+  role:string;
   jabatan: string;
   no_hp: string;
 }
 
 export interface UpdateData {
-  name?: string;
+  name?:string;
+  username?: string;
+  password?: string;
+  // role?:string;
   jabatan?: string;
   no_hp?: string;
 }

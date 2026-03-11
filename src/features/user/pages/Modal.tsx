@@ -25,12 +25,17 @@ const {
         name: editingData.name,
         jabatan: editingData.jabatan,
         no_hp: editingData.no_hp,
+        username: editingData.username,
+        password: "",
+
       });
     } else {
       reset({
         name: '',
         jabatan: '',
         no_hp: '',
+        username: '',
+        password: '',
       });
     }
   }, [editingData, reset]);
@@ -86,6 +91,12 @@ const {
           })}
           error={errors.name?.message}
         />
+                 <Input
+          label="Username"
+          {...register('username', {
+          })}
+          error={errors.username?.message}
+        />
 
           <Input
           label="Jabatan"
@@ -100,6 +111,14 @@ const {
           })}
           error={errors.no_hp?.message}
         />
+
+          <Input
+          label="Password"
+          {...register('password', {
+          })}
+          error={errors.password?.message}
+        />
+ 
 
         <div>
         </div>

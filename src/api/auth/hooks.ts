@@ -22,7 +22,7 @@ export const useAuth = () => {
       localStorage.setItem(TOKEN_KEY, response.token);
 
       // jangan simpan password
-      const { password, ...safeAdmin } = response.admin;
+      const { password, ...safeAdmin } = response.user;
       localStorage.setItem(ADMIN_KEY, JSON.stringify(safeAdmin));
 
       navigate("/dashboard");

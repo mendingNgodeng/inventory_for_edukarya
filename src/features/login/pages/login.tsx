@@ -8,13 +8,14 @@ import { useNavigate } from "react-router-dom";
 
 type LoginForm = {
   username: string;
+  name:string;
   password: string;
 };
 
 type LoginErrors = Partial<Record<keyof LoginForm, string>>;
 
 export default function LoginPage() {
-  const [form, setForm] = useState<LoginForm>({ username: "", password: "" });
+  const [form, setForm] = useState<LoginForm>({ username: "", password: "",name:""});
   const [errors, setErrors] = useState<LoginErrors>({});
   const navigate = useNavigate()
   const { login, loading, error } = useAuth();

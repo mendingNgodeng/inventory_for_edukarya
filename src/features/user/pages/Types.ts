@@ -1,12 +1,17 @@
 export interface Data {
   id_user: number;
   name: string;
+  username: string;
+  password: string;
+  role:string;
   jabatan: string;
-  no_hp:string;
+  no_hp: string;
 }
-
 export interface UserFormData {
   name: string;
+  username: string;
+  password: string;
+  role:string;
   jabatan: string;
   no_hp:string;
 }

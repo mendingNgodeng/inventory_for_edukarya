@@ -3,9 +3,10 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface Admin {
-  id_admin: number;
+export interface user {
+  id_user: number;
   username: string;
+  name:string;
   password: string; // dari backend memang ikut terkirim
   role: "ADMIN" | string;
   created_at: string;
@@ -14,7 +15,7 @@ export interface Admin {
 
 export interface LoginResponse {
   message: string;
-  admin: Admin;
+  user: user;
   token: string;
 }
 
