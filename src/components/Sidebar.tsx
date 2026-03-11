@@ -20,7 +20,7 @@ interface MenuItem {
   path: string;
   icon: LucideIcon;
   label: string;
-  adminOnly: boolean;
+  roles: ("ADMIN" | "KARYAWAN")[];
 }
 interface SidebarProps {
   onClose?: () => void;
@@ -31,28 +31,24 @@ const {getUSER, isAuthenticated } = useAuth();
 const admin = getUSER();
 const isAuthed = isAuthenticated();
 const allMenus: MenuItem[] = [
-  { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', adminOnly: true },
-  { path: '/asset-types', icon: Package, label: 'List Tipe Aset', adminOnly: true },
-  { path: '/locations', icon: MapPin, label: 'List Lokasi', adminOnly: true },
-  // { path: '/divisi', icon: MapPin, label: 'List Divisi', adminOnly: true },
-  { path: '/asset-categories', icon: Tag, label: 'List Kategori Aset', adminOnly: true },
-  { path: '/user-karyawan', icon: UserCheck, label: 'List Karyawan', adminOnly: true },
-  { path: '/asset', icon: NotebookTabs, label: 'List Aset', adminOnly: true },
-  { path: '/asset-stock', icon: NotebookPen, label: 'List Stock aset', adminOnly: true },
-  { path: '/borrow-assets', icon: NotebookPen, label: 'Pinjam Barang', adminOnly: false },
-  { path: '/rental', icon: NotebookPen, label: 'Rental', adminOnly: true },
+  { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard", roles: ["ADMIN", "KARYAWAN"] },
+  { path: "/borrow-assets", icon: NotebookPen, label: "Pinjam Barang", roles: ["ADMIN", "KARYAWAN"] },
 
-  { path: '/use-assets', icon: NotebookPen, label: 'Pakai Barang', adminOnly: true },
-  { path: '/maintenance-assets', icon: WrenchIcon, label: 'Barang Rusak', adminOnly: true },
-  { path: '/assetLogs', icon: Logs, label: 'Logs Data Aset', adminOnly: true },
-
+  { path: "/asset-types", icon: Package, label: "List Tipe Aset", roles: ["ADMIN"] },
+  { path: "/locations", icon: MapPin, label: "List Lokasi", roles: ["ADMIN"] },
+  { path: "/asset-categories", icon: Tag, label: "List Kategori Aset", roles: ["ADMIN"] },
+  { path: "/user-karyawan", icon: UserCheck, label: "List Karyawan", roles: ["ADMIN"] },
+  { path: "/asset", icon: NotebookTabs, label: "List Aset", roles: ["ADMIN"] },
+  { path: "/asset-stock", icon: NotebookPen, label: "List Stock aset", roles: ["ADMIN"] },
+  { path: "/rental", icon: NotebookPen, label: "Rental", roles: ["ADMIN"] },
+  { path: "/use-assets", icon: NotebookPen, label: "Pakai Barang", roles: ["ADMIN"] },
+  { path: "/maintenance-assets", icon: WrenchIcon, label: "Barang Rusak", roles: ["ADMIN"] },
+  { path: "/assetLogs", icon: Logs, label: "Logs Data Aset", roles: ["ADMIN"] },
 ];
- const menuItems = allMenus.filter((item) => {
-    if (!item.adminOnly) return true;
-    if (!isAuthed) return false;
-    if (admin?.role !== "ADMIN") return false;
-    return true;
-  });
+const menuItems = allMenus.filter((item) => {
+  if (!isAuthed || !admin?.role) return false;
+  return item.roles.includes(admin.role);
+});
   return (
     <aside className="h-full flex flex-col bg-white">
       {/* Header Sidebar dengan tombol close di mobile */}

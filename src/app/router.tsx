@@ -18,18 +18,16 @@ import Divisi from "../features/Divisi/pages/Page";
 import MaintenanceAssets from "../features/maintenanceAssets/Page";
 import Rental from "../features/rental/asset_rental/page";
 import AssetLogs from "../features/assetLogs/pages/Page";
-
+import NotFoundPage from "../features/notFound";
 
 
 export const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
-
-  // public
-  {
-    path: "/borrow-assets",
-    element: <Dashboardlayout />,
-    children: [{ index: true, element: <Borrowassets /> }],
+ {
+    path: "*",
+    element: <NotFoundPage />,
   },
+  // public
   //   {
   //   path: "/rental",
   //   element: <Dashboardlayout />,
@@ -56,6 +54,8 @@ export const router = createBrowserRouter([
           { path: "rental", element: <Rental /> },
           { path: "assetLogs", element: <AssetLogs /> },
           { path: "divisi", element: <Divisi /> },
+          { path: "borrow-assets", element: <Borrowassets /> },
+            { path: "*", element: <NotFoundPage /> },
         ],
       },
     ],
