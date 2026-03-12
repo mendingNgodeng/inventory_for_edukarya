@@ -13,7 +13,7 @@ export default function RentableStockTab({
   const [selectedStock, setSelectedStock] = useState<any | null>(null);
   const [open, setOpen] = useState(false);
 
-  // ✅ pagination state
+  // pagination state
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(9); // cocok 3 kolom (3x3)
 
@@ -22,7 +22,7 @@ export default function RentableStockTab({
     setOpen(true);
   };
 
-  // ✅ reset page ketika data berubah (misal search/filter dari parent)
+  // reset page ketika data berubah (misal search/filter dari parent)
   useEffect(() => {
     setPage(1);
   }, [stocks?.length, pageSize]);
@@ -55,7 +55,7 @@ export default function RentableStockTab({
         ))}
       </div>
 
-      {/* ✅ PAGINATION */}
+      {/* PAGINATION */}
       <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
         <Pagination
           page={page}

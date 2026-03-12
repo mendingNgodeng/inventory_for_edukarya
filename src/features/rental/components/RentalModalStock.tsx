@@ -162,6 +162,14 @@ useEffect(() => {
               <div className="text-sm text-gray-600">
                 Lokasi: {stock.location?.name ?? "-"} • Stock: {stock.quantity ?? 0}
               </div>
+               <div className="text-sm text-gray-600">
+                Harga Per-hari:  <span className="font-semibold">  
+        {new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(stock.asset?.rental_price ?? 0)}
+        </span>
+              </div>
             </div>
 
             {/* customer select */}
