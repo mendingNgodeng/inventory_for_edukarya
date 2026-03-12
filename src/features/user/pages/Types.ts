@@ -4,16 +4,16 @@ export interface Data {
   username: string;
   // password: string;
   role:string;
-  jabatan: string;
-  no_hp: string;
+  jabatan?: string;
+  no_hp?: string;
 }
 export interface UserFormData {
   name: string;
   username: string;
   password: string;
   role:string;
-  jabatan: string;
-  no_hp:string;
+  jabatan?: string;
+  no_hp?: string;
 }
 
 export interface UserTableProps {
@@ -26,5 +26,6 @@ export interface UserModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: UserFormData) => Promise<void>;
+  onSubmitMany: (data: UserFormData[]) => Promise<void>;
   editingData: Data | null;
 }

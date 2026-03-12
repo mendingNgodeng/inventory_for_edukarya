@@ -22,6 +22,7 @@ const [deleteLoading, setDeleteLoading] = useState(false);
     updateData,
     deleteData,
     // loading,
+    createManyUsers,
   } = useData();
 
   const handleAdd = () => {
@@ -34,7 +35,11 @@ const [deleteLoading, setDeleteLoading] = useState(false);
     setIsModalOpen(true);
   };
 
-
+const handleSubmitMany = async (rows: UserFormData[]) => {
+    await createManyUsers(rows);
+    toast.success(`${rows.length} user(karyawan) berhasil ditambahkan`);
+    setIsModalOpen(false);
+  };
   const handleConfirmDelete = async () => {
   if (!deleteId) return;
 
@@ -67,7 +72,7 @@ const handleSubmit = async (data: UserFormData) => {
 };
 
   const filtered = Data.filter((loc) =>
-    loc.name.toLowerCase().includes(searchTerm.toLowerCase()) || loc.jabatan.toLowerCase().includes(searchTerm.toLowerCase()) || loc.no_hp.toLowerCase().includes(searchTerm.toLowerCase()) 
+    loc.name.toLowerCase().includes(searchTerm.toLowerCase()) || loc.jabatan?.toLowerCase().includes(searchTerm.toLowerCase()) || loc.no_hp?.toLowerCase().includes(searchTerm.toLowerCase()) 
   );
 
   return (
@@ -108,6 +113,7 @@ const handleSubmit = async (data: UserFormData) => {
         <Modal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
+          onSubmitMany={handleSubmitMany}
           onSubmit={handleSubmit}
           editingData={editingData}
         />
