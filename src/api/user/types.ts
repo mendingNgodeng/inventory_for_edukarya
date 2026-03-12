@@ -6,20 +6,21 @@ export interface data {
   username: string;
   password: string;
   role:string;
-  jabatan: string;
-  no_hp: string;
+  jabatan?: string;
+  no_hp?: string;
 }
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
+  message?: string;
 }
 export interface CreateData {
   name: string;
   username: string;
   password: string;
   role:string;
-  jabatan: string;
-  no_hp: string;
+  jabatan?: string;
+  no_hp?: string;
 }
 
 export interface UpdateData {

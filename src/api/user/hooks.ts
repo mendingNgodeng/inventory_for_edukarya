@@ -5,7 +5,6 @@ import type { data, CreateData, UpdateData } from './types';
 export const useData = () => {
   const [Data, setData] = useState<data[]>([]);
   const [loading, setLoading] = useState(false);
-
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -21,6 +20,11 @@ export const useData = () => {
   const createData = async (payload: CreateData) => {
     const newData = await dataService.create(payload);
     setData((prev) => [...prev, newData]);
+  };
+const createManyUsers = async (payload: CreateData[]) => {
+    const newUsers = await dataService.createMany(payload);
+    setData((prev) => [...prev, ...newUsers]);
+    return newUsers;
   };
 
   const updateData = async (
@@ -53,5 +57,6 @@ export const useData = () => {
     createData,
     updateData,
     deleteData,
+    createManyUsers
   };
 };

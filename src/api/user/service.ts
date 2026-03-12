@@ -35,6 +35,14 @@ static async create(payload: CreateData): Promise<data> {
   return data.data;
 }
 
+static async createMany(payload: CreateData[]): Promise<data[]> {
+    const { data } = await privateClient.post<ApiResponse<data[]>>(
+      `${ENDPOINTS.USER}/many`,
+      payload
+    );
+    return data.data;
+  }
+
 static async update(
   id: number,
   payload: UpdateData
