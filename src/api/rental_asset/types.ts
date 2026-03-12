@@ -13,6 +13,7 @@ export interface RentalCustomerLite {
 export interface AssetLite {
   asset_code: string;
   asset_name: string;
+  rental_price:number;
   is_rentable?: boolean;
 }
 
@@ -37,12 +38,11 @@ export interface data {
   id_rental_customer: number;
   id_asset_stock: number;
   quantity: number;
-  rental_start: string; // ISO from backend
-  rental_end: string;   // ISO from backend
+  rental_start: string; 
+  rental_end: string;   
   price: number;
   status: RentalStatus;
   image_after_rental?: string | null;
-
   assetStock?: AssetStockLite;
   customer?: RentalCustomerLite;
 }

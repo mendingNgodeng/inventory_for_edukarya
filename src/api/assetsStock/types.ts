@@ -10,6 +10,7 @@ export interface data {
   asset: {
     asset_name: string;
     asset_code: string;
+    rental_price:number;
     is_rentable: boolean;
     type:{
       name:string,

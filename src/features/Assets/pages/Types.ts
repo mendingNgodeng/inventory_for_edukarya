@@ -2,6 +2,7 @@ export interface Data {
   id_assets: number;
   id_asset_types: number;
   id_asset_categories: number;
+  rental_price:number,
   purchase_price:number,
   asset_name: string;
   asset_code: string;
@@ -22,6 +23,7 @@ export interface AssetsFormData {
   id_asset_categories: number;
   purchase_price:number,
   asset_code: string;
+  rental_price:number,
   asset_name: string;
   is_rentable: boolean;
   created_at: string;

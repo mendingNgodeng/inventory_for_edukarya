@@ -46,6 +46,7 @@ const optTypes = (assetTypes ?? []).map((a: any) => ({
         id_asset_categories: editingData.id_asset_categories,
         asset_code: editingData.asset_code,
         purchase_price: editingData.purchase_price,
+        rental_price: editingData.rental_price,
         is_rentable: editingData.is_rentable,
       });
     } else {
@@ -55,6 +56,7 @@ const optTypes = (assetTypes ?? []).map((a: any) => ({
       asset_name: "",
       asset_code: "",
       purchase_price: 0,
+      rental_price: 0,
       is_rentable: false,
       });
     }
@@ -131,18 +133,14 @@ const optTypes = (assetTypes ?? []).map((a: any) => ({
           error={errors.purchase_price?.message}
         />
 
-        {/* <Select
-  label="Tipe Aset"
-  options={assetTypes.map((type) => ({
-    value: type.id_asset_types,
-    label: type.name
-  }))}
-  registration={register("id_asset_types", {
-    required: "Tipe Aset wajib dipilih",
-    valueAsNumber: true,
-  })}
-  error={errors.id_asset_types?.message}
-/> */}
+           <Input
+         type='number'
+          label="harga Sewa per-hari"
+          {...register('rental_price', {
+            valueAsNumber:true
+          })}
+          error={errors.rental_price?.message}
+        />
 <Controller
   name="id_asset_categories"
   control={control}

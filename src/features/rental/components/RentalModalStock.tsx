@@ -24,6 +24,8 @@ export default function RentalModalStock({ isOpen, onClose, stock, customers, on
     handleSubmit,
     reset,
     setError,
+    setValue,
+    watch,
     formState: { isSubmitting, errors },
   } = useForm<Form>({
     defaultValues: {
@@ -75,6 +77,33 @@ export default function RentalModalStock({ isOpen, onClose, stock, customers, on
     }
   };
 
+
+  const quantity = watch("quantity")
+  const rentalStart = watch("rental_start")
+  const rentalEnd = watch("rental_end")
+useEffect(() => {
+  const unitPrice = Number(stock?.asset?.rental_price ?? 0);
+  const qty = Number(quantity ?? 0);
+
+  if (!rentalStart || !rentalEnd || !unitPrice || !qty) {
+    setValue("price", 0);
+    return;
+  }
+
+  const start = new Date(rentalStart).getTime();
+  const end = new Date(rentalEnd).getTime();
+  const ms = end - start;
+
+  if (!Number.isFinite(ms) || ms <= 0) {
+    setValue("price", 0);
+    return;
+  }
+
+  const days = Math.ceil(ms / (1000 * 60 * 60 * 24));
+  const total = unitPrice * qty * days;
+
+  setValue("price", total);
+}, [quantity, rentalStart, rentalEnd, stock, setValue]);
   return (
     <Modal
       isOpen={isOpen}
@@ -190,16 +219,16 @@ export default function RentalModalStock({ isOpen, onClose, stock, customers, on
               {...register("rental_end", { required: "Tanggal selesai wajib" })}
               error={errors.rental_end?.message}
             />
-
-            <Input
-              label="Price"
-              type="number"
-              {...register("price", {
-                valueAsNumber: true,
-                min: { value: 0, message: "Tidak boleh negatif" },
-              })}
-              error={errors.price?.message}
-            />
+<div className="rounded-lg border bg-gray-50 p-3">
+  <div className="text-sm text-gray-600">Harga Rental</div>
+  <div className="text-lg font-semibold text-gray-900">
+    {new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(watch("price") || 0)}
+  </div>
+</div>
           </form>
         </>
       )}

@@ -246,7 +246,12 @@ export default function RentalHistoryTab({ rentals, searchTerm,}: any) {
 
               {typeof selected.price !== "undefined" && (
                 <div className="text-sm text-gray-600 mt-1">
-                  Price: <span className="font-semibold">{selected.price}</span>
+                  Price: <span className="font-semibold">
+                      {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(selected.price)}
+                  </span>
                 </div>
               )}
             </div>

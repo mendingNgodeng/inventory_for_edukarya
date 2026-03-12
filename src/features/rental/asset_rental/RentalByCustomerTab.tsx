@@ -182,6 +182,7 @@ const cardTotal = customerCards.length;
                     <th className="px-4 py-2 text-left">Asset</th>
                     <th className="px-4 py-2 text-left">Qty</th>
                     <th className="px-4 py-2 text-left">Periode</th>
+                    <th className="px-4 py-2 text-left">Harga Rental</th>
                     <th className="px-4 py-2 text-right">Aksi</th>
                   </tr>
                 </thead>
@@ -196,6 +197,13 @@ const cardTotal = customerCards.length;
                       <td className="px-4 py-2">
                         {new Date(r.rental_start).toLocaleString()} → {new Date(r.rental_end).toLocaleString()}
                       </td>
+                <td className="px-4 py-2">
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(r.price)}
+                  </td>
+
                       <td className="px-4 py-2">
                         <div className="flex justify-end gap-2">
                           <Button

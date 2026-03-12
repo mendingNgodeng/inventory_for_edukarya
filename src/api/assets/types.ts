@@ -5,6 +5,7 @@ export interface data {
   id_asset_types: number;
   id_asset_categories: number;
   purchase_price:number,
+  rental_price:number,
   asset_name: string;
   asset_code: string;
   type: {
@@ -25,6 +26,7 @@ export interface CreateData {
   id_asset_types: number;
   id_asset_categories: number;
   purchase_price:number,
+  rental_price:number,
   asset_name: string;
   asset_code: string;
   is_rentable: boolean;
@@ -36,6 +38,7 @@ export interface UpdateData {
  id_asset_types?: number;
   id_asset_categories?: number;
   purchase_price?:number,
+  rental_price?:number,
   asset_name?: string;
   is_rentable?: boolean;
   type?: {

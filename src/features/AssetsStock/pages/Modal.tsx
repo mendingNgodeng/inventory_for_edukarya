@@ -120,18 +120,7 @@ const locationOptions = (location ?? []).map((l: any) => ({
     {serverError}
   </div>
 )}
-        {/* <Select
-  label="Aset"
-  options={asset.map((asset) => ({
-    value: asset.id_assets,
-    label: asset.asset_name +" - " + asset.asset_code
-  }))}
-  registration={register("id_asset", {
-    required: "Aset wajib dipilih",
-    valueAsNumber: true,
-  })}
-  error={errors.id_asset?.message}
-/> */}
+
 <Controller
   name="id_asset"
   control={control}
@@ -160,21 +149,6 @@ const locationOptions = (location ?? []).map((l: any) => ({
     />
   )}
 />
-
-{/* <Controller
-  name="id_divisi"
-  control={control}
-  rules={{ required: "Divisi wajib dipilih" }}
-  render={({ field }) => (
-    <SearchSelect
-      label="Divisi Aset"
-      value={field.value ?? null}
-      onChange={(val) => field.onChange(val ?? "")}
-      options={divisiOptions}
-      error={errors.id_divisi?.message as any}
-    />
-  )}
-/> */}
 
  <Input
           label="Quantitas"

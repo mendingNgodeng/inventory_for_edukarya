@@ -104,6 +104,9 @@ const pageData = useMemo(() => {
                      <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Harga Aset (Per unit)
                 </th>
+                                     <th className="w-[40%] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Harga Sewa per-hari
+                </th>
                   <th className="w-[40%] px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Disewa
                 </th>
@@ -140,7 +143,11 @@ const pageData = useMemo(() => {
                     </td>
 
                     <td className="px-6 py-4 text-sm text-gray-500 truncate">
-                      {loc.purchase_price}
+                      {loc.purchase_price ?? 0}
+                    </td>
+                    
+                    <td className="px-6 py-4 text-sm text-gray-500 truncate">
+                      {loc.rental_price ?? 0}
                     </td>
 
 
