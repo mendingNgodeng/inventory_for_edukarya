@@ -125,6 +125,7 @@ export default function RentalHistoryTab({ rentals, searchTerm,}: any) {
               <th className="px-4 py-2 text-left">Asset</th>
               <th className="px-4 py-2 text-left">Qty</th>
               <th className="px-4 py-2 text-left">Status</th>
+              <th className="px-4 py-2 text-left">Pembayaran</th>
               <th className="px-4 py-2 text-left">After Rental</th>
               <th className="px-4 py-2 text-left">Tanggal Pengembalian</th>
               <th className="px-4 py-2 text-left">Periode</th>
@@ -144,6 +145,7 @@ export default function RentalHistoryTab({ rentals, searchTerm,}: any) {
 
                 <td className="px-4 py-2">{r.quantity}</td>
                 <td className="px-4 py-2 font-medium">{r.status}</td>
+                <td className="px-4 py-2 font-medium">{r.payment_status}</td>
 
                 <td className="px-4 py-2">
                   {r.image_after_rental ? (

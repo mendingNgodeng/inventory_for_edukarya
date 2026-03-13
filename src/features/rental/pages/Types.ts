@@ -41,4 +41,7 @@ export type RentalForm = {
   rental_start: string;     // datetime-local
   rental_end: string;       // datetime-local
   price: number;
+  dp_amount: number;
+  // price: number;
+
 };

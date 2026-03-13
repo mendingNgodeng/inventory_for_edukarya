@@ -14,6 +14,7 @@ type Form = {
   rental_start: string;
   rental_end: string;
   price: number;
+  dp_amount: number;
 };
 
 export default function RentalModalStock({ isOpen, onClose, stock, customers, onSubmit }: any) {
@@ -34,6 +35,7 @@ export default function RentalModalStock({ isOpen, onClose, stock, customers, on
       quantity: 1,
       rental_start: "",
       rental_end: "",
+      dp_amount:0,
       price: 0,
     },
   });
@@ -48,6 +50,7 @@ export default function RentalModalStock({ isOpen, onClose, stock, customers, on
       rental_start: "",
       rental_end: "",
       price: 0,
+      dp_amount:0,
     });
   }, [isOpen, reset, stock]);
 
@@ -145,7 +148,7 @@ useEffect(() => {
                   quantity: Number(v.quantity),
                   rental_start: new Date(v.rental_start).toISOString(),
                   rental_end: new Date(v.rental_end).toISOString(),
-                  price: Number(v.price),
+                 dp_amount: Number(v.dp_amount ?? 0),
                   status: "AKTIF",
                 });
                 toast.success("Data Rental Berhasil dibuat")
@@ -212,6 +215,17 @@ useEffect(() => {
                 min: { value: 1, message: "Minimal 1" },
               })}
               error={errors.quantity?.message}
+            />
+
+             <Input
+              label="DP"
+              type="number"
+              {...register("dp_amount", {
+                // required: "Quantity wajib",
+                valueAsNumber: true,
+                min: { value: 0, message: "Jumlah DP tidak valid" },
+              })}
+              error={errors.dp_amount?.message}
             />
 
             <Input

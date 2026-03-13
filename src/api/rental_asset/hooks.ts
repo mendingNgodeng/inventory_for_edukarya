@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { rentalAssetService } from "./service";
-import type { data, CreateData, UpdateData, FinishPayload } from "./types";
+import type { data, CreateData, UpdateData, FinishPayload,PayRentalPayload } from "./types";
 
 export const useData = () => {
   const [Data, setData] = useState<data[]>([]);
@@ -39,6 +39,12 @@ export const useData = () => {
     return updated;
   };
 
+  const payRental = async (id: number, payload: PayRentalPayload) => {
+    const updated = await rentalAssetService.pay(id, payload);
+    setData((prev) => prev.map((x) => (x.id_asset_rental === id ? updated : x)));
+    return updated;
+  };
+
   const cancelRental = async (id: number) => {
     const updated = await rentalAssetService.cancel(id);
     setData((prev) => prev.map((x) => (x.id_asset_rental === id ? updated : x)));
@@ -66,6 +72,7 @@ export const useData = () => {
     createRental,
     updateData,
     finishRental,
+    payRental,
     cancelRental,
     deletAllnonActive,
     deleteData, //only for non active

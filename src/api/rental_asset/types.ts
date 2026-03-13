@@ -2,6 +2,8 @@
 
 
 export type RentalStatus = "AKTIF" | "SELESAI" | "DIBATALKAN";
+export type PaymentStatus = "DP" | "BELUM_BAYAR" | "LUNAS";
+
 
 export interface RentalCustomerLite {
   id_rental_customer: number;
@@ -41,7 +43,10 @@ export interface data {
   rental_start: string; 
   rental_end: string;   
   price: number;
+  dp_amount: number;
+  remaining_amount: number;
   status: RentalStatus;
+  payment_status: PaymentStatus;
   image_after_rental?: string | null;
   assetStock?: AssetStockLite;
   customer?: RentalCustomerLite;
@@ -60,7 +65,7 @@ export interface CreateData {
   quantity: number;
   rental_start: string; // kirim ISO string
   rental_end: string;   // kirim ISO string
-  price: number;
+  dp_amount: number;
   status?: RentalStatus; // optional (default AKTIF)
 }
 
@@ -73,4 +78,8 @@ export interface UpdateData {
 
 export interface FinishPayload {
   image_after_rental?: string; // base64 optional
+}
+export interface PayRentalPayload {
+  payment_amount: number;
+  payment_note?: string;
 }

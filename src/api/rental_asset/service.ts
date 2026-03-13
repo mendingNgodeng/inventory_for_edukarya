@@ -2,7 +2,7 @@
 
 import { privateClient } from "../client";
 import { ENDPOINTS } from "../endpoints";
-import type { ApiResponse, data, CreateData, UpdateData, FinishPayload } from "./types";
+import type { ApiResponse, data, CreateData, UpdateData, FinishPayload,PayRentalPayload } from "./types";
 
 export class rentalAssetService {
   static async getAll(): Promise<data[]> {
@@ -29,6 +29,13 @@ export class rentalAssetService {
     const res = await privateClient.put<ApiResponse<data>>(
       `${ENDPOINTS.ASSET_RENTAL}/${id}/finish`,
       payload ?? {}
+    );
+    return res.data.data;
+  }
+static async pay(id: number, payload: PayRentalPayload): Promise<data> {
+    const res = await privateClient.put<ApiResponse<data>>(
+      `${ENDPOINTS.ASSET_RENTAL}/${id}/pay`,
+      payload
     );
     return res.data.data;
   }

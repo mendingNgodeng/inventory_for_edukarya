@@ -6,16 +6,21 @@ import Pagination from "../../../components/ui/pagination";
 
 import CustomerRentalCard from "../components/CustomerRentalCard";
 import FinishRentalModal from "../components/FinishRentalModal";
-
+import PayRentalModal from "../components/payRentalModal";
 export default function RentalByCustomerTab({
   rentals,
   finishRental,
+  payRental,
   cancelRental,
   afterAction,
   searchTerm,
 }: {
   rentals: any[];
   finishRental: (id: number, payload: { image_after_rental: string }) => Promise<void>;
+  payRental: (
+    id: number,
+    payload: { payment_amount: number; payment_note?: string }
+  ) => Promise<void>;
   cancelRental: (id: number) => Promise<void>;
   afterAction: () => Promise<void>;
   searchTerm: string;
@@ -26,6 +31,11 @@ export default function RentalByCustomerTab({
   // modal finish
   const [selectedRental, setSelectedRental] = useState<any | null>(null);
   const [openFinish, setOpenFinish] = useState(false);
+
+  
+  // [TAMBAHAN] state untuk modal pay
+  const [openPay, setOpenPay] = useState(false);
+  const [selectedPayRental, setSelectedPayRental] = useState<any | null>(null);
 
   // alert cancel per row
   const [cancelTarget, setCancelTarget] = useState<any | null>(null);
@@ -41,7 +51,7 @@ export default function RentalByCustomerTab({
 
   // 1) ambil rental aktif + search
   const activeRentals = useMemo(() => {
-    const base = (rentals ?? []).filter((r: any) => r.status === "AKTIF");
+    const base = (rentals ?? []).filter((r: any) => r.status === "AKTIF" || r.payment_status !== "LUNAS");
 
     const term = (searchTerm ?? "").toLowerCase().trim();
     if (!term) return base;
@@ -156,7 +166,9 @@ const cardTotal = customerCards.length;
               onClick={() => {
                 setSelectedCustomerId(null);
                 setSelectedRental(null);
+                setSelectedPayRental(null);
                 setOpenFinish(false);
+                setOpenPay(false);
                 setPage(1);
               }}
             >
@@ -182,7 +194,11 @@ const cardTotal = customerCards.length;
                     <th className="px-4 py-2 text-left">Asset</th>
                     <th className="px-4 py-2 text-left">Qty</th>
                     <th className="px-4 py-2 text-left">Periode</th>
-                    <th className="px-4 py-2 text-left">Harga Rental</th>
+                    <th className="px-4 py-2 text-left">Harga Total Rental</th>
+                    <th className="px-4 py-2 text-left">DP</th>
+                    <th className="px-4 py-2 text-left">Sisa Bayar</th>
+                    <th className="px-4 py-2 text-left">Payment Status</th>
+                    <th className="px-4 py-2 text-left">Rental Status</th>
                     <th className="px-4 py-2 text-right">Aksi</th>
                   </tr>
                 </thead>
@@ -205,7 +221,37 @@ const cardTotal = customerCards.length;
                   </td>
 
                       <td className="px-4 py-2">
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(r.dp_amount ?? 0)}
+                  </td>
+
+                      <td className="px-4 py-2">
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    }).format(r.remaining_amount)}
+                  </td>
+                      <td className="px-4 py-2">{r.payment_status}</td>
+                      <td className="px-4 py-2">{r.status}</td>
+
+
+                      <td className="px-4 py-2">
                         <div className="flex justify-end gap-2">
+ {r.remaining_amount > 0 && (
+                              <Button
+                                variant="outline_blue"
+                                type="button"
+                                onClick={() => {
+                                  setSelectedPayRental(r);
+                                  setOpenPay(true);
+                                }}
+                              >
+                                Pay
+                              </Button>
+                            )}
+
                           <Button
                             variant="outline_blue"
                             type="button"
@@ -265,6 +311,19 @@ const cardTotal = customerCards.length;
             setOpenFinish(false);
           }}
         />
+
+         <PayRentalModal
+            isOpen={openPay}
+            onClose={() => setOpenPay(false)}
+            rental={selectedPayRental}
+            onSubmit={async (payload) => {
+              if (!selectedPayRental) return;
+              await payRental(selectedPayRental.id_asset_rental, payload);
+              await afterAction();
+              toast.success("Pembayaran berhasil disimpan");
+              setOpenPay(false);
+            }}
+          />
 
         {/* CANCEL ALERT */}
         <Alert

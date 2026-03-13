@@ -9,7 +9,7 @@ export default function ActiveRentalCard({
   onFinish,
   onCancel,
 
-}: {
+} : {
   rental: any;
   onFinish: () => void;
   onCancel: () => Promise<void>;

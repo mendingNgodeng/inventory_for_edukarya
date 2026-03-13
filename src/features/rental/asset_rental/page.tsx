@@ -32,6 +32,7 @@ export default function Page() {
     fetchData: refetchRentals,
     createRental,
     finishRental,
+    payRental,
     cancelRental,
     deleteDataHistory,
     deleteAllnonActive,
@@ -62,13 +63,13 @@ export default function Page() {
 
   // rentals aktif
   const activeRentals = useMemo(() => {
-    return (rentals ?? []).filter((r: any) => r.status === "AKTIF");
+    return (rentals ?? []).filter((r: any) => r.status === "AKTIF" ||  r.payment_status !== "LUNAS");
   }, [rentals]);
 
   // rentals history
   const historyRentals = useMemo(() => {
     return (rentals ?? []).filter(
-      (r: any) => r.status === "SELESAI" || r.status === "DIBATALKAN"
+      (r: any) => r.status === "SELESAI" || r.status === "DIBATALKAN" || r.payment_status === "LUNAS"
     );
   }, [rentals]);
 
@@ -118,6 +119,7 @@ export default function Page() {
           searchTerm={searchTerm}
           rentals={activeRentals}         
           finishRental={finishRental}
+          payRental={payRental}
           cancelRental={cancelRental}
           afterAction={refreshAll}
         />
