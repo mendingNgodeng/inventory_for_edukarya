@@ -63,13 +63,14 @@ export default function Page() {
 
   // rentals aktif
   const activeRentals = useMemo(() => {
-    return (rentals ?? []).filter((r: any) => r.status === "AKTIF" ||  r.payment_status !== "LUNAS");
+    return (rentals ?? []).filter((r: any) => (r.status === "AKTIF"
+ ));
   }, [rentals]);
 
   // rentals history
   const historyRentals = useMemo(() => {
     return (rentals ?? []).filter(
-      (r: any) => r.status === "SELESAI" || r.status === "DIBATALKAN" || r.payment_status === "LUNAS"
+      (r: any) => (r.status === "SELESAI" || r.status === "BATALKAN"  || r.payment_status === "LUNAS") 
     );
   }, [rentals]);
 
