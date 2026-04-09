@@ -18,6 +18,7 @@ export const useAuth = () => {
 
       const response = await authService.login(payload);
 
+      // const realData = response.data ?? response;
       // simpan token
       localStorage.setItem(TOKEN_KEY, response.token);
 

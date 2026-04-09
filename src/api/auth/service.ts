@@ -1,4 +1,4 @@
-import { publicClient,privateClient } from "../client";
+import { publicClient, privateClient } from "../client";
 import { ENDPOINTS } from '../endpoints';
 import type { LoginRequest, LoginResponse, LogoutResponse } from "./types";
 
