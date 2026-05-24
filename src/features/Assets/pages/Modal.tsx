@@ -166,7 +166,7 @@ const optTypes = (assetTypes ?? []).map((a: any) => ({
       value={field.value ?? null}
       onChange={(val) => field.onChange(val ?? "")}
       options={optTypes}
-      error={errors.id_asset_categories?.message as any}
+      error={errors.id_asset_types?.message as any}
     />
   )}
 />
