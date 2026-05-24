@@ -134,7 +134,7 @@ const LocationModal: React.FC<ModalProps> = ({
         })}
       >
         <Input
-          label="Nama nama Customer"
+          label="Nama Customer"
           {...register("name", { required: "Nama Customer wajib diisi" })}
           error={errors.name?.message}
         />

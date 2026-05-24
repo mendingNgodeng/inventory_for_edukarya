@@ -50,6 +50,8 @@ export default function MaintenanceActiveTable({
             <th className="px-4 py-2 text-left">Lokasi</th>
            
             <th className="px-4 py-2 text-left">Qty</th>
+            <th className="px-4 py-2 text-left">Biaya</th>
+            <th className="px-4 py-2 text-left">Deskripsi</th>
             <th className="px-4 py-2 text-left">Status</th>
             <th className="px-4 py-2 text-left">Tanggal</th>
             <th className="px-4 py-2 text-right">Aksi</th>
@@ -64,6 +66,13 @@ export default function MaintenanceActiveTable({
               </td>
               <td className="px-4 py-2">{r.assetStock?.location?.name ?? "-"}</td>
               <td className="px-4 py-2">{r.quantity}</td>
+              <td className="px-4 py-2"> <span className="font-semibold">  
+        {new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(r.cost ?? 0)}
+        </span></td>
+              <td className="px-4 py-2 font-medium">{r.description ?? "tidak ada deskripsi"}</td>
               <td className="px-4 py-2 font-medium">{r.status}</td>
               <td className="px-4 py-2">{new Date(r.created_at).toLocaleString()}</td>
               <td className="px-4 py-2 text-right">

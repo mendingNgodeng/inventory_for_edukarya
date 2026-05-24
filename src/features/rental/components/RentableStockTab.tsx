@@ -22,7 +22,7 @@ export default function RentableStockTab({
     setOpen(true);
   };
 
-  // reset page ketika data berubah (misal search/filter dari parent)
+  // reset page ketika data berubah (search/filter dari parent)
   useEffect(() => {
     setPage(1);
   }, [stocks?.length, pageSize]);

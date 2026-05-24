@@ -71,8 +71,11 @@ export default function BorrowReturnedTable({ data, loading }: MaintenanceReturn
             <th className="px-4 py-2 text-left">Asset</th>
           
             <th className="px-4 py-2 text-left">Qty</th>
+            <th className="px-4 py-2 text-left">Biaya</th>
             <th className="px-4 py-2 text-left">Tanggal Maintenance</th>
             <th className="px-4 py-2 text-left">Tanggal Kembali</th>
+            <th className="px-4 py-2 text-left">Deskripsi</th>
+
             <th className="px-4 py-2 text-left">status</th>
 
           </tr>
@@ -85,10 +88,20 @@ export default function BorrowReturnedTable({ data, loading }: MaintenanceReturn
               </td>
              
               <td className="px-4 py-2">{r.quantity}</td>
+              <td className="px-4 py-2">
+
+              <span  className="font-semibold">  
+        {new Intl.NumberFormat("id-ID", {
+          style: "currency",
+          currency: "IDR",
+        }).format(r.cost ?? 0)}
+        </span>
+        </td>
               <td className="px-4 py-2">{new Date(r.created_at).toLocaleString()}</td>
               <td className="px-4 py-2">
                 {r.updated_at ? new Date(r.updated_at).toLocaleString() : "-"}
               </td>
+                 <td className="px-4 py-2 font-medium">{r.description ?? "tidak ada deskripsi"}</td>
               <td className="px-4 py-2">{r.status}</td>
 
             </tr>
