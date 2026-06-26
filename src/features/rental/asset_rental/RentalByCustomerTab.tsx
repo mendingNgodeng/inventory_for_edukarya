@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import Button from "../../../components/ui/button";
 import Alert from "../../../components/ui/alert";
 import Pagination from "../../../components/ui/pagination";
-
+import UpdateRentalEndModal from "../components/updateRentalEndModal";
 import CustomerRentalCard from "../components/CustomerRentalCard";
 import FinishRentalModal from "../components/FinishRentalModal";
 import PayRentalModal from "../components/payRentalModal";
@@ -11,6 +11,7 @@ export default function RentalByCustomerTab({
   rentals,
   finishRental,
   payRental,
+  updateRentalEnd,
   cancelRental,
   afterAction,
   searchTerm,
@@ -21,10 +22,17 @@ export default function RentalByCustomerTab({
     id: number,
     payload: { payment_amount: number; payment_note?: string }
   ) => Promise<void>;
+  updateRentalEnd: (
+    id: number,
+    payload: { rental_end: string }
+  ) => Promise<void>;
   cancelRental: (id: number) => Promise<void>;
   afterAction: () => Promise<void>;
   searchTerm: string;
 }) {
+  // update rental end statte
+  const [openUpdateEnd, setOpenUpdateEnd] = useState(false);
+const [selectedUpdateEndRental, setSelectedUpdateEndRental] = useState<any | null>(null);
   // customer terpilih
   const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
 
@@ -169,6 +177,8 @@ const cardTotal = customerCards.length;
                 setSelectedPayRental(null);
                 setOpenFinish(false);
                 setOpenPay(false);
+                setSelectedUpdateEndRental(null);
+                setOpenUpdateEnd(false);
                 setPage(1);
               }}
             >
@@ -196,6 +206,8 @@ const cardTotal = customerCards.length;
                     <th className="px-4 py-2 text-left">Periode</th>
                     <th className="px-4 py-2 text-left">Harga Total Rental</th>
                     <th className="px-4 py-2 text-left">DP</th>
+                    <th className="px-4 py-2 text-left">Telat</th>
+<th className="px-4 py-2 text-left">Denda</th>
                     <th className="px-4 py-2 text-left">Sisa Bayar</th>
                     <th className="px-4 py-2 text-left">Payment Status</th>
                     <th className="px-4 py-2 text-left">Rental Status</th>
@@ -227,6 +239,25 @@ const cardTotal = customerCards.length;
                     }).format(r.dp_amount ?? 0)}
                   </td>
 
+                  <td className="px-4 py-2">
+  {Number(r.late_days ?? 0) > 0 ? (
+    <span className="rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-700">
+      {r.late_days} hari
+    </span>
+  ) : (
+    <span className="text-gray-500">-</span>
+  )}
+</td>
+
+<td className="px-4 py-2">
+  <span className={Number(r.fine_amount ?? 0) > 0 ? "font-semibold text-red-600" : ""}>
+    {new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(Number(r.fine_amount ?? 0))}
+  </span>
+</td>
+
                       <td className="px-4 py-2">
                     {new Intl.NumberFormat("id-ID", {
                       style: "currency",
@@ -251,7 +282,16 @@ const cardTotal = customerCards.length;
                                 Pay
                               </Button>
                             )}
-
+                          <Button
+                            variant="outline_blue"
+                            type="button"
+                            onClick={() => {
+                              setSelectedUpdateEndRental(r);
+                              setOpenUpdateEnd(true);
+                            }}
+                          >
+                            Perpanjang
+                          </Button>
                           <Button
                             variant="outline_blue"
                             type="button"
@@ -311,6 +351,24 @@ const cardTotal = customerCards.length;
             setOpenFinish(false);
           }}
         />
+
+        <UpdateRentalEndModal
+  isOpen={openUpdateEnd}
+  onClose={() => setOpenUpdateEnd(false)}
+  rental={selectedUpdateEndRental}
+  onSubmit={async (payload) => {
+    if (!selectedUpdateEndRental) return;
+
+    await updateRentalEnd(
+      selectedUpdateEndRental.id_asset_rental,
+      payload
+    );
+
+    await afterAction();
+    toast.success("Tanggal selesai rental berhasil diperbarui");
+    setOpenUpdateEnd(false);
+  }}
+/>
 
          <PayRentalModal
             isOpen={openPay}

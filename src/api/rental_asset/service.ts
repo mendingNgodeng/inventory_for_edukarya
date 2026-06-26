@@ -2,7 +2,7 @@
 
 import { privateClient } from "../client";
 import { ENDPOINTS } from "../endpoints";
-import type { ApiResponse, data, CreateData, UpdateData, FinishPayload,PayRentalPayload } from "./types";
+import type { ApiResponse, data, CreateData, UpdateData, FinishPayload,PayRentalPayload,  UpdateRentalEndPayload,} from "./types";
 
 export class rentalAssetService {
   static async getAll(): Promise<data[]> {
@@ -54,4 +54,16 @@ static async pay(id: number, payload: PayRentalPayload): Promise<data> {
     static async deleteAllNonActive(): Promise<void> {
     await privateClient.delete(`${ENDPOINTS.ASSET_RENTAL}/nonActive`);
   }
+
+  static async updateRentalEnd(
+  id: number,
+  payload: UpdateRentalEndPayload
+): Promise<data> {
+  const res = await privateClient.patch<ApiResponse<data>>(
+    `${ENDPOINTS.ASSET_RENTAL}/${id}/rental-end`,
+    payload
+  );
+
+  return res.data.data;
+}
 }

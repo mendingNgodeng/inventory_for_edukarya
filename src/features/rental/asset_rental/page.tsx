@@ -23,7 +23,7 @@ export default function Page() {
     fetchData: refetchCustomers,
     createData,
     updateData,
-    deleteData
+    deleteData,
   } = useCustomers() as any;
 
   const {
@@ -33,6 +33,7 @@ export default function Page() {
     createRental,
     finishRental,
     payRental,
+    updateRentalEnd,
     cancelRental,
     deleteDataHistory,
     deleteAllnonActive,
@@ -75,7 +76,7 @@ export default function Page() {
   // rentals history
   const historyRentals = useMemo(() => {
     return (rentals ?? []).filter(
-      (r: any) => (r.status === "SELESAI" || r.status === "BATALKAN"  || r.payment_status === "LUNAS") 
+      (r: any) => (r.status === "SELESAI" || r.status === "DIBATALKAN"  || r.payment_status === "LUNAS") 
     );
   }, [rentals]);
 
@@ -126,6 +127,7 @@ export default function Page() {
           rentals={activeRentals}         
           finishRental={finishRental}
           payRental={payRental}
+          updateRentalEnd={updateRentalEnd}
           cancelRental={cancelRental}
           afterAction={refreshAll}
         />

@@ -69,6 +69,9 @@ export default function PayRentalModal({
 
   // sisa tagihan dari rental
   const remaining = Number(rental?.remaining_amount ?? 0);
+  const fineAmount = Number(rental?.fine_amount ?? 0);
+const lateDays = Number(rental?.late_days ?? 0);
+const totalBill = Number(rental?.price ?? 0) + fineAmount;
 
   // hitung sisa setelah bayar
   const afterPay = Math.max(0, remaining - Number(paymentAmount || 0));
@@ -160,8 +163,31 @@ export default function PayRentalModal({
                 </span>
               </div>
 
+              {lateDays > 0 && (
+  <div>
+    Terlambat:{" "}
+    <span className="font-semibold text-red-600">
+      {lateDays} hari
+    </span>
+  </div>
+)}
+
+<div>
+  Denda:{" "}
+  <span className={fineAmount > 0 ? "font-semibold text-red-600" : "font-semibold"}>
+    {formatIDR(fineAmount)}
+  </span>
+</div>
+
+<div>
+  Total Tagihan:{" "}
+  <span className="font-semibold">
+    {formatIDR(totalBill)}
+  </span>
+</div>
+
               <div>
-                DP:{" "}
+                Total Dibayar:{" "}
                 <span className="font-semibold">
                   {formatIDR(Number(rental.dp_amount ?? 0))}
                 </span>

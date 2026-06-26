@@ -30,6 +30,7 @@ const getErrorMessage = (err: any) => {
     data?.error ??
     data?.errors?.[0]?.message ??
     data?.errors?.[0] ??
+    data?.errors?.rental_end??
     err?.message ??
     "Terjadi kesalahan."
   );

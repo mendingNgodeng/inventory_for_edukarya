@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { rentalAssetService } from "./service";
-import type { data, CreateData, UpdateData, FinishPayload,PayRentalPayload } from "./types";
+import type { data, CreateData, UpdateData, FinishPayload,PayRentalPayload,  UpdateRentalEndPayload, } from "./types";
 
 export const useData = () => {
   const [Data, setData] = useState<data[]>([]);
@@ -61,6 +61,19 @@ export const useData = () => {
     setData((prev) => prev.filter((x) => {x.status === "AKTIF"}));
   };
 
+  const updateRentalEnd = async (
+  id: number,
+  payload: UpdateRentalEndPayload
+) => {
+  const updated = await rentalAssetService.updateRentalEnd(id, payload);
+
+  setData((prev) =>
+    prev.map((x) => (x.id_asset_rental === id ? updated : x))
+  );
+
+  return updated;
+};
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -76,5 +89,6 @@ export const useData = () => {
     cancelRental,
     deletAllnonActive,
     deleteData, //only for non active
+    updateRentalEnd
   };
 };

@@ -49,6 +49,8 @@ export interface data {
   payment_status: PaymentStatus;
   image_after_rental?: string | null;
   assetStock?: AssetStockLite;
+  late_days: number;
+  fine_amount: number | string;
   customer?: RentalCustomerLite;
 }
 
@@ -82,4 +84,8 @@ export interface FinishPayload {
 export interface PayRentalPayload {
   payment_amount: number;
   payment_note?: string;
+}
+
+export interface UpdateRentalEndPayload {
+  rental_end: string;
 }

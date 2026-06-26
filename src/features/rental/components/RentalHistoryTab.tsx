@@ -10,6 +10,23 @@ import { sortByDate } from "../../../components/helper/dateSort";
 type SortKey = "START_DATE" | "END_DATE" | "RETURNED_DATE";
 type StatusFilter = "ALL" | "SELESAI" | "DIBATALKAN";
 
+const formatIDR = (value: number | string | null | undefined) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(Number(value ?? 0));
+};
+
+const formatDateTime = (value?: string | Date | null) => {
+  if (!value) return "-";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) return "-";
+
+  return date.toLocaleString("id-ID");
+};
+
 export default function RentalHistoryTab({ rentals, searchTerm,}: any) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<any | null>(null);
@@ -81,7 +98,7 @@ export default function RentalHistoryTab({ rentals, searchTerm,}: any) {
 
   if (!sorted.length) {
     return <div className="text-sm text-gray-600">Belum ada riwayat rental.</div>;
-  }
+  } 
 
   return (
     <>
@@ -126,6 +143,10 @@ export default function RentalHistoryTab({ rentals, searchTerm,}: any) {
               <th className="px-4 py-2 text-left">Qty</th>
               <th className="px-4 py-2 text-left">Status</th>
               <th className="px-4 py-2 text-left">Pembayaran</th>
+              <th className="px-4 py-2 text-left">Total Rental</th>
+<th className="px-4 py-2 text-left">Total Dibayar</th>
+<th className="px-4 py-2 text-left">Telat</th>
+<th className="px-4 py-2 text-left">Denda</th>
               <th className="px-4 py-2 text-left">After Rental</th>
               <th className="px-4 py-2 text-left">Tanggal Pengembalian</th>
               <th className="px-4 py-2 text-left">Periode</th>
@@ -146,6 +167,32 @@ export default function RentalHistoryTab({ rentals, searchTerm,}: any) {
                 <td className="px-4 py-2">{r.quantity}</td>
                 <td className="px-4 py-2 font-medium">{r.status}</td>
                 <td className="px-4 py-2 font-medium">{r.payment_status}</td>
+
+
+<td className="px-4 py-2 font-medium">
+  {formatIDR(r.price)}
+</td>
+
+<td className="px-4 py-2 font-medium">
+  {formatIDR(r.dp_amount)}
+</td>
+
+
+<td className="px-4 py-2">
+  {Number(r.late_days ?? 0) > 0 ? (
+    <span className="rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-700">
+      {r.late_days} hari
+    </span>
+  ) : (
+    <span className="text-gray-400">-</span>
+  )}
+</td>
+
+<td className="px-4 py-2 font-medium">
+  <span className={Number(r.fine_amount ?? 0) > 0 ? "text-red-600" : "text-gray-700"}>
+    {formatIDR(r.fine_amount)}
+  </span>
+</td>
 
                 <td className="px-4 py-2">
                   {r.image_after_rental ? (
@@ -168,12 +215,13 @@ export default function RentalHistoryTab({ rentals, searchTerm,}: any) {
                     <span className="text-gray-400 text-xs">Tidak ada foto</span>
                   )}
                 </td>
-                <td className="px-4 py-2 font-medium">  {new Date(r.returned_date).toLocaleString()}</td>
+ <td className="px-4 py-2 font-medium">
+  {formatDateTime(r.returned_date)}
+</td>
 
-                <td className="px-4 py-2">
-                  {new Date(r.rental_start).toLocaleString()} →{" "}
-                  {new Date(r.rental_end).toLocaleString()}
-                </td>
+<td className="px-4 py-2">
+  {formatDateTime(r.rental_start)} → {formatDateTime(r.rental_end)}
+</td>
 
                   <td className="px-4 py-2 font-medium">  
                     {/* <Button
@@ -236,26 +284,63 @@ export default function RentalHistoryTab({ rentals, searchTerm,}: any) {
                 • {selected.customer?.phone ?? "-"}
               </div>
 
-              <div className="text-sm text-gray-700 mt-1">
-                Qty: <span className="font-semibold">{selected.quantity}</span>{" "}
-                • Status: <span className="font-semibold">{selected.status}</span>
-              </div>
+               <div className="text-gray-700">
+    Total Rental:{" "}
+    <span className="font-semibold text-gray-700">
+      {formatIDR(selected.price)}
+    </span>
+  </div>
 
-              <div className="text-sm text-gray-600 mt-1">
-                Periode: {new Date(selected.rental_start).toLocaleString()} →{" "}
-                {new Date(selected.rental_end).toLocaleString()}
-              </div>
+  <div className="text-gray-700">
+    Total Dibayar:{" "}
+    <span className="font-semibold text-gray-700">
+      {formatIDR(selected.dp_amount)}
+    </span>
+  </div>
 
-              {typeof selected.price !== "undefined" && (
-                <div className="text-sm text-gray-600 mt-1">
-                  Price: <span className="font-semibold">
-                      {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    }).format(selected.price)}
-                  </span>
-                </div>
-              )}
+  <div className="text-gray-700">
+    Telat:{" "}
+    {Number(selected.late_days ?? 0) > 0 ? (
+      <span className="font-semibold text-red-600">
+        {selected.late_days} hari
+      </span>
+    ) : (
+      <span className="font-semibold ">-</span>
+    )}
+  </div>
+
+  <div className="text-gray-700">
+    Denda:{" "}
+    <span
+      className={
+        Number(selected.fine_amount ?? 0) > 0
+          ? "font-semibold text-red-600"
+          : "font-semibold"
+      }
+    >
+      {formatIDR(selected.fine_amount)}
+    </span>
+  </div>
+
+  {/* <div className="text-gray-700">
+    Sisa Bayar:{" "}
+    <span
+      className={
+        Number(selected.remaining_amount ?? 0) > 0
+          ? "font-semibold text-red-600"
+          : "font-semibold text-green-700"
+      }
+    >
+      {formatIDR(selected.remaining_amount)}
+    </span>
+  </div> */}
+
+  <div className="text-gray-700">
+    Payment Status:{" "}
+    <span className="font-semibold">
+      {selected.payment_status ?? "-"}
+    </span>
+  </div>
             </div>
 
             {selected.image_after_rental ? (

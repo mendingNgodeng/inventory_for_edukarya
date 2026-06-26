@@ -154,7 +154,7 @@ useEffect(() => {
                 toast.success("Data Rental Berhasil dibuat")
               } catch (err: any) {
                 mapBackendErrors(err);
-                toast.error("Data Rental gagal dibuat: ",err)
+                // toast.error("Data Rental gagal dibuat",err)
               }
             })}
           >
