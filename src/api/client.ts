@@ -22,6 +22,19 @@ privateClient.interceptors.request.use((config) => {
   return config;
 });
 
+const getErrorMessage = (err: any) => {
+  const data = err?.response?.data;
+
+  return (
+    data?.message ??
+    data?.error ??
+    data?.errors?.[0]?.message ??
+    data?.errors?.[0] ??
+    err?.message ??
+    "Terjadi kesalahan."
+  );
+};
+
 /* ===============================
    GLOBAL ERROR HANDLER
 ================================= */
@@ -29,7 +42,8 @@ privateClient.interceptors.request.use((config) => {
 const handleResponseError = (err: any) => {
   const status = err?.response?.status;
   const data = err?.response?.data;
-
+  // const errorGen = err?.response?.data?.message;
+  const errorGen = getErrorMessage(err)
   // RATE LIMIT
   if (status === 429) {
     const retryAfter = data?.retryAfter ?? 0;
@@ -57,7 +71,9 @@ const handleResponseError = (err: any) => {
 
   // GENERIC ERROR (optional)
   if (status >= 500) {
-    toast.error("Terjadi kesalahan pada server.");
+    toast.error(errorGen || "Terjadi kesalahan pada server.");
+  }else{
+     toast.error(errorGen || "Terjadi kesalahan");
   }
 
   return Promise.reject(err);

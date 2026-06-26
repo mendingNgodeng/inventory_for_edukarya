@@ -145,7 +145,7 @@ const LocationModal: React.FC<ModalProps> = ({
           error={errors.phone?.message}
         />
 
-        {/* hidden field untuk RHF submit + validasi */}
+        {/* hidden field untuk submit + validasi */}
         <Input
           type="hidden"
           {...register("pictureKtp", {
