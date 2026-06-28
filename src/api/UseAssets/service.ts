@@ -6,7 +6,8 @@ import type {
   data,
   CreateData,
   UpdateData,
-  ApiResponse
+  ApiResponse,
+  RejectBorrowPayload,
 } from './types';
 
 export class dataService {
@@ -57,4 +58,35 @@ static async returnAsset(
   static async delete(id: number): Promise<void> {
     await privateClient.delete(`${ENDPOINTS.ASSET_USE}/${id}`);
   }
+
+static async approveByAdmin(id: number): Promise<data> {
+  const { data } = await privateClient.put<ApiResponse<data>>(
+    `${ENDPOINTS.ASSET_USE}/${id}/approve-admin`,
+    {}
+  );
+
+  return data.data;
+}
+
+static async approveByBoss(id: number): Promise<data> {
+  const { data } = await privateClient.put<ApiResponse<data>>(
+    `${ENDPOINTS.ASSET_USE}/${id}/approve-boss`,
+    {}
+  );
+
+  return data.data;
+}
+
+static async rejectBorrow(
+  id: number,
+  payload?: RejectBorrowPayload
+): Promise<data> {
+  const { data } = await privateClient.put<ApiResponse<data>>(
+    `${ENDPOINTS.ASSET_USE}/${id}/reject`,
+    payload ?? {}
+  );
+
+  return data.data;
+}
+
 }

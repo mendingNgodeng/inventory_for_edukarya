@@ -20,7 +20,7 @@ import type { LucideIcon } from "lucide-react";
 interface BaseMenuItem {
   icon: LucideIcon;
   label: string;
-  roles: ("ADMIN" | "KARYAWAN")[];
+  roles: ("ADMIN" | "KARYAWAN" | "BOS")[];
 }
 
 interface SingleMenuItem extends BaseMenuItem {
@@ -57,13 +57,13 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
       path: "/dashboard",
       icon: LayoutDashboard,
       label: "Dashboard",
-      roles: ["ADMIN", "KARYAWAN"],
+      roles: ["ADMIN", "KARYAWAN","BOS"],
     },
     {
       path: "/borrow-assets",
       icon: NotebookPen,
       label: "Pinjam Barang",
-      roles: ["ADMIN", "KARYAWAN"],
+      roles: ["ADMIN", "KARYAWAN","BOS"],
     },
 
     // ADDED: group menu untuk data master
@@ -103,37 +103,37 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
       path: "/asset",
       icon: NotebookTabs,
       label: "List Aset",
-      roles: ["ADMIN"],
+      roles: ["ADMIN","BOS"],
     },
     {
       path: "/asset-stock",
       icon: NotebookPen,
       label: "List Stock aset",
-      roles: ["ADMIN"],
+      roles: ["ADMIN","BOS"],
     },
     {
       path: "/rental",
       icon: NotebookPen,
       label: "Rental",
-      roles: ["ADMIN"],
+      roles: ["ADMIN","BOS"],
     },
     {
       path: "/use-assets",
       icon: NotebookPen,
       label: "Pakai Barang",
-      roles: ["ADMIN"],
+      roles: ["ADMIN","BOS"],
     },
     {
       path: "/maintenance-assets",
       icon: WrenchIcon,
       label: "Barang Rusak",
-      roles: ["ADMIN"],
+      roles: ["ADMIN","BOS"],
     },
     {
       path: "/assetLogs",
       icon: Logs,
       label: "Logs Data Aset",
-      roles: ["ADMIN"],
+      roles: ["ADMIN","BOS","KARYAWAN"],
     },
   ];
 

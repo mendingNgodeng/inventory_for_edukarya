@@ -18,7 +18,7 @@ const rawUser = localStorage.getItem(USER_KEY);
   }
 
   // route yang boleh diakses oleh KARYAWAN
-  const karyawanAllowedPaths = ["/dashboard", "/borrow-assets"];
+  const karyawanAllowedPaths = ["/dashboard", "/borrow-assets","/assetLogs"];
 
 
   if (

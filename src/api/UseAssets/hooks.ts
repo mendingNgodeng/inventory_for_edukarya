@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { dataService } from './service';
-import type { data, CreateData, UpdateData } from './types';
+import type { data, CreateData, UpdateData,RejectBorrowPayload } from './types';
 
 export const useData = () => {
   const [Data, setData] = useState<data[]>([]);
@@ -47,6 +47,37 @@ export const useData = () => {
     );
   };
 
+
+  const approveByAdmin = async (id: number) => {
+  const updated = await dataService.approveByAdmin(id);
+
+  setData((prev) =>
+    prev.map((x) => (x.id_asset_borrowed === id ? updated : x))
+  );
+
+  return updated;
+};
+
+const approveByBoss = async (id: number) => {
+  const updated = await dataService.approveByBoss(id);
+
+  setData((prev) =>
+    prev.map((x) => (x.id_asset_borrowed === id ? updated : x))
+  );
+
+  return updated;
+};
+
+const rejectBorrow = async (id: number, payload?: RejectBorrowPayload) => {
+  const updated = await dataService.rejectBorrow(id, payload);
+
+  setData((prev) =>
+    prev.map((x) => (x.id_asset_borrowed === id ? updated : x))
+  );
+
+  return updated;
+};
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -58,6 +89,9 @@ export const useData = () => {
     createBorrow,
     createUsed,
     updateData,
+    approveByAdmin,
+    approveByBoss,
+    rejectBorrow,
     deleteData,
   };
 };

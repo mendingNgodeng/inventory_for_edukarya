@@ -1,56 +1,85 @@
-type TabKey = "STOCK" | "ACTIVE" | "OWN" | "RETURNED";
-
-interface TabsProps {
-  active: TabKey;
-  onChange: (t: TabKey) => void;
-  isAdmin: boolean; // ADDED: untuk kontrol tab admin
-  counts: {
-    stock: number;
-    active: number;
-    own: number; // CHANGED: samakan dengan Page
-    returned: number;
-  };
-}
+import type { TabKey } from "../Types";
 
 export default function Tabs({
   active,
   onChange,
-  isAdmin,
+  role,
   counts,
-}: TabsProps) {
-  const btn = (key: TabKey, label: string, count: number) => {
-    const isActive = active === key;
-
-    return (
-      <button
-        type="button"
-        onClick={() => onChange(key)}
-        className={[
-          "px-4 py-2 rounded-lg text-sm font-semibold border transition",
-          isActive
-            ? "bg-blue-600 text-white border-blue-600"
-            : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50",
-        ].join(" ")}
-      >
-        {label}{" "}
-        <span className={isActive ? "opacity-90" : "text-gray-500"}>
-          ({count})
-        </span>
-      </button>
-    );
+}: {
+  active: TabKey;
+  onChange: (tab: TabKey) => void;
+  role?: "ADMIN" | "KARYAWAN" | "BOS";
+  counts: {
+    stock: number;
+    approval: number;
+    active: number;
+    own: number;
+    returned: number;
   };
+}) {
+  const canApprove = role === "ADMIN" || role === "BOS";
+  const canSeeActive = role === "ADMIN" || role === "BOS";
+
+  const tabs: { key: TabKey; label: string; count: number; show: boolean }[] = [
+    {
+      key: "STOCK",
+      label: "Stock",
+      count: counts.stock,
+      show: true,
+    },
+    {
+      key: "APPROVAL",
+      label: "Menunggu Approval",
+      count: counts.approval,
+      show: canApprove,
+    },
+    {
+      key: "ACTIVE",
+      label: "Peminjaman Aktif",
+      count: counts.active,
+      show: canSeeActive,
+    },
+    {
+      key: "OWN",
+      label: "Pinjaman Saya",
+      count: counts.own,
+      show: true,
+    },
+    {
+      key: "RETURNED",
+      label: "Riwayat",
+      count: counts.returned,
+      show: true,
+    },
+  ];
 
   return (
     <div className="flex flex-wrap gap-2">
-      {btn("STOCK", "Stock", counts.stock)}
-
-      {/* ADDED: tab ACTIVE hanya untuk admin */}
-      {isAdmin && btn("ACTIVE", "Sedang dipinjam", counts.active)}
-
-      {/* CHANGED: pakai counts.own */}
-      {btn("OWN", "Pinjaman anda", counts.own)}
-
-      {btn("RETURNED", "Dikembalikan", counts.returned)}
+      {tabs
+        .filter((tab) => tab.show)
+        .map((tab) => (
+          <button
+            key={tab.key}
+            type="button"
+            onClick={() => onChange(tab.key)}
+            className={`rounded-lg border px-4 py-2 text-sm font-medium ${
+              active === tab.key
+                ? "border-blue-600 bg-blue-600 text-white"
+                : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            {tab.label}{" "}
+            <span
+              className={`ml-1 rounded-full px-2 py-0.5 text-xs ${
+                active === tab.key
+                  ? "bg-white text-blue-700"
+                  : "bg-gray-100 text-gray-700"
+              }`}
+            >
+              {tab.count}
+            </span>
+          </button>
+        ))}
     </div>
   );
 }

@@ -22,11 +22,19 @@ export default function BorrowActiveByUserTab({
   const [cardPageSize, setCardPageSize] = useState(9); // 3 kolom x 3 baris
 
   // hanya status aktif (kalau mau include TERLAMBAT/DIPAKAI, ubah disini)
-  const activeOnly = useMemo(
-    () => (data ?? []).filter((x: AnyRow) => x.status === "DIPINJAM" ),
-    [data]
-  );
-
+const activeOnly = useMemo(
+  () =>
+    (data ?? []).filter((x: AnyRow) =>
+      [
+        "MENUNGGU_ADMIN",
+        "MENUNGGU_BOS",
+        "DITOLAK",
+        "DIPINJAM",
+        "TERLAMBAT",
+      ].includes(x.status)
+    ),
+  [data]
+);
   // group by user untuk card
   const groupedUsers = useMemo(() => {
     const map = new Map<
@@ -202,6 +210,8 @@ export default function BorrowActiveByUserTab({
                 <th className="px-4 py-2 text-left">Qty</th>
                 <th className="px-4 py-2 text-left">Status</th>
                 <th className="px-4 py-2 text-left">Tanggal</th>
+                <th className="px-4 py-2 text-left">Tanggal Pengembalian</th>
+                <th className="px-4 py-2 text-left">Ketelatan (hari)</th>
                 <th className="px-4 py-2 text-right">Aksi</th>
               </tr>
             </thead>
@@ -221,11 +231,18 @@ export default function BorrowActiveByUserTab({
                   <td className="px-4 py-2">
                     {new Date(r.borrowed_date).toLocaleString()}
                   </td>
+                   <td className="px-4 py-2">
+                    {new Date(r.due_date).toLocaleString()}
+                  </td>
+                  <td className="px-4 py-2">
+                     {r.late_days ?? "-"}
+                  </td>
                   <td className="px-4 py-2 text-right">
                     <Button type="button" onClick={() => onReturn(r)}>
                       Kembalikan
                     </Button>
                   </td>
+                  
                 </tr>
               ))}
 

@@ -44,7 +44,9 @@ const BorrowModal: React.FC<Props> = ({
 
   // ADDED:
   // cek role user login
-  const isAdmin = currentUser?.role === "ADMIN";
+const isAdmin = currentUser?.role === "ADMIN";
+const isBoss = currentUser?.role === "BOS";
+const canBorrowForOther = isAdmin || isBoss;
 
   // ADDED:
   // admin punya 2 mode:
@@ -132,7 +134,7 @@ const BorrowModal: React.FC<Props> = ({
 
     // ADDED:
     // hanya admin mode OTHER yang wajib memilih karyawan
-    if (isAdmin && borrowMode === "OTHER" && !data.borrower_id) {
+    if (canBorrowForOther && borrowMode === "OTHER" && !data.borrower_id) {
       setError("borrower_id", {
         type: "manual",
         message: "User wajib dipilih",
@@ -152,7 +154,8 @@ const BorrowModal: React.FC<Props> = ({
     const payload: CreateBorrowPayload = {
       id_asset_stock: stock.id_asset_stock,
       quantity: data.quantity,
-      ...(isAdmin && borrowMode === "OTHER" && data.borrower_id
+      due_date: new Date(data.due_date).toISOString(),
+      ...(canBorrowForOther && borrowMode === "OTHER" && data.borrower_id
         ? { borrower_id: Number(data.borrower_id) }
         : {}),
     };
@@ -217,7 +220,7 @@ const BorrowModal: React.FC<Props> = ({
           {/* ADDED:
               hanya admin yang bisa pilih mode pinjam
           */}
-          {isAdmin && (
+          {canBorrowForOther  && (
             <div className="space-y-2">
               <div className="text-sm font-medium text-gray-700">
                 Mode peminjaman
@@ -246,7 +249,7 @@ const BorrowModal: React.FC<Props> = ({
           {/* ADDED:
               user biasa tidak perlu pilih siapa yang pinjam
           */}
-          {!isAdmin && (
+          {!canBorrowForOther  && (
             <div className="p-3 rounded-lg border border-green-200 bg-green-50 text-sm text-green-700">
               Asset akan dipinjam untuk akun yang sedang login.
             </div>
@@ -264,12 +267,35 @@ const BorrowModal: React.FC<Props> = ({
               error={errors.quantity?.message}
             />
 
+            <Input
+  label="Batas Pengembalian"
+  type="datetime-local"
+  {...register("due_date", {
+    required: "Batas pengembalian wajib diisi",
+    validate: (value) => {
+      const selected = new Date(value);
+      const now = new Date();
+
+      if (Number.isNaN(selected.getTime())) {
+        return "Tanggal batas pengembalian tidak valid";
+      }
+
+      if (selected <= now) {
+        return "Batas pengembalian harus setelah waktu sekarang";
+      }
+
+      return true;
+    },
+  })}
+  error={errors.due_date?.message}
+/>
+
             {/* CHANGED:
                 select user hanya tampil kalau:
                 - admin
                 - mode OTHER
             */}
-            {isAdmin && borrowMode === "OTHER" && (
+            {canBorrowForOther  && borrowMode === "OTHER" && (
               <Controller
                 name="borrower_id"
                 control={control}
@@ -292,7 +318,7 @@ const BorrowModal: React.FC<Props> = ({
           {/* ADDED:
               info visual siapa peminjamnya
           */}
-          {isAdmin && borrowMode === "SELF" && (
+          {canBorrowForOther && borrowMode === "SELF" && (
             <div className="text-sm text-gray-600">
               Peminjaman ini akan dicatat atas nama:
               <span className="font-semibold text-gray-900">
@@ -302,7 +328,7 @@ const BorrowModal: React.FC<Props> = ({
             </div>
           )}
 
-          {isAdmin && borrowMode === "OTHER" && selectedBorrowerId && (
+          {canBorrowForOther && borrowMode === "OTHER" && selectedBorrowerId && (
             <div className="text-sm text-gray-600">
               Peminjaman ini akan dicatat untuk user yang dipilih.
             </div>

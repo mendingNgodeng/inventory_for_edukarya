@@ -1,4 +1,12 @@
 // api/assets/types.ts
+export type BorrowStatus =
+  | "MENUNGGU_ADMIN"
+  | "MENUNGGU_BOS"
+  | "DITOLAK"
+  | "DIPAKAI"
+  | "DIPINJAM"
+  | "DIKEMBALIKAN"
+  | "TERLAMBAT";
 
 export interface data {
   id_asset_borrowed:number;
@@ -7,7 +15,25 @@ export interface data {
   quantity: number;
   borrowed_date:string,
   returned_date: string;
-  status: string;
+  status: BorrowStatus;
+
+  due_date:Date;
+  late_days:number;
+
+  requested_by_id?: number | null;
+  admin_approved_by_id?: number | null;
+  admin_approved_at?: string | null;
+  boss_approved_by_id?: number | null;
+  boss_approved_at?: string | null;
+  rejected_by_id?: number | null;
+  rejected_at?: string | null;
+  approval_note?: string | null;
+
+  requestedBy?: BorrowApprovalUserLite | null;
+adminApprovedBy?: BorrowApprovalUserLite | null;
+bossApprovedBy?: BorrowApprovalUserLite | null;
+rejectedBy?: BorrowApprovalUserLite | null;
+
   assetStock: {
     asset: {
       asset_name:string;
@@ -17,20 +43,24 @@ export interface data {
       name:string;
     }
   };
-  user:{
-    name:string,
-    jabatan:string,
-    no_hp:string,
-  }
+  user: {
+    id_user?: number;
+    name: string;
+    jabatan: string;
+    no_hp: string;
+    role?: "ADMIN" | "KARYAWAN" | "BOS";
+  } | null;
 }
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
+  message?: string;
 }
 export interface CreateData {
   id_asset_stock: number;
-  borrower_id: any;
+  borrower_id?: any;
   quantity: number;
+  due_date:string;
 }
 
 export interface UpdateData {
@@ -38,27 +68,16 @@ export interface UpdateData {
   borrower_id?: any;
   quantity?: number;
 }
-// id_asset_borrowed": 3,
-//             "id_asset_stock": 5,
-//             "id_user": 1,
-//             "quantity": 10,
-//             "borrowed_date": "2026-02-18T03:54:57.540Z",
-//             "returned_date": "2026-02-18T04:46:18.731Z",
-//             "status": "DIKEMBALIKAN",
-//             "assetStock": {
-//                 "id_asset_stock": 5,
-//                 "id_asset": 5,
-//                 "id_location": 2,
-//                 "condition": "BAIK",
-//                 "status": "TERSEDIA",
-//                 "quantity": 10,
-//                 "created_at": "2026-02-16T13:24:13.913Z",
-//                 "updated_at": "2026-02-18T15:29:22.545Z",
-//                 "asset": {
-//                     "asset_code": "enh1",
-//                     "asset_name": "laptop Acer"
-//                 },
-//                 "location": {
-//                     "name": "Ruang 2"
-//                 }
-//             }
+
+export interface RejectBorrowPayload {
+  approval_note?: string;
+}
+
+export interface BorrowApprovalUserLite {
+  id_user: number;
+  name: string;
+  username?: string;
+  role: "ADMIN" | "KARYAWAN" | "BOS";
+  jabatan?: string | null;
+  no_hp?: string | null;
+}

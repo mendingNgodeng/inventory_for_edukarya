@@ -8,7 +8,7 @@ import BorrowReturnedTable from "./component/borrowReturnedTable";
 import ReturnModal from "./component/returnModal";
 import BorrowActiveByUserTab from "./component/BorrowActiveKaryawanTab";
 import BorrowActiveByUserOwnTab from "./component/BorrowActiveKaryawanOwnTab";
-
+import BorrowApprovalTab from "./component/BorrowApprovalTab";
 import { useData as useStock } from "../../api/assetsStock/hooks";
 import { useData as useBorrowed } from "../../api/UseAssets/hooks";
 import { useAuth } from "../../api/auth/hooks";
@@ -22,6 +22,9 @@ const Page: React.FC = () => {
 const { getUSER } = useAuth(); // ADDED
 const currentUser = getUSER(); // CHANGED
 const isAdmin = currentUser?.role === "ADMIN";
+const isBoss = currentUser?.role === "BOS";
+const canApprove = isAdmin || isBoss;
+const canSeeActive = isAdmin || isBoss;
 const currentUserId = Number(currentUser?.id_user);
 
   useEffect(() => {
@@ -41,6 +44,9 @@ const currentUserId = Number(currentUser?.id_user);
     loading: borrowLoading,
     createBorrow,
     updateData,
+     approveByAdmin,
+    approveByBoss,
+    rejectBorrow,
     fetchData: refetchBorrow,
   } = useBorrowed() as any;
 
@@ -81,24 +87,42 @@ const currentUserId = Number(currentUser?.id_user);
     });
   }, [borrowedData, searchTerm]);
 
+  // approval data
+  const approvalBorrow = useMemo(() => {
+  return (filteredBorrow ?? []).filter((x: any) => {
+    if (isAdmin) return x.status === "MENUNGGU_ADMIN";
+    if (isBoss) return x.status === "MENUNGGU_BOS";
+    return false;
+  });
+}, [filteredBorrow, isAdmin, isBoss]);
+
   // ADMIN: semua pinjaman aktif user-user
   const activeBorrow = useMemo(() => {
     return (filteredBorrow ?? []).filter((x: any) =>
-      ["DIPINJAM","DIPAKAI"].includes(x.status)
+      ["DIPINJAM","DIPAKAI","TERLAMBAT"].includes(x.status)
     );
   }, [filteredBorrow]);
 
   // ADDED: pinjaman milik user login
 const ownBorrow = useMemo(() => {
   return (filteredBorrow ?? []).filter(
-    (x: any) =>
+     (x: any) =>
       Number(x.id_user ?? x.user?.id_user) === currentUserId &&
-      ["DIPINJAM", "DIPAKAI"].includes(x.status)
+      [
+        "MENUNGGU_ADMIN",
+        "MENUNGGU_BOS",
+        "DITOLAK",
+        "DIPINJAM",
+        "DIPAKAI",
+        "TERLAMBAT",
+      ].includes(x.status)
   );
 }, [filteredBorrow, currentUserId]);
 
   const returnedBorrow = useMemo(() => {
-    return (filteredBorrow ?? []).filter((x: any) => x.status === "DIKEMBALIKAN");
+    return (filteredBorrow ?? []).filter((x: any) =>
+    ["DIKEMBALIKAN", "DITOLAK"].includes(x.status)
+  );
   }, [filteredBorrow]);
 
   const handleBorrow = (stock: any) => {
@@ -140,9 +164,10 @@ const ownBorrow = useMemo(() => {
       <Tabs
         active={tab}
         onChange={setTab}
-        isAdmin={isAdmin} // ADDED
+        role={currentUser?.role}
         counts={{
           stock: filteredStock?.length ?? 0,
+          approval: approvalBorrow.length,
           active: activeBorrow.length,
           own: ownBorrow.length, // ADDED
           returned: returnedBorrow.length,
@@ -174,13 +199,35 @@ const ownBorrow = useMemo(() => {
       )}
 
       {/* ACTIVE hanya admin */}
-      {tab === "ACTIVE" && isAdmin && (
-        <BorrowActiveByUserTab
-          data={activeBorrow}
-          loading={borrowLoading}
-          onReturn={handleOpenReturn}
-        />
-      )}
+{tab === "ACTIVE" && canSeeActive && (
+  <BorrowActiveByUserTab
+    data={activeBorrow}
+    loading={borrowLoading}
+    onReturn={handleOpenReturn}
+  />
+)}
+
+      {tab === "APPROVAL" && canApprove && (
+  <BorrowApprovalTab
+    data={approvalBorrow}
+    loading={borrowLoading}
+    currentRole={currentUser?.role}
+    onApproveAdmin={async (row) => {
+      await approveByAdmin(row.id_asset_borrowed);
+      await refreshAll();
+    }}
+    onApproveBoss={async (row) => {
+      await approveByBoss(row.id_asset_borrowed);
+      await refreshAll();
+    }}
+    onReject={async (row, note) => {
+      await rejectBorrow(row.id_asset_borrowed, {
+        approval_note: note,
+      });
+      await refreshAll();
+    }}
+  />
+)}
 
       {/* OWN untuk semua role */}
      {tab === "OWN" && (

@@ -72,6 +72,7 @@ export default function BorrowReturnedTable({ data, loading }: BorrowReturnedTab
             <th className="px-4 py-2 text-left">Asset</th>
             <th className="px-4 py-2 text-left">User</th>
             <th className="px-4 py-2 text-left">Qty</th>
+            <th className="px-4 py-2 text-left">Status</th>
             <th className="px-4 py-2 text-left">Tanggal Pinjam</th>
             <th className="px-4 py-2 text-left">Tanggal Kembali</th>
           </tr>
@@ -86,6 +87,7 @@ export default function BorrowReturnedTable({ data, loading }: BorrowReturnedTab
                 {r.status === "DIPAKAI" ? "Dipakai Kantor" : (r.user?.name ?? r.id_user ?? "Kantor")}
               </td>
               <td className="px-4 py-2">{r.quantity}</td>
+              <td className="px-4 py-2">{r.status}</td>
               <td className="px-4 py-2">{new Date(r.borrowed_date).toLocaleString()}</td>
               <td className="px-4 py-2">
                 {r.returned_date ? new Date(r.returned_date).toLocaleString() : "-"}
