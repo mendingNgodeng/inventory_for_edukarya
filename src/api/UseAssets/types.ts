@@ -33,6 +33,7 @@ export interface data {
 adminApprovedBy?: BorrowApprovalUserLite | null;
 bossApprovedBy?: BorrowApprovalUserLite | null;
 rejectedBy?: BorrowApprovalUserLite | null;
+image_after_return?: string | null;
 
   assetStock: {
     asset: {
@@ -72,7 +73,9 @@ export interface UpdateData {
 export interface RejectBorrowPayload {
   approval_note?: string;
 }
-
+export interface ReturnAssetPayload {
+  image_after_return: string;
+}
 export interface BorrowApprovalUserLite {
   id_user: number;
   name: string;

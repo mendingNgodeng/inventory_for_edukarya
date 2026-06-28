@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { dataService } from './service';
-import type { data, CreateData, UpdateData,RejectBorrowPayload } from './types';
+import type { data, CreateData, UpdateData,RejectBorrowPayload,ReturnAssetPayload } from './types';
 
 export const useData = () => {
   const [Data, setData] = useState<data[]>([]);
@@ -30,7 +30,7 @@ export const useData = () => {
 
   const updateData = async (
     id: number,
-    payload: UpdateData
+    payload: ReturnAssetPayload
   ) => {
     const updated = await dataService.returnAsset(id, payload);
     setData((prev) =>
@@ -38,6 +38,8 @@ export const useData = () => {
         loc.id_asset_borrowed === id ? updated : loc
       )
     );
+
+    return updated;
   };
 
   const deleteData = async (id: number) => {
@@ -45,6 +47,7 @@ export const useData = () => {
     setData((prev) =>
       prev.filter((loc) => loc.id_asset_borrowed !== id)
     );
+    
   };
 
 

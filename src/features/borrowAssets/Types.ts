@@ -71,7 +71,8 @@ export interface CreateBorrowPayload {
 
 /** Payload return (sesuaikan dengan UpdateData kamu) */
 export interface ReturnPayload {
-  status: "DIKEMBALIKAN" | string;
+  // status: "DIKEMBALIKAN" | string;
+   image_after_return: string;
   // optional: returned_date?: string;
   // optional: notes?: string;
 }

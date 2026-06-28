@@ -252,15 +252,19 @@ const ownBorrow = useMemo(() => {
       />
 
       <ReturnModal
-        isOpen={openReturnModal}
-        onClose={() => setOpenReturnModal(false)}
-        row={selectedBorrow}
-        onReturn={async (payload) => {
-          if (!selectedBorrow) return;
-          await updateData(selectedBorrow.id_asset_borrowed, payload);
-          await Promise.all([refetchStock(), refetchBorrow()]);
-        }}
-      />
+  isOpen={openReturnModal}
+  onClose={() => {
+    setOpenReturnModal(false);
+    setSelectedBorrow(null);
+  }}
+  row={selectedBorrow}
+  onReturn={async (payload) => {
+    if (!selectedBorrow) return;
+
+    await updateData(selectedBorrow.id_asset_borrowed, payload);
+    await Promise.all([refetchStock(), refetchBorrow()]);
+  }}
+/>
     </div>
   );
 };

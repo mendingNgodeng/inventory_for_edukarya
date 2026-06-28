@@ -8,6 +8,7 @@ import type {
   UpdateData,
   ApiResponse,
   RejectBorrowPayload,
+  ReturnAssetPayload
 } from './types';
 
 export class dataService {
@@ -45,7 +46,7 @@ static async createBorrow(payload: CreateData): Promise<data> {
 
 static async returnAsset(
   id: number,
-  payload: UpdateData
+  payload: ReturnAssetPayload
 ): Promise<data> {
   const { data } = await privateClient.put<ApiResponse<data>>(
     `${ENDPOINTS.ASSET_USE}/${id}/return`,
