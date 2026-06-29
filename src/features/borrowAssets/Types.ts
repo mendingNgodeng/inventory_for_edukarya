@@ -88,6 +88,12 @@ export interface BorrowActiveTableProps {
   data: BorrowRow[];
   loading: boolean;
   onReturn: (row: BorrowRow) => void;
+   onCancel?: (
+    row: BorrowRow,
+    payload?: {
+      cancel_note?: string;
+    }
+  ) => Promise<void>;
 }
 
 /** Props BorrowReturnedTable */

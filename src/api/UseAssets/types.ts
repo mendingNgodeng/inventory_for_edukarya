@@ -2,6 +2,7 @@
 export type BorrowStatus =
   | "MENUNGGU_ADMIN"
   | "MENUNGGU_BOS"
+  | "DIBATALKAN"
   | "DITOLAK"
   | "DIPAKAI"
   | "DIPINJAM"
@@ -75,6 +76,10 @@ export interface RejectBorrowPayload {
 }
 export interface ReturnAssetPayload {
   image_after_return: string;
+}
+
+export interface CancelBorrowPayload {
+  cancel_note?: string;
 }
 export interface BorrowApprovalUserLite {
   id_user: number;

@@ -5,7 +5,7 @@ import { ENDPOINTS } from '../endpoints';
 import type {
   data,
   CreateData,
-  UpdateData,
+  CancelBorrowPayload,
   ApiResponse,
   RejectBorrowPayload,
   ReturnAssetPayload
@@ -84,6 +84,18 @@ static async rejectBorrow(
 ): Promise<data> {
   const { data } = await privateClient.put<ApiResponse<data>>(
     `${ENDPOINTS.ASSET_USE}/${id}/reject`,
+    payload ?? {}
+  );
+
+  return data.data;
+}
+
+static async cancelBorrow(
+  id: number,
+  payload?: CancelBorrowPayload
+): Promise<data> {
+  const { data } = await privateClient.put<ApiResponse<data>>(
+    `${ENDPOINTS.ASSET_USE}/${id}/cancel`,
     payload ?? {}
   );
 

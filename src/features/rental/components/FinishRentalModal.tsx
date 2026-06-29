@@ -80,7 +80,7 @@ export default function FinishRentalModal({
                 // toast.success("Rental berhasil diselesaikan");
                 onClose();
               } catch (e: any) {
-                toast.error(e?.message || "Gagal menyelesaikan rental");
+                // toast.error(e?.message || "Gagal menyelesaikan rental");
               } finally {
                 setLoading(false);
               }

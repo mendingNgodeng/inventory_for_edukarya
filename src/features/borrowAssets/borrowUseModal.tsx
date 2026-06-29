@@ -91,9 +91,19 @@ const canBorrowForOther = isAdmin || isBoss;
     return borrowedData.filter((x) => x.id_asset_stock === stock.id_asset_stock);
   }, [borrowedData, stock]);
 
-  const active = useMemo(() => {
-    return related.filter((x) => x.status !== "DIKEMBALIKAN");
-  }, [related]);
+const VISIBLE_BORROW_STATUSES = [
+  "MENUNGGU_ADMIN",
+  "MENUNGGU_BOS",
+  "DIPAKAI",
+  "DIPINJAM",
+  "TERLAMBAT"
+] as const;
+
+const active = useMemo(() => {
+  return related.filter((x) =>
+    VISIBLE_BORROW_STATUSES.includes(x.status as any)
+  );
+}, [related]);
 
   const borrowedByEmployees = useMemo(() => {
     return active.filter(

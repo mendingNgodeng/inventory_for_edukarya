@@ -3,6 +3,7 @@ import Button from "../../../components/ui/button";
 import Pagination from "../../../components/ui/pagination";
 import type { BorrowActiveTableProps } from "../Types";
 import BorrowDetailModal from "./BorrowDetailModal";
+import BorrowCancelModal from "./BorrowCancelModal";
 type AnyRow = any;
 
 const formatDateTime = (value?: string | null) => {
@@ -18,6 +19,10 @@ const formatDateTime = (value?: string | null) => {
 const getStatusBadgeClass = (status: string) => {
   if (status === "DIPINJAM" || status === "TERLAMBAT") {
     return "bg-blue-100 text-blue-700";
+  }
+
+  if (status === "DIBATALKAN") {
+  return "bg-orange-100 text-orange-700";
   }
 
   if (status === "MENUNGGU_ADMIN" || status === "MENUNGGU_BOS") {
@@ -39,12 +44,16 @@ export default function BorrowActiveByUserOwnTab({
   data,
   loading,
   onReturn,
+  onCancel,
 }: BorrowActiveTableProps) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
   const [selected, setSelected] = useState<AnyRow | null>(null);
   const [openDetail, setOpenDetail] = useState(false);
+
+  const [selectedCancel, setSelectedCancel] = useState<AnyRow | null>(null);
+  const [openCancel, setOpenCancel] = useState(false);
 
   const activeOnly = useMemo(
     () =>
@@ -54,6 +63,7 @@ export default function BorrowActiveByUserOwnTab({
           "TERLAMBAT",
           "MENUNGGU_BOS",
           "MENUNGGU_ADMIN",
+          "DIBATALKAN",
           "DITOLAK",
         ].includes(x.status)
       ),
@@ -85,6 +95,16 @@ export default function BorrowActiveByUserOwnTab({
     setOpenDetail(false);
     setSelected(null);
   };
+
+  const handleOpenCancel = (row: AnyRow) => {
+  setSelectedCancel(row);
+  setOpenCancel(true);
+};
+
+const handleCloseCancel = () => {
+  setOpenCancel(false);
+  setSelectedCancel(null);
+};
 
   if (loading) {
     return <div className="text-sm text-gray-600">Memuat data peminjaman...</div>;
@@ -156,15 +176,23 @@ export default function BorrowActiveByUserOwnTab({
                         Detail
                       </Button>
 
-                      {["DIPINJAM", "TERLAMBAT"].includes(r.status) ? (
-                        <Button type="button" onClick={() => onReturn(r)}>
-                          Kembalikan
-                        </Button>
-                      ) : (
-                        <span className="self-center text-xs text-gray-400">
-                          Tidak ada aksi
-                        </span>
-                      )}
+                    {["MENUNGGU_ADMIN", "MENUNGGU_BOS"].includes(r.status) && onCancel ? (
+  <Button
+    type="button"
+    variant="danger"
+    onClick={() => handleOpenCancel(r)}
+  >
+    Batalkan
+  </Button>
+) : ["DIPINJAM", "TERLAMBAT"].includes(r.status) ? (
+  <Button type="button" onClick={() => onReturn(r)}>
+    Kembalikan
+  </Button>
+) : (
+  <span className="self-center text-xs text-gray-400">
+    Tidak ada aksi
+  </span>
+)}
                     </div>
                   </td>
                 </tr>
@@ -202,6 +230,16 @@ export default function BorrowActiveByUserOwnTab({
         selected={selected}
         onReturn={onReturn}
       />
+
+      <BorrowCancelModal
+  isOpen={openCancel}
+  onClose={handleCloseCancel}
+  row={selectedCancel}
+  onCancel={async (row, payload) => {
+    if (!onCancel) return;
+    await onCancel(row, payload);
+  }}
+/>
 
     </>
   );

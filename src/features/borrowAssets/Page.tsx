@@ -47,6 +47,7 @@ const currentUserId = Number(currentUser?.id_user);
      approveByAdmin,
     approveByBoss,
     rejectBorrow,
+      cancelBorrow,
     fetchData: refetchBorrow,
   } = useBorrowed() as any;
 
@@ -99,7 +100,7 @@ const currentUserId = Number(currentUser?.id_user);
   // ADMIN: semua pinjaman aktif user-user
   const activeBorrow = useMemo(() => {
     return (filteredBorrow ?? []).filter((x: any) =>
-      ["DIPINJAM","DIPAKAI","TERLAMBAT"].includes(x.status)
+      ["DIPINJAM","TERLAMBAT"].includes(x.status)
     );
   }, [filteredBorrow]);
 
@@ -114,6 +115,7 @@ const ownBorrow = useMemo(() => {
         "DITOLAK",
         "DIPINJAM",
         "DIPAKAI",
+        "DIBATALKAN",
         "TERLAMBAT",
       ].includes(x.status)
   );
@@ -121,7 +123,7 @@ const ownBorrow = useMemo(() => {
 
   const returnedBorrow = useMemo(() => {
     return (filteredBorrow ?? []).filter((x: any) =>
-    ["DIKEMBALIKAN", "DITOLAK"].includes(x.status)
+    ["DIKEMBALIKAN", "DITOLAK","DIBATALKAN"].includes(x.status)
   );
   }, [filteredBorrow]);
 
@@ -134,6 +136,8 @@ const ownBorrow = useMemo(() => {
     setSelectedBorrow(row);
     setOpenReturnModal(true);
   };
+
+  
 
   const refreshAll = async () => {
     await Promise.all([refetchStock(), refetchBorrow()]);
@@ -235,6 +239,10 @@ const ownBorrow = useMemo(() => {
     data={ownBorrow}
     loading={borrowLoading}
     onReturn={handleOpenReturn}
+    onCancel={async (row, payload) => {
+    await cancelBorrow(row.id_asset_borrowed, payload);
+    await refreshAll();
+  }}
   />
 )}
 
