@@ -145,7 +145,7 @@ export default function RentalHistoryTab({ rentals, searchTerm,}: any) {
               <th className="px-4 py-2 text-left">Pembayaran</th>
               <th className="px-4 py-2 text-left">Total Rental</th>
 <th className="px-4 py-2 text-left">Total Dibayar</th>
-<th className="px-4 py-2 text-left">Telat</th>
+<th className="px-4 py-2 text-left">Telat (hari)</th>
 <th className="px-4 py-2 text-left">Denda</th>
               <th className="px-4 py-2 text-left">After Rental</th>
               <th className="px-4 py-2 text-left">Tanggal Pengembalian</th>
@@ -180,8 +180,8 @@ export default function RentalHistoryTab({ rentals, searchTerm,}: any) {
 
 <td className="px-4 py-2">
   {Number(r.late_days ?? 0) > 0 ? (
-    <span className="rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-700">
-      {r.late_days} hari
+    <span className="rounded-full font-medium font-semibold text-red-700">
+      {r.late_days} 
     </span>
   ) : (
     <span className="text-gray-400">-</span>
