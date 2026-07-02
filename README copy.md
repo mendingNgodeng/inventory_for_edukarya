@@ -33,7 +33,6 @@
 22. [Panduan Deployment](#22-panduan-deployment)
 23. [FAQ Developer](#23-faq-developer)
 24. [Glosarium](#24-glosarium)
-25. [Update Fitur Frontend Terbaru](#25-update-fitur-frontend-terbaru)
 
 ---
 
@@ -624,9 +623,6 @@ Role yang digunakan:
 
 - `ADMIN`
 - `KARYAWAN`
-- `BOS`
-
-Role `BOS` digunakan untuk alur approval akhir peminjaman. Role ini dapat melihat request yang menunggu persetujuan bos, melakukan approve akhir, serta melakukan peminjaman langsung sesuai aturan backend.
 
 ### 10.7 Akses Role `KARYAWAN`
 
@@ -637,24 +633,6 @@ const karyawanAllowedPaths = ["/dashboard", "/borrow-assets"];
 ```
 
 Artinya, karyawan tidak boleh mengakses fitur admin seperti master data, stok, user, rental, dan logs.
-
-### 10.8 Akses Role `BOS`
-
-Role `BOS` digunakan untuk proses persetujuan peminjaman. Secara frontend, role ini perlu diberi akses minimal ke:
-
-```ts
-const bosAllowedPaths = ["/dashboard", "/borrow-assets"];
-```
-
-Pada halaman `/borrow-assets`, BOS dapat:
-
-- Melihat tab `Menunggu Approval` untuk request yang sudah melewati admin atau request dari admin.
-- Menyetujui request peminjaman tahap akhir.
-- Menolak request peminjaman.
-- Melakukan peminjaman langsung.
-- Melakukan pengembalian asset jika diperlukan.
-
-Jika role `BOS` juga ingin diberi akses dashboard/asset logs/rental, perlu disesuaikan lagi di `ProtectedRoute` dan `Sidebar`.
 
 ---
 
@@ -815,7 +793,7 @@ export const ENDPOINTS = {
 | User | `/user` | CRUD user/karyawan dan create many |
 | Rental Customer | `/rentalCustomer` | CRUD customer rental |
 | Asset Stock | `/assetStock` | CRUD stok aset |
-| Asset Borrow/Use | `/assetBorrow` | Peminjaman, approval, pembatalan, pemakaian, dan pengembalian |
+| Asset Borrow/Use | `/assetBorrow` | Peminjaman, pemakaian, pengembalian |
 | Asset Maintenance | `/assetMaintenance` | Maintenance aset |
 | Asset Rental | `/assetRental` | Rental aset |
 | Asset Logs | `/assetLogs` | Log aktivitas aset |
@@ -1311,73 +1289,28 @@ GET    /assetBorrow
 GET    /assetBorrow/:id
 POST   /assetBorrow/borrow
 POST   /assetBorrow/used
-PUT    /assetBorrow/:id/approve-admin
-PUT    /assetBorrow/:id/approve-boss
-PUT    /assetBorrow/:id/reject
-PUT    /assetBorrow/:id/cancel
 PUT    /assetBorrow/:id/return
 DELETE /assetBorrow/:id
 ```
 
-Method utama pada API layer:
+Untuk fitur pinjam, method utama:
 
 ```ts
 createBorrow(payload)
-createUsed(payload)
-approveByAdmin(id)
-approveByBoss(id)
-rejectBorrow(id, payload)
-cancelBorrow(id, payload)
-updateData(id, payload) // return asset
+updateData(id, payload)
 ```
 
-Status peminjaman yang didukung:
-
-```ts
-export type BorrowStatus =
-  | "MENUNGGU_ADMIN"
-  | "MENUNGGU_BOS"
-  | "DITOLAK"
-  | "DIBATALKAN"
-  | "DIPAKAI"
-  | "DIPINJAM"
-  | "DIKEMBALIKAN"
-  | "TERLAMBAT";
-```
-
-Data model terbaru:
+Data model:
 
 ```ts
 export interface data {
   id_asset_borrowed: number;
   id_asset_stock: number;
-  id_user: number | null;
+  id_user: any;
   quantity: number;
   borrowed_date: string;
-  returned_date?: string | null;
-  due_date?: string | null;
-  late_days?: number;
-  status: BorrowStatus;
-  image_after_return?: string | null;
-
-  requested_by_id?: number | null;
-  admin_approved_by_id?: number | null;
-  admin_approved_at?: string | null;
-  boss_approved_by_id?: number | null;
-  boss_approved_at?: string | null;
-  rejected_by_id?: number | null;
-  rejected_at?: string | null;
-  approval_note?: string | null;
-  canceled_by_id?: number | null;
-  canceled_at?: string | null;
-  cancel_note?: string | null;
-
-  requestedBy?: BorrowApprovalUserLite | null;
-  adminApprovedBy?: BorrowApprovalUserLite | null;
-  bossApprovedBy?: BorrowApprovalUserLite | null;
-  rejectedBy?: BorrowApprovalUserLite | null;
-  canceledBy?: BorrowApprovalUserLite | null;
-
+  returned_date: string;
+  status: string;
   assetStock: {
     asset: {
       asset_name: string;
@@ -1387,49 +1320,15 @@ export interface data {
       name: string;
     };
   };
-
   user: {
-    id_user?: number;
     name: string;
     jabatan: string;
     no_hp: string;
-    role?: "ADMIN" | "KARYAWAN" | "BOS";
-  } | null;
+  };
 }
 ```
 
-Payload request peminjaman:
-
-```ts
-export interface CreateBorrowPayload {
-  id_asset_stock: number;
-  borrower_id?: number;
-  quantity: number;
-  due_date: string;
-}
-```
-
-Payload return asset:
-
-```ts
-export interface ReturnPayload {
-  image_after_return: string;
-}
-```
-
-Payload reject dan cancel:
-
-```ts
-export interface RejectBorrowPayload {
-  approval_note?: string;
-}
-
-export interface CancelBorrowPayload {
-  cancel_note?: string;
-}
-```
-
-Fitur UI terbaru:
+Fitur UI:
 
 - List stok tersedia untuk dipinjam.
 - Search berdasarkan:
@@ -1439,61 +1338,15 @@ Fitur UI terbaru:
   - Nama user.
 - Tab:
   - `STOCK`
-  - `APPROVAL`
-  - `ACTIVE`
-  - `OWN`
+  - `ACTIVE` khusus admin.
+  - `OWN` untuk user login.
   - `RETURNED`
 - Role-aware behavior:
-  - `KARYAWAN` membuat request peminjaman untuk dirinya sendiri.
-  - `ADMIN` dapat membuat request untuk dirinya sendiri atau meminjamkan ke user lain.
-  - `BOS` dapat meminjam langsung dan melakukan approval akhir.
-- Modal pinjam aset dengan field:
-  - Quantity.
-  - Batas pengembalian (`due_date`) menggunakan input `datetime-local`.
-  - Mode `Pinjam untuk saya` dan `Pinjamkan ke karyawan` untuk ADMIN/BOS.
-- Validasi frontend untuk:
-  - Quantity wajib lebih dari 0.
-  - Quantity tidak boleh melebihi stok tersedia.
-  - Due date wajib diisi dan harus setelah waktu perangkat user.
-  - User wajib dipilih jika ADMIN/BOS memakai mode `Pinjamkan ke karyawan`.
-- Tab `APPROVAL` untuk ADMIN/BOS.
-- Approval bertahap:
-  - Karyawan request → `MENUNGGU_ADMIN`.
-  - Admin approve → `MENUNGGU_BOS`.
-  - Bos approve → `DIPINJAM`.
-  - Admin request → langsung `MENUNGGU_BOS`.
-  - Bos request → langsung `DIPINJAM`.
-- Reject request oleh ADMIN/BOS.
-- Cancel request sebelum disetujui melalui tombol `Batalkan` pada status:
-  - `MENUNGGU_ADMIN`.
-  - `MENUNGGU_BOS`.
-- Modal detail peminjaman:
-  - Detail asset.
-  - Detail peminjam.
-  - Status.
-  - Due date.
-  - Tanggal kembali.
-  - Data approval/reject/cancel jika backend mengirim relasi user approver.
-- Return asset mandiri:
-  - Karyawan dapat mengembalikan asset yang sudah berstatus `DIPINJAM` atau `TERLAMBAT`.
-  - Return menggunakan modal pengembalian.
-  - Pengembalian wajib menyertakan foto kondisi asset.
-  - Foto dikirim sebagai base64 melalui `image_after_return`.
-- Riwayat peminjaman:
-  - Menampilkan `DIKEMBALIKAN`, `DITOLAK`, dan `DIBATALKAN`.
-  - Tabel riwayat memiliki tombol detail.
-  - Detail riwayat menampilkan foto pengembalian jika tersedia.
-
-Catatan implementasi:
-
-- `returned_date` pada frontend harus ditampilkan dengan fallback `"-"`, bukan dikirim ke backend sebagai string `"-"`.
-- `due_date` pada frontend dikirim sebagai ISO string:
-
-```ts
-due_date: new Date(data.due_date).toISOString()
-```
-
-- Validasi final due date tetap berada di backend/server. Validasi frontend hanya untuk UX.
+  - Admin dapat melihat semua peminjaman aktif.
+  - Karyawan melihat peminjaman miliknya sendiri.
+- Modal pinjam aset.
+- Modal pengembalian aset.
+- Refetch stok dan data borrow setelah aksi sukses.
 
 ---
 
@@ -1638,7 +1491,7 @@ Route:
 Modul rental terdiri dari:
 
 1. Customer rental.
-2. Rental aktif berdasarkan customer.
+2. Rental aktif.
 3. Stok yang bisa dirental.
 4. History rental.
 
@@ -1677,16 +1530,6 @@ export interface CreateData {
 }
 ```
 
-Fitur customer rental:
-
-- Tambah customer rental.
-- Edit customer rental.
-- Hapus customer rental.
-- Upload/ambil foto KTP menggunakan komponen `ImagePicker`.
-- Preview foto KTP sebelum submit.
-- Foto KTP dikirim dalam bentuk base64 ke backend.
-- Backend dapat menyimpan KTP dalam bentuk terenkripsi, sementara frontend tetap menerima hasil decrypt untuk preview jika disediakan oleh API.
-
 #### 13.12.2 Rental Asset
 
 Endpoint:
@@ -1699,7 +1542,6 @@ PUT    /assetRental/:id
 PUT    /assetRental/:id/finish
 PUT    /assetRental/:id/pay
 PUT    /assetRental/:id/cancel
-PUT    /assetRental/:id/update-date-end
 DELETE /assetRental/:id
 DELETE /assetRental/nonActive
 ```
@@ -1717,12 +1559,9 @@ export interface data {
   quantity: number;
   rental_start: string;
   rental_end: string;
-  returned_date?: string | null;
   price: number;
   dp_amount: number;
   remaining_amount: number;
-  late_days?: number;
-  fine_amount?: number;
   status: RentalStatus;
   payment_status: PaymentStatus;
   image_after_rental?: string | null;
@@ -1749,7 +1588,7 @@ Payload finish rental:
 
 ```ts
 export interface FinishPayload {
-  image_after_rental: string;
+  image_after_rental?: string;
 }
 ```
 
@@ -1762,63 +1601,22 @@ export interface PayRentalPayload {
 }
 ```
 
-Payload update tanggal selesai rental:
+Fitur UI:
 
-```ts
-export interface UpdateRentalEndPayload {
-  rental_end: string;
-}
-```
-
-Fitur UI terbaru:
-
-- Tab `CUSTOMER`.
-- Tab `RENTAL_BY_CUSTOMER`.
-- Tab `RENTABLE_STOCK`.
-- Tab `HISTORY`.
-- Search global berdasarkan customer, nomor HP, nama asset, dan kode asset.
+- Tab `CUSTOMER`
+- Tab `RENTAL_BY_CUSTOMER`
+- Tab `RENTABLE_STOCK`
+- Tab `HISTORY`
+- Search global.
 - Filter stok rentable:
-  - `asset.is_rentable === true`.
-  - `status === "TERSEDIA"`.
-  - `condition === "BAIK"`.
-  - `quantity > 0`.
-- Create rental dengan perhitungan harga berdasarkan:
-  - Harga rental asset.
-  - Quantity.
-  - Durasi rental.
-  - DP awal.
-- Tampilan pembayaran rental:
-  - Total rental.
-  - Total dibayar.
-  - Denda.
-  - Hari terlambat.
-  - Sisa tagihan.
-  - Status pembayaran.
-- Pembayaran rental bertahap melalui `PayRentalModal`.
-- Preview realtime sisa tagihan setelah input nominal pembayaran.
-- Update tanggal selesai rental melalui endpoint update date end.
-- Denda rental otomatis mengikuti data dari backend:
-  - `late_days`.
-  - `fine_amount`.
-  - `remaining_amount`.
-  - `payment_status`.
-- Finish rental wajib menyertakan foto kondisi barang setelah rental.
-- Foto pengembalian rental dikirim sebagai base64 melalui `image_after_rental`.
+  - `asset.is_rentable === true`
+  - `status === "TERSEDIA"`
+  - `condition === "BAIK"`
+  - `quantity > 0`
+- Finish rental.
+- Pay rental.
 - Cancel rental.
 - Delete rental non-active.
-- History rental:
-  - Filter status.
-  - Sort berdasarkan tanggal mulai, tanggal selesai, atau tanggal kembali.
-  - Pagination.
-  - Modal detail rental.
-  - Menampilkan foto pengembalian rental jika tersedia.
-
-Catatan implementasi:
-
-- Field pembayaran yang benar adalah `payment_status`, bukan `status_payment`.
-- Status batal yang benar adalah `DIBATALKAN`, bukan `BATALKAN`.
-- Fungsi delete non-active sebaiknya menggunakan nama konsisten `deleteAllNonActive`.
-- Setelah finish/pay/cancel/update date, halaman perlu melakukan refresh data rental dan stock.
 
 ---
 
@@ -2554,27 +2352,8 @@ Gagal menghapus data ini masih digunakan oleh tabel lain!
 
 ## 18. Role Access Matrix
 
-| Fitur | ADMIN | KARYAWAN | BOS | Catatan |
-|---|---:|---:|---:|---|
-| Login | ✅ | ✅ | ✅ | Bergantung credential backend |
-| Dashboard | ✅ | ✅ | ✅ | Dapat disesuaikan di `ProtectedRoute` |
-| Borrow Assets | ✅ | ✅ | ✅ | Karyawan request sendiri, admin/bos dapat approval sesuai role |
-| Approval Peminjaman | ✅ | ❌ | ✅ | ADMIN approve tahap admin, BOS approve tahap akhir |
-| Cancel Request Peminjaman | ✅ | ✅ | ✅ | Hanya sebelum status `DIPINJAM` |
-| Return Borrow Asset | ✅ | ✅ | ✅ | Return dapat dilakukan mandiri sesuai aturan backend |
-| Locations | ✅ | ❌ | ❌ | Admin only |
-| Asset Categories | ✅ | ❌ | ❌ | Admin only |
-| Asset Types | ✅ | ❌ | ❌ | Admin only |
-| User/Karyawan | ✅ | ❌ | ❌ | Admin only |
-| Assets | ✅ | ❌ | ❌ | Admin only |
-| Asset Stock | ✅ | ❌ | ❌ | Admin only |
-| Rental | ✅ | ❌ | ❌ | Admin only, kecuali nanti diberi akses BOS |
-| Use Assets | ✅ | ❌ | ❌ | Admin only |
-| Maintenance Assets | ✅ | ❌ | ❌ | Admin only |
-| Asset Logs | ✅ | ❌ | ❌ | Admin only |
-| Divisi | ⚠️ | ❌ | ❌ | Deprecated/legacy |
-
----|---:|---:|---|
+| Fitur | ADMIN | KARYAWAN | Catatan |
+|---|---:|---:|---|
 | Login | ✅ | ✅ | Bergantung credential backend |
 | Dashboard | ✅ | ✅ | Diizinkan untuk KARYAWAN |
 | Borrow Assets | ✅ | ✅ | Karyawan melihat pinjaman sendiri |
@@ -3236,249 +3015,3 @@ Area yang paling penting untuk dirapikan ke depan:
 5. Error state yang lebih konsisten di semua page.
 6. Pagination server-side untuk data besar seperti logs.
 7. Kurang Multiple input untuk asset dan asset_stock
-
----
-
-## 25. Update Fitur Frontend Terbaru
-
-Bagian ini merangkum perubahan fitur frontend terbaru yang ditambahkan setelah dokumentasi awal.
-
-### 25.1 Role Baru `BOS`
-
-Role frontend sekarang tidak hanya `ADMIN` dan `KARYAWAN`, tetapi juga mendukung `BOS`.
-
-Dampak perubahan:
-
-- Type role perlu mencakup `"BOS"`.
-- Sidebar dan protected route perlu disesuaikan jika BOS diberi akses menu tertentu.
-- Halaman `/borrow-assets` menggunakan role untuk menentukan tab dan aksi yang tampil.
-- BOS dapat melihat tab approval akhir peminjaman.
-
-Contoh type:
-
-```ts
-type Role = "ADMIN" | "KARYAWAN" | "BOS";
-```
-
-### 25.2 Peminjaman dengan Approval Bertahap
-
-Alur peminjaman frontend sekarang mendukung workflow approval:
-
-```text
-KARYAWAN request
-  → MENUNGGU_ADMIN
-  → ADMIN approve
-  → MENUNGGU_BOS
-  → BOS approve
-  → DIPINJAM
-```
-
-```text
-ADMIN request
-  → MENUNGGU_BOS
-  → BOS approve
-  → DIPINJAM
-```
-
-```text
-BOS request
-  → DIPINJAM langsung
-```
-
-Perubahan frontend:
-
-- Menambah tab `APPROVAL` pada halaman borrow.
-- Menambah action `approveByAdmin`.
-- Menambah action `approveByBoss`.
-- Menambah action `rejectBorrow`.
-- Menambah tampilan status `MENUNGGU_ADMIN`, `MENUNGGU_BOS`, `DITOLAK`, dan `DIBATALKAN`.
-- Menambah detail modal untuk melihat status approval.
-
-### 25.3 Batalkan Request Peminjaman
-
-User dapat membatalkan request sebelum peminjaman disetujui.
-
-Status yang dapat dibatalkan:
-
-```text
-MENUNGGU_ADMIN
-MENUNGGU_BOS
-```
-
-Status hasil:
-
-```text
-DIBATALKAN
-```
-
-Frontend yang ditambahkan:
-
-- `BorrowCancelModal`.
-- Tombol `Batalkan` pada tab `Pinjaman Saya`.
-- Payload `cancel_note` opsional.
-- Status `DIBATALKAN` ditampilkan pada riwayat.
-
-### 25.4 Durasi Peminjaman dan Due Date
-
-Request peminjaman sekarang memiliki batas pengembalian.
-
-Frontend menambahkan field:
-
-```ts
-due_date: string;
-```
-
-Pada modal pinjam, input menggunakan:
-
-```tsx
-<Input type="datetime-local" />
-```
-
-Sebelum dikirim ke backend, value diubah menjadi ISO string:
-
-```ts
-due_date: new Date(data.due_date).toISOString()
-```
-
-Validasi frontend:
-
-- Due date wajib diisi.
-- Due date harus setelah waktu sekarang.
-- Pesan error ditampilkan di bawah input.
-
-Catatan: validasi frontend menggunakan waktu perangkat user, sedangkan validasi final tetap dilakukan backend menggunakan waktu server.
-
-### 25.5 Foto Pengembalian Asset Borrow
-
-Return asset sekarang mendukung bukti foto.
-
-Frontend menambahkan:
-
-- Komponen `ImagePicker`.
-- Upload file gambar.
-- Ambil foto dari kamera HP.
-- Ambil foto dari webcam desktop.
-- Preview gambar.
-- Clear/hapus gambar.
-- Payload base64 `image_after_return`.
-
-Payload return:
-
-```ts
-export interface ReturnPayload {
-  image_after_return: string;
-}
-```
-
-Foto ditampilkan kembali pada:
-
-- Detail modal peminjaman.
-- Detail modal riwayat pengembalian.
-
-### 25.6 Detail Modal Peminjaman dan Riwayat
-
-Frontend menambahkan modal detail untuk peminjaman aktif dan riwayat.
-
-Detail yang ditampilkan:
-
-- Nama asset.
-- Kode asset.
-- Lokasi.
-- Nama peminjam.
-- Role/jabatan/no HP jika tersedia.
-- Quantity.
-- Status.
-- Tanggal request.
-- Due date.
-- Tanggal kembali.
-- Hari terlambat.
-- Data approver/rejecter/canceler jika backend mengirim data relasi.
-- Foto pengembalian jika tersedia.
-
-### 25.7 Rental: KTP dan Foto Pengembalian
-
-Pada fitur rental, frontend mendukung gambar base64 untuk:
-
-- Foto KTP customer rental (`pictureKtp`).
-- Foto pengembalian barang setelah rental selesai (`image_after_rental`).
-
-Keduanya menggunakan komponen `ImagePicker`.
-
-Perubahan frontend:
-
-- Customer rental modal menampilkan upload/ambil foto KTP.
-- Finish rental modal menampilkan upload/ambil foto pengembalian barang.
-- Detail rental/history dapat menampilkan preview gambar jika data tersedia.
-
-Catatan: backend dapat mengenkripsi KTP saat penyimpanan. Frontend tetap membaca field `pictureKtp` dari response API untuk preview.
-
-### 25.8 Rental: Denda, Pembayaran, dan Update Tanggal Selesai
-
-Fitur rental aktif ditambahkan informasi:
-
-- Total rental.
-- Total dibayar.
-- Denda.
-- Hari terlambat.
-- Sisa tagihan.
-- Status pembayaran.
-
-Modal pembayaran rental menggunakan `react-hook-form` dan memiliki preview realtime sisa tagihan setelah nominal pembayaran diinput.
-
-Endpoint tambahan yang digunakan:
-
-```text
-PUT /assetRental/:id/pay
-PUT /assetRental/:id/update-date-end
-PUT /assetRental/:id/finish
-PUT /assetRental/:id/cancel
-```
-
-### 25.9 Komponen UI Baru / Diperluas
-
-Komponen yang ditambahkan atau diperluas:
-
-| Komponen | Fungsi |
-|---|---|
-| `ImagePicker` | Upload gambar, ambil foto kamera HP, ambil foto webcam desktop, preview base64 |
-| `BorrowApprovalTab` | Menampilkan request peminjaman yang perlu approval |
-| `BorrowDetailModal` | Detail peminjaman aktif/request |
-| `BorrowCancelModal` | Konfirmasi pembatalan request |
-| `BorrowReturnedDetailModal` | Detail riwayat peminjaman dan foto pengembalian |
-| `ReturnModal` | Pengembalian asset dengan foto wajib |
-| `PayRentalModal` | Pembayaran rental dengan preview sisa tagihan |
-| `FinishRentalModal` | Penyelesaian rental dengan foto pengembalian |
-| `UpdateRentalEndModal` | Perubahan tanggal selesai rental |
-
-### 25.10 Endpoint Frontend yang Ditambahkan
-
-Endpoint borrow tambahan:
-
-```text
-PUT /assetBorrow/:id/approve-admin
-PUT /assetBorrow/:id/approve-boss
-PUT /assetBorrow/:id/reject
-PUT /assetBorrow/:id/cancel
-PUT /assetBorrow/:id/return
-```
-
-Endpoint rental tambahan:
-
-```text
-PUT /assetRental/:id/pay
-PUT /assetRental/:id/update-date-end
-PUT /assetRental/:id/finish
-PUT /assetRental/:id/cancel
-```
-
-### 25.11 Catatan Pengembangan Terbaru
-
-- Jangan kirim `returned_date: "-"` ke backend. Gunakan `null` atau omit field tersebut.
-- String `"-"` hanya digunakan sebagai fallback tampilan UI.
-- Semua date dari form frontend sebaiknya dikirim sebagai ISO string.
-- Untuk gambar base64, frontend tetap perlu validasi ringan, tetapi validasi final format dan ukuran harus dilakukan backend.
-- Status di frontend harus konsisten dengan enum backend:
-  - `DIBATALKAN`, bukan `BATALKAN`.
-  - `payment_status`, bukan `status_payment`.
-- Tab counter harus menghitung data dari filter yang tepat agar angka tidak membingungkan.
-
